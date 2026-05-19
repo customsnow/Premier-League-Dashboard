@@ -1097,7 +1097,8 @@ function openPanel(team, season) {
 
   // Goal contribution leaders (approximate / fun stats)
   const winPct = ((data.w/data.p)*100).toFixed(0);
-  const cleanSheetEst = Math.round(data.w * 0.55 + data.d * 0.3);
+  let cleanSheetEst = Math.round(data.w * 0.55 + data.d * 0.3); // Default estimate
+  let cleanSheetsLabel = 'Est. Clean Sheets';
 
   content.innerHTML = `
     <div class="panel-header">
@@ -1158,8 +1159,8 @@ function openPanel(team, season) {
           <span class="val">${(data.gf/data.p).toFixed(2)}</span>
         </div>
         <div class="stat-row">
-          <span class="lbl">Est. Clean Sheets</span>
-          <span class="val">~${cleanSheetEst}</span>
+          <span class="lbl">${cleanSheetsLabel}</span>
+          <span class="val" id="cleanSheetVal">${cleanSheetEst}</span>
         </div>
         <div class="stat-row">
           <span class="lbl">Conceded Per Game</span>
@@ -1649,6 +1650,16 @@ async function buildMatchChart(team, season) {
   const sourceNote = isReal
     ? `<span style="color:#22c55e">● Live data · TheSportsDB</span>`
     : `<span style="color:#6b7280">● Estimated from season record</span>`;
+
+  // Calculate real clean sheets from match data
+  if (isReal && matches.length) {
+    const realCleanSheets = matches.filter(m => m.ga === 0).length;
+    const cleanVal = document.getElementById('cleanSheetVal');
+    if (cleanVal) {
+      cleanVal.textContent = realCleanSheets;
+      cleanVal.parentElement.querySelector('.lbl').textContent = 'Clean Sheets';
+    }
+  }
 
   container.innerHTML = `
     <div class="mr-header">
