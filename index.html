@@ -330,6 +330,7 @@
       <button onclick="setColorMode('goals')" id="mode-goals">Goals</button>
       <button onclick="setColorMode('gd')" id="mode-gd">Goal Diff</button>
       <button onclick="setColorMode('pts')" id="mode-pts">Points</button>
+      <button onclick="setColorMode('cleansheets')" id="mode-cleansheets">Clean Sheets</button>
     </div>
   </div>
 </header>
@@ -960,12 +961,21 @@ function ptsColor(pts) {
   return lerpColor('#1e1e3a','#6366f1',t);
 }
 
-function getCellColor(data) {
+function cleanSheetsColor(team, season) {
+  const data = teamSeasonMap[team]?.[season];
+  if (!data) return '#1a1d27';
+  const est = Math.round(data.w * 0.55 + data.d * 0.3);
+  const t = Math.min(1, est / 25);
+  return lerpColor('#1a1d27', '#0ea5e9', t);
+}
+
+function getCellColor(data, team, season) {
   if (!data) return null;
   if (colorMode === 'position') return positionColor(data.pos, 22);
   if (colorMode === 'goals') return goalsColor(data.gf);
   if (colorMode === 'gd') return gdColor(data.gd);
   if (colorMode === 'pts') return ptsColor(data.pts);
+  if (colorMode === 'cleansheets') return cleanSheetsColor(team, season);
   return '#374151';
 }
 
@@ -978,6 +988,12 @@ function textColor(bgColor) {
 // ════════════════════════════════════════════════════════════════
 //  SORT TEAMS
 // ════════════════════════════════════════════════════════════════
+function teamCleanSheets(team) {
+  // Estimate total clean sheets across all seasons: sum of (wins * 0.55 + draws * 0.3)
+  const seasons = Object.values(teamSeasonMap[team] || {});
+  return seasons.reduce((sum, s) => sum + Math.round(s.w * 0.55 + s.d * 0.3), 0);
+}
+
 function getSortedTeams() {
   let teams = ALL_TEAMS.filter(t => t.toLowerCase().includes(searchFilter.toLowerCase()));
   if (sortMode === 'seasons') teams.sort((a,b) => teamSeasons(b)-teamSeasons(a) || teamAvg(a)-teamAvg(b));
@@ -1038,10 +1054,15 @@ function buildTable() {
       const data = teamSeasonMap[team]?.[s];
       if (data) {
         td.className = 'cell';
-        const bg = getCellColor(data);
+        const bg = getCellColor(data, team, s);
         td.style.background = bg;
         td.style.color = colorMode === 'position' ? textColor(bg) : '#fff';
-        td.textContent = colorMode === 'position' ? data.pos : (colorMode==='goals'?data.gf:colorMode==='gd'?data.gd:data.pts);
+        let cellText = data.pos;
+        if (colorMode === 'goals') cellText = data.gf;
+        else if (colorMode === 'gd') cellText = data.gd;
+        else if (colorMode === 'pts') cellText = data.pts;
+        else if (colorMode === 'cleansheets') cellText = Math.round(data.w * 0.55 + data.d * 0.3);
+        td.textContent = cellText;
         td.dataset.team = team;
         td.dataset.season = s;
         if (selectedCell && selectedCell.team===team && selectedCell.season===s) {
