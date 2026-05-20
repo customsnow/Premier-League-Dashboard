@@ -4793,7 +4793,7 @@ function buildTable() {
           else if (colorMode === 'gd') cellValue = data.gd;
           else if (colorMode === 'pts') cellValue = data.pts;
           else if (colorMode === 'cleansheets') cellValue = Math.round(data.w * 0.55 + data.d * 0.3);
-          cellText = cellValue;
+          if (cellValue !== null) cellText = cellValue;
         }
 
         td.textContent = cellText;
