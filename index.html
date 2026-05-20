@@ -5046,6 +5046,9 @@ async function handleGameClick(e, idx) {
   let match = window._mrMatches?.[idx];
   if (!match) return;
 
+  // Don't allow interaction with upcoming matches
+  if (match.result === 'U') return;
+
   // Try to enrich match data with historical scores if available
   const season = match.season || match.seasonKey;
   if (season && HISTORICAL_MATCHES?.[season]) {
@@ -5276,18 +5279,35 @@ async function buildMatchChart(team, season) {
   const isReal = !!matches;
   if (!matches) matches = generateMatchData(team, season);
 
+  // For 2025-26 season, mark upcoming fixtures as 'U' instead of treating them as unplayed
+  if (season === '2025-26') {
+    const fixture = FIXTURES_2025_26.find(f => f.h === team || f.a === team);
+    if (fixture && matches.length > 0) {
+      // Mark all matches without a result as upcoming
+      matches = matches.map(m => {
+        if (m.gf === 0 && m.ga === 0 && m.result === 'D') {
+          return { ...m, result: 'U' };
+        }
+        return m;
+      });
+    }
+  }
+
   const d = teamSeasonMap[team]?.[season];
   if (!d || !matches.length) { container.innerHTML = '<p style="color:#4b5563;font-size:11px">No data available</p>'; return; }
 
   const hm = matches.filter(m=>m.ha==='H'), am = matches.filter(m=>m.ha==='A');
   const hw=hm.filter(m=>m.result==='W').length, hd=hm.filter(m=>m.result==='D').length, hl=hm.filter(m=>m.result==='L').length;
+  const hu=hm.filter(m=>m.result==='U').length, hu_actual=hm.filter(m=>m.result==='U').length;
   const aw=am.filter(m=>m.result==='W').length, ad=am.filter(m=>m.result==='D').length, al=am.filter(m=>m.result==='L').length;
+  const au=am.filter(m=>m.result==='U').length;
   const hpts=hw*3+hd, apts=aw*3+ad;
 
   const BG = {
     'W-H':'#166534','W-A':'#14532d',
     'D-H':'#92400e','D-A':'#78350f',
-    'L-H':'#991b1b','L-A':'#7f1d1d'
+    'L-H':'#991b1b','L-A':'#7f1d1d',
+    'U-H':'#374151','U-A':'#1f2937'
   };
 
   window._mrMatches = matches;
@@ -5302,10 +5322,13 @@ async function buildMatchChart(team, season) {
     const bg = BG[`${m.result}-${m.ha}`];
     const oppLine = m.opp ? ` vs ${m.opp}` : '';
     const dateLine = m.date ? ` · ${m.date}` : '';
-    const tip = `Game ${i+1}${dateLine}${oppLine} · ${m.ha==='H'?'Home':'Away'} · ${m.result==='W'?'Win':m.result==='D'?'Draw':'Loss'} ${m.gf}–${m.ga} · ${cum}pts`;
+    const resultText = m.result==='W'?'Win':m.result==='D'?'Draw':m.result==='L'?'Loss':'Upcoming';
+    const scoreText = m.result==='U' ? '—' : `${m.gf}–${m.ga}`;
+    const ptsText = m.result==='U' ? '—' : ` · ${cum}pts`;
+    const tip = `Game ${i+1}${dateLine}${oppLine} · ${m.ha==='H'?'Home':'Away'} · ${resultText} ${scoreText}${ptsText}`;
     cells += `<div class="mr-cell" style="background:${bg}" title="${tip}" onclick="handleGameClick(event,${i})">
-      <span class="mr-res">${m.result}</span>
-      <span class="mr-score">${m.gf}–${m.ga}</span>
+      <span class="mr-res">${m.result==='U'?'?':m.result}</span>
+      <span class="mr-score">${scoreText}</span>
       <span class="mr-ha ${m.ha}">${m.ha}</span>
     </div>`;
   }
@@ -5315,7 +5338,7 @@ async function buildMatchChart(team, season) {
   for (let i=0; i<cumPts.length; i++) {
     const h = Math.round((cumPts[i]/maxPts)*30)+2;
     const m = matches[i];
-    const c = m.result==='W'?'#4ade80':m.result==='D'?'#fbbf24':'#f87171';
+    const c = m.result==='W'?'#4ade80':m.result==='D'?'#fbbf24':m.result==='U'?'#6b7280':'#f87171';
     bars += `<div class="mr-pts-bar" style="height:${h}px;background:${c};opacity:.75" title="After game ${i+1}: ${cumPts[i]}pts"></div>`;
   }
 
@@ -5333,22 +5356,30 @@ async function buildMatchChart(team, season) {
     }
   }
 
+  // Adjust games count to exclude upcoming matches
+  const hPlayedCount = hm.length - hu;
+  const aPlayedCount = am.length - au;
+
+  // Build record display - exclude upcoming games
+  const hRecordDisplay = hu > 0 ? `${hw}W–${hd}D–${hl}L (${hu} upcoming)` : `${hw}W–${hd}D–${hl}L`;
+  const aRecordDisplay = au > 0 ? `${aw}W–${ad}D–${al}L (${au} upcoming)` : `${aw}W–${ad}D–${al}L`;
+
   container.innerHTML = `
     <div class="mr-header">
       <div class="mr-ha-card">
         <div class="hac-label" style="color:#fbbf24">🏠 Home</div>
-        <div class="hac-rec">${hw}W–${hd}D–${hl}L</div>
-        <div class="hac-pts">${hpts} pts · ${hm.length} games</div>
+        <div class="hac-rec">${hRecordDisplay}</div>
+        <div class="hac-pts">${hpts} pts · ${hPlayedCount} played</div>
       </div>
       <div class="mr-ha-card">
         <div class="hac-label" style="color:#93c5fd">✈ Away</div>
-        <div class="hac-rec">${aw}W–${ad}D–${al}L</div>
-        <div class="hac-pts">${apts} pts · ${am.length} games</div>
+        <div class="hac-rec">${aRecordDisplay}</div>
+        <div class="hac-pts">${apts} pts · ${aPlayedCount} played</div>
       </div>
     </div>
     <div class="mr-grid">${cells}</div>
     <div class="mr-pts-strip">${bars}</div>
-    <div class="mr-note">${sourceNote} · cumulative points</div>
+    <div class="mr-note">${sourceNote} · cumulative points · gray bars = upcoming matches</div>
   `;
 }
 
