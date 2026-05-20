@@ -21,9 +21,17 @@
     --panel-width: 380px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
   body {
     background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px;
-    overflow-x: hidden; transition: background 0.3s ease;
+    transition: background 0.3s ease;
   }
   @media (prefers-reduced-motion: no-preference) {
     * { scroll-behavior: smooth; }
@@ -73,6 +81,11 @@
     flex: 1; overflow-x: auto; overflow-y: auto; position: relative;
     transition: margin-right 0.3s ease;
     scrollbar-gutter: stable;
+    scrollbar-width: none;
+  }
+  .grid-wrap::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
   }
   .grid-wrap.panel-open { margin-right: var(--panel-width); }
   table { border-collapse: collapse; min-width: max-content; }
@@ -390,7 +403,7 @@
 <body>
 
 <header>
-  <h1>Premier League <span>Dashboard</span></h1>
+  <h1><span style="color: var(--cl-blue);">Premier League</span> <span>Dashboard</span></h1>
   <div class="controls">
     <div class="btn-group">
       <button class="active" onclick="setViewMode('historical')" id="view-historical">Historical</button>
@@ -5032,11 +5045,13 @@ function buildLiveTable() {
   const table = calculateLiveStandings();
   const tbody = document.getElementById('tbody');
   const thead = document.getElementById('thead');
+  const matches = HISTORICAL_MATCHES['2025-26'] || [];
+  const last5 = matches.slice(-5).reverse();
 
   // Clear and rebuild header
   thead.innerHTML = `
     <tr>
-      <th class="team-col">Pos</th>
+      <th style="padding: 8px; text-align: center; min-width: 35px; max-width: 35px;">Pos</th>
       <th style="padding: 8px; text-align: left;">Team</th>
       <th style="padding: 8px; text-align: center;">P</th>
       <th style="padding: 8px; text-align: center;">W</th>
@@ -5057,7 +5072,7 @@ function buildLiveTable() {
     const posText = idx + 1;
 
     tr.innerHTML = `
-      <td class="team-name" style="background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center;">${posText}</td>
+      <td style="background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px;">${posText}</td>
       <td style="padding: 8px; font-weight: 600;">${row.team}</td>
       <td style="padding: 8px; text-align: center;">${row.p}</td>
       <td style="padding: 8px; text-align: center; color: #10b981;">${row.w}</td>
@@ -5070,6 +5085,46 @@ function buildLiveTable() {
     `;
     tbody.appendChild(tr);
   });
+
+  // Add last 5 results section after the table
+  const gridWrap = document.getElementById('gridWrap');
+  let last5Container = document.getElementById('last5Container');
+
+  if (!last5Container) {
+    last5Container = document.createElement('div');
+    last5Container.id = 'last5Container';
+    last5Container.style.cssText = 'padding: 20px 24px; background: var(--surface); border-top: 2px solid var(--border); margin-top: 20px;';
+    gridWrap.appendChild(last5Container);
+  }
+
+  let html = '<h2 style="font-size: 1rem; margin-bottom: 12px; color: var(--text); font-weight: 700;">Latest Matches</h2>';
+  html += '<div style="display: flex; flex-direction: column; gap: 8px;">';
+
+  last5.forEach(match => {
+    const homeColor = TEAM_COLORS[match.h] || '#666';
+    const awayColor = TEAM_COLORS[match.a] || '#666';
+    html += `
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--surface2); border-radius: 6px; border: 1px solid var(--border);">
+        <div style="font-size: 10px; color: var(--text-muted); min-width: 60px;">${match.d}</div>
+        <div style="flex: 1; text-align: right; padding-right: 8px;">
+          <div style="font-weight: 500; font-size: 12px;">${match.h}</div>
+          <div style="font-size: 10px; color: var(--text-muted);">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${homeColor}; margin-right: 4px;"></span>
+          </div>
+        </div>
+        <div style="min-width: 45px; text-align: center; font-weight: 900; font-size: 14px;">${match.hg}-${match.ag}</div>
+        <div style="flex: 1; text-align: left; padding-left: 8px;">
+          <div style="font-weight: 500; font-size: 12px;">${match.a}</div>
+          <div style="font-size: 10px; color: var(--text-muted);">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${awayColor}; margin-right: 4px;"></span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  last5Container.innerHTML = html;
 }
 
 function filterTeams(val) {
