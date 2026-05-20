@@ -459,8 +459,9 @@ function generateDefaultBadge(team) {
 function getTeamLogo(team) {
   const realUrl = THESPORTSDB_LOGOS[team];
   if (realUrl) {
-    // Try to load real logo via CORS proxy, with SVG fallback
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(realUrl)}`;
+    // Use images.weserv.nl CDN - more reliable than allorigins.win for image proxying
+    const encoded = encodeURIComponent(realUrl.replace('https://', ''));
+    const proxyUrl = `https://images.weserv.nl/?url=${encoded}&w=24&h=24&fit=cover`;
     return { real: proxyUrl, fallback: getTeamLogoFallback(team) };
   }
   return { real: null, fallback: getTeamLogoFallback(team) };
