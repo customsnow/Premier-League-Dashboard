@@ -371,6 +371,10 @@
     tbody td.team-name .team-meta { font-size: 9px; margin-top: 1px; }
     tbody td.team-name .team-seasons { font-size: 9px; }
 
+    /* Hide scrollbar on mobile but keep scrolling functional */
+    .grid-wrap { scrollbar-width: none; }
+    .grid-wrap::-webkit-scrollbar { display: none; }
+
     /* Game popup: center on screen instead of anchoring to cell */
     .game-popup {
       position: fixed !important;
