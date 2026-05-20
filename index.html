@@ -48,6 +48,7 @@
   }
   header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
   header h1 span { color: var(--accent); text-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+  header h1 span:last-child { color: #f0f4f8; text-shadow: none; }
   .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; align-items: center; }
   .btn-group { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .btn-group button {
@@ -5041,12 +5042,32 @@ function setViewMode(mode) {
   else buildTable();
 }
 
+function getTeamLast5(teamName, matches) {
+  const teamMatches = matches.filter(m => m.h === teamName || m.a === teamName).slice(-5);
+  let html = '';
+  teamMatches.forEach(m => {
+    let result = '';
+    if (m.h === teamName) {
+      if (m.hg > m.ag) result = 'W';
+      else if (m.hg < m.ag) result = 'L';
+      else result = 'D';
+    } else {
+      if (m.ag > m.hg) result = 'W';
+      else if (m.ag < m.hg) result = 'L';
+      else result = 'D';
+    }
+    const bgColor = result === 'W' ? '#10b981' : result === 'D' ? '#f59e0b' : '#ef4444';
+    const score = m.h === teamName ? `${m.hg}-${m.ag}` : `${m.ag}-${m.hg}`;
+    html += `<div style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: ${bgColor}; border-radius: 4px; font-weight: 700; font-size: 11px; color: white; margin-right: 3px; title="${score}">${result}</div>`;
+  });
+  return html;
+}
+
 function buildLiveTable() {
   const table = calculateLiveStandings();
   const tbody = document.getElementById('tbody');
   const thead = document.getElementById('thead');
   const matches = HISTORICAL_MATCHES['2025-26'] || [];
-  const last5 = matches.slice(-5).reverse();
 
   // Clear and rebuild header
   thead.innerHTML = `
@@ -5061,6 +5082,7 @@ function buildLiveTable() {
       <th style="padding: 8px; text-align: center;">GA</th>
       <th style="padding: 8px; text-align: center;">GD</th>
       <th style="padding: 8px; text-align: center; font-weight: 900;">Pts</th>
+      <th style="padding: 8px; text-align: center; min-width: 180px;">Last 5</th>
     </tr>
   `;
 
@@ -5070,6 +5092,7 @@ function buildLiveTable() {
     const tr = document.createElement('tr');
     const posColor = positionColor(idx + 1, 20);
     const posText = idx + 1;
+    const last5Html = getTeamLast5(row.team, matches);
 
     tr.innerHTML = `
       <td style="background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px;">${posText}</td>
@@ -5082,49 +5105,14 @@ function buildLiveTable() {
       <td style="padding: 8px; text-align: center;">${row.ga}</td>
       <td style="padding: 8px; text-align: center; font-weight: 600; color: ${row.gd > 0 ? '#10b981' : row.gd < 0 ? '#ef4444' : '#9ca3af'};">${row.gd > 0 ? '+' : ''}${row.gd}</td>
       <td style="padding: 8px; text-align: center; font-weight: 900; font-size: 1.1rem;">${row.pts}</td>
+      <td style="padding: 8px; text-align: center;">${last5Html}</td>
     `;
     tbody.appendChild(tr);
   });
 
-  // Add last 5 results section after the table
-  const gridWrap = document.getElementById('gridWrap');
-  let last5Container = document.getElementById('last5Container');
-
-  if (!last5Container) {
-    last5Container = document.createElement('div');
-    last5Container.id = 'last5Container';
-    last5Container.style.cssText = 'padding: 20px 24px; background: var(--surface); border-top: 2px solid var(--border); margin-top: 20px;';
-    gridWrap.appendChild(last5Container);
-  }
-
-  let html = '<h2 style="font-size: 1rem; margin-bottom: 12px; color: var(--text); font-weight: 700;">Latest Matches</h2>';
-  html += '<div style="display: flex; flex-direction: column; gap: 8px;">';
-
-  last5.forEach(match => {
-    const homeColor = TEAM_COLORS[match.h] || '#666';
-    const awayColor = TEAM_COLORS[match.a] || '#666';
-    html += `
-      <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--surface2); border-radius: 6px; border: 1px solid var(--border);">
-        <div style="font-size: 10px; color: var(--text-muted); min-width: 60px;">${match.d}</div>
-        <div style="flex: 1; text-align: right; padding-right: 8px;">
-          <div style="font-weight: 500; font-size: 12px;">${match.h}</div>
-          <div style="font-size: 10px; color: var(--text-muted);">
-            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${homeColor}; margin-right: 4px;"></span>
-          </div>
-        </div>
-        <div style="min-width: 45px; text-align: center; font-weight: 900; font-size: 14px;">${match.hg}-${match.ag}</div>
-        <div style="flex: 1; text-align: left; padding-left: 8px;">
-          <div style="font-weight: 500; font-size: 12px;">${match.a}</div>
-          <div style="font-size: 10px; color: var(--text-muted);">
-            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${awayColor}; margin-right: 4px;"></span>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  html += '</div>';
-  last5Container.innerHTML = html;
+  // Remove old last 5 container if it exists
+  const oldContainer = document.getElementById('last5Container');
+  if (oldContainer) oldContainer.remove();
 }
 
 function filterTeams(val) {
