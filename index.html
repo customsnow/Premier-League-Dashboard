@@ -5622,10 +5622,6 @@ function setSort(mode) {
   yearSortMode = null;
   document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
   document.getElementById(`sort-${mode}`).classList.add('active');
-  // Hide the year button
-  const yearBtn = document.getElementById('sort-year');
-  yearBtn.style.display = 'none';
-  yearBtn.classList.remove('active');
   // Reset year dropdown to "Select Year"
   const yearSelect = document.getElementById('yearSelect');
   if (yearSelect) yearSelect.value = '';
