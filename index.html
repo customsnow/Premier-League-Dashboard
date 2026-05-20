@@ -5531,18 +5531,19 @@ async function buildMatchChart(team, season) {
   const isReal = !!matches;
   if (!matches) matches = generateMatchData(team, season);
 
-  // For 2025-26 season, mark upcoming fixtures as 'U' instead of treating them as unplayed
-  if (season === '2025-26') {
-    const fixture = FIXTURES_2025_26.find(f => f.h === team || f.a === team);
-    if (fixture && matches.length > 0) {
-      // Mark all matches without a result as upcoming
-      matches = matches.map(m => {
-        if (m.gf === 0 && m.ga === 0 && m.result === 'D') {
-          return { ...m, result: 'U' };
-        }
-        return m;
-      });
-    }
+  // For 2025-26 season, mark estimated matches without real data as 'U' (upcoming)
+  if (season === '2025-26' && !isReal) {
+    // Real matches from fetchRealMatches will have 'opp' and 'date' properties
+    // Generated matches from generateMatchData won't have these
+    // Only mark matches without opponent info as upcoming
+    matches = matches.map(m => {
+      // If this match has no opponent/date info, it's an estimated match
+      // Mark the last few (upcoming fixtures count) as 'U'
+      if (!m.opp) {
+        return { ...m, result: 'U' };
+      }
+      return m;
+    });
   }
 
   const d = teamSeasonMap[team]?.[season];
