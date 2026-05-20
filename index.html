@@ -79,7 +79,7 @@
   .legend-swatch { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; box-shadow: inset 0 0 1px rgba(0,0,0,0.5); }
 
   /* ── Main layout ── */
-  .app { display: flex; height: calc(100vh - var(--header-h, 97px)); }
+  .app { display: flex; height: calc(100vh - var(--header-h, 97px)); width: 100%; max-width: 100vw; overflow: hidden; }
 
   /* ── Grid container ── */
   .grid-wrap {
@@ -97,7 +97,7 @@
     -webkit-overflow-scrolling: touch;
   }
   .grid-wrap.panel-open { margin-right: var(--panel-width); }
-  table { border-collapse: collapse; min-width: max-content; }
+  table { border-collapse: collapse; min-width: max-content; width: 100%; }
   /* Trailing spacer so the last season column is never clipped at the scroll edge */
   table thead tr::after, table tbody tr::after {
     content: ''; display: table-cell; min-width: 16px;
@@ -159,6 +159,7 @@
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 90;
     display: flex; flex-direction: column;
     box-shadow: -8px 0 24px rgba(0,0,0,0.4);
+    max-width: 100vw;
   }
   #panelContent { overflow-y: auto; flex: 1; }
   @keyframes spin { to { transform: rotate(360deg); } }
