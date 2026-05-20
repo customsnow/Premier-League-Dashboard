@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premier League History Dashboard</title>
+<title>Premier League Dashboard</title>
 <style>
   :root {
     --bg: #08101a;
@@ -92,17 +92,17 @@
   thead th.team-col {
     position: sticky; left: 0; z-index: 60; min-width: 200px; max-width: 200px; text-align: left;
     padding: 10px 14px; border-right: 2px solid var(--accent);
-    background: linear-gradient(90deg, var(--surface2) 0%, transparent 80%);
+    background: var(--surface2);
   }
   tbody td.team-name {
     position: sticky; left: 0; z-index: 10;
-    background: linear-gradient(90deg, var(--surface) 0%, transparent 90%);
+    background: var(--surface);
     border-right: 2px solid var(--border);
     padding: 8px 14px; font-weight: 600;
     min-width: 200px; max-width: 200px;
     height: auto; transition: background 0.2s ease;
   }
-  tbody td.team-name:hover { background: linear-gradient(90deg, #1e2a3a 0%, transparent 90%); }
+  tbody td.team-name:hover { background: rgba(31, 41, 55, 0.8); }
   tbody td.team-name .team-logo { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; margin-right: 6px; }
   tbody td.team-name .team-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 7px; flex-shrink: 0; }
   tbody td.team-name .team-label { display: flex; align-items: flex-start; gap: 4px; }
@@ -362,12 +362,13 @@
     .legend-item { font-size: 11px; gap: 6px; }
     .legend-swatch { width: 14px; height: 14px; }
 
-    td.cell { width: 30px; min-width: 30px; height: 30px; font-size: 10px; }
-    tbody td.team-name, thead th.team-col { min-width: 130px; max-width: 130px; padding: 6px 10px; font-size: 11px; }
+    td.cell { width: 26px; min-width: 26px; height: 28px; font-size: 9px; }
+    tbody td.team-name, thead th.team-col { min-width: 90px; max-width: 90px; padding: 5px 6px; font-size: 10px; }
 
-    tbody td.team-name .team-dot { width: 7px; height: 7px; margin-right: 6px; }
-    tbody td.team-name .team-meta { font-size: 9px; margin-top: 1px; }
-    tbody td.team-name .team-seasons { font-size: 9px; }
+    tbody td.team-name .team-dot { width: 6px; height: 6px; margin-right: 4px; }
+    tbody td.team-name .team-label-text { font-size: 10px; }
+    tbody td.team-name .team-meta { display: none; }
+    tbody td.team-name .team-seasons { display: none; }
 
     /* Game popup: center on screen instead of anchoring to cell */
     .game-popup {
@@ -384,7 +385,7 @@
 <body>
 
 <header>
-  <h1>Premier League <span>History</span> Dashboard</h1>
+  <h1>Premier League <span>Dashboard</span></h1>
   <div class="controls">
     <input type="text" id="searchTeam" placeholder="Search team…" oninput="filterTeams(this.value)">
     <div class="btn-group">
