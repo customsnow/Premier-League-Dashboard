@@ -112,7 +112,7 @@
     -webkit-overflow-scrolling: touch;
   }
   .grid-wrap.panel-open { margin-right: var(--panel-width); }
-  table { border-collapse: collapse; min-width: max-content; width: auto; }
+  table { border-collapse: collapse; width: 100%; table-layout: auto; }
   /* Trailing spacer so the last season column is never clipped at the scroll edge */
   table thead tr::after, table tbody tr::after {
     content: ''; display: table-cell; min-width: 16px;
@@ -5096,8 +5096,8 @@ function buildLiveTable() {
   // Clear and rebuild header
   thead.innerHTML = `
     <tr>
-      <th style="padding: 8px; text-align: center; min-width: 35px; max-width: 35px;">Pos</th>
-      <th style="padding: 8px; text-align: left;">Team</th>
+      <th style="position: sticky; left: 0; z-index: 60; padding: 8px; text-align: center; min-width: 35px; max-width: 35px; background: var(--surface2); border-right: 2px solid var(--accent);">Pos</th>
+      <th style="position: sticky; left: 35px; z-index: 60; padding: 8px; text-align: left; min-width: 140px; background: var(--surface2); border-right: 2px solid var(--accent);">Team</th>
       <th style="padding: 8px; text-align: center;">P</th>
       <th style="padding: 8px; text-align: center;">W</th>
       <th style="padding: 8px; text-align: center;">D</th>
@@ -5119,8 +5119,8 @@ function buildLiveTable() {
     const last5Html = getTeamLast5(row.team, matches);
 
     tr.innerHTML = `
-      <td style="background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px;">${posText}</td>
-      <td style="padding: 8px; font-weight: 600;">${row.team}</td>
+      <td style="position: sticky; left: 0; z-index: 10; background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px; border-right: 2px solid var(--border);">${posText}</td>
+      <td style="position: sticky; left: 35px; z-index: 10; background: var(--surface); color: white; font-weight: 600; padding: 8px; min-width: 140px; border-right: 2px solid var(--border);">${row.team}</td>
       <td style="padding: 8px; text-align: center;">${row.p}</td>
       <td style="padding: 8px; text-align: center; color: #10b981;">${row.w}</td>
       <td style="padding: 8px; text-align: center; color: #f59e0b;">${row.d}</td>
