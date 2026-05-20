@@ -523,6 +523,7 @@
       <button onclick="setSort('best')" id="sort-best">Best Finish</button>
       <button onclick="setSort('current')" id="sort-current">Current Standings</button>
       <button onclick="setSort('alpha')" id="sort-alpha">A–Z</button>
+      <button id="sort-year" style="display:none;background:var(--accent);color:#000;font-weight:700"></button>
     </div>
     <div class="btn-group">
       <button class="active" onclick="setColorMode('position')" id="mode-position">Position</button>
@@ -5618,6 +5619,10 @@ function setSort(mode) {
   yearSortMode = null;
   document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
   document.getElementById(`sort-${mode}`).classList.add('active');
+  // Hide the year button
+  const yearBtn = document.getElementById('sort-year');
+  yearBtn.style.display = 'none';
+  yearBtn.classList.remove('active');
   // Clear year header highlights
   document.querySelectorAll('.season-hdr.active-year').forEach(s=>s.classList.remove('active-year'));
   buildTable();
@@ -5626,15 +5631,20 @@ function setSort(mode) {
 function sortByYearStandings(year) {
   yearSortMode = year;
   document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
-  // Clear all year header highlights
-  document.querySelectorAll('.season-hdr.active-year').forEach(s=>s.classList.remove('active-year'));
-  // Highlight the clicked year header
-  document.querySelectorAll('.season-hdr').forEach(s => {
-    if (s.textContent === year) {
-      s.classList.add('active-year');
-    }
-  });
+  // Show the year button and make it active
+  const yearBtn = document.getElementById('sort-year');
+  yearBtn.textContent = `Year: ${year}`;
+  yearBtn.style.display = 'block';
+  yearBtn.classList.add('active');
   buildTable();
+  // Apply highlight AFTER buildTable rebuilds the headers
+  setTimeout(() => {
+    document.querySelectorAll('.season-hdr').forEach(s => {
+      if (s.textContent === year) {
+        s.classList.add('active-year');
+      }
+    });
+  }, 0);
 }
 
 function setColorMode(mode) {
