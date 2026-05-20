@@ -88,6 +88,7 @@
     height: auto;
   }
   tbody td.team-name .team-logo { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; margin-right: 6px; }
+  tbody td.team-name .team-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 7px; flex-shrink: 0; }
   tbody td.team-name .team-label { display: flex; align-items: flex-start; gap: 4px; }
   tbody td.team-name .team-label-text { word-break: break-word; line-height: 1.3; }
   tbody td.team-name .team-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.2; word-break: break-word; }
@@ -1091,7 +1092,7 @@ function buildTable() {
     tdName.title = team;
     const logo = getTeamLogo(team);
     const logoHtml = logo
-      ? `<img class="team-logo" src="${logo}" alt="${team}" onerror="this.style.display='none'">`
+      ? `<img class="team-logo" src="${logo}" alt="${team}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span class="team-dot" style="background:${color}; display:none;"></span>`
       : `<span class="team-dot" style="background:${color}"></span>`;
     tdName.innerHTML = `
       <div class="team-label">
@@ -1583,13 +1584,13 @@ async function handleGameClick(e, idx) {
       <div class="gp-score-big">${match.gf}<span style="color:#4b5563;font-weight:300;padding:0 4px">–</span>${match.ga}</div>
       <div class="gp-teams-row">
         <span class="ht" style="display:flex; align-items:center; gap:4px;">
-          ${match.isHome ? (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`) : (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`)}
+          ${match.isHome ? (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:none;"></span>` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`) : (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:none;"></span>` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`)}
           ${match.isHome ? (myTeam || '—') : (oppTeam || '—')}
         </span>
         <span style="color:#6366f1;font-weight:700">${resultTx}</span>
         <span class="at" style="display:flex; align-items:center; gap:4px; justify-content:flex-end;">
           ${match.isHome ? (oppTeam || '—') : (myTeam || '—')}
-          ${match.isHome ? (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`) : (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`)}
+          ${match.isHome ? (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:none;"></span>` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`) : (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:none;"></span>` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`)}
         </span>
       </div>
     </div>
