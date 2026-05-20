@@ -5637,11 +5637,9 @@ function setSort(mode) {
 function sortByYearStandings(year) {
   yearSortMode = year;
   document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
-  // Show the year button and make it active
-  const yearBtn = document.getElementById('sort-year');
-  yearBtn.textContent = `Year: ${year}`;
-  yearBtn.style.display = 'block';
-  yearBtn.classList.add('active');
+  // Update dropdown to show selected year
+  const yearSelect = document.getElementById('yearSelect');
+  if (yearSelect) yearSelect.value = year;
   buildTable();
   // Apply highlight AFTER buildTable rebuilds the headers
   setTimeout(() => {
