@@ -4706,7 +4706,8 @@ function buildTable() {
     span.textContent = s;
     span.title = note ? `Champion: ${note.champion}` : s;
     span.style.cursor = 'pointer';
-    span.onclick = function() { sortByYearStandings(s); };
+    span.dataset.year = s;
+    span.onclick = function() { sortByYearStandings(this.dataset.year); };
     th.appendChild(span);
     hr.appendChild(th);
   }
