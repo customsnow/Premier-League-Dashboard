@@ -433,38 +433,13 @@ const THESPORTSDB_LOGOS = {
   'Sunderland': 'https://www.thesportsdb.com/images/media/team/badge/kkc6p41512583163.png',
 };
 
-function getTeamLogoFallback(team) {
-  // SVG fallback badges with team colors
-  const badges = {
-    'Manchester United': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23DA291C%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3EMU%3C/text%3E%3C/svg%3E',
-    'Manchester City': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%221F4B9A%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3EMC%3C/text%3E%3C/svg%3E',
-    'Arsenal': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23EF0107%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3EAR%3C/text%3E%3C/svg%3E',
-    'Liverpool': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23C8102E%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3ELV%3C/text%3E%3C/svg%3E',
-    'Chelsea': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23034694%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3ECH%3C/text%3E%3C/svg%3E',
-    'Tottenham Hotspur': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23132257%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3ETO%3C/text%3E%3C/svg%3E',
-    'Newcastle United': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23241F20%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3ENU%3C/text%3E%3C/svg%3E',
-    'Brighton': 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%23003DA5%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3EBR%3C/text%3E%3C/svg%3E',
-  };
-  return badges[team] || generateDefaultBadge(team);
-}
-
-function generateDefaultBadge(team) {
-  const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#14B8A6'];
-  const code = team.split('').reduce((a,b) => a + b.charCodeAt(0), 0);
-  const color = colors[code % colors.length];
-  const initials = team.split(' ').slice(0, 2).map(w => w[0]).join('').substring(0, 2).toUpperCase();
-  return `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22${color.substring(1)}%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2260%22 text-anchor=%22middle%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22%3E${initials}%3C/text%3E%3C/svg%3E`;
-}
 
 function getTeamLogo(team) {
   const realUrl = THESPORTSDB_LOGOS[team];
-  if (realUrl) {
-    // Use images.weserv.nl CDN - more reliable than allorigins.win for image proxying
-    const encoded = encodeURIComponent(realUrl.replace('https://', ''));
-    const proxyUrl = `https://images.weserv.nl/?url=${encoded}&w=24&h=24&fit=cover`;
-    return { real: proxyUrl, fallback: getTeamLogoFallback(team) };
-  }
-  return { real: null, fallback: getTeamLogoFallback(team) };
+  if (!realUrl) return null;
+  // Try to load real logo via images.weserv.nl CDN
+  const encoded = encodeURIComponent(realUrl.replace('https://', ''));
+  return `https://images.weserv.nl/?url=${encoded}&w=24&h=24&fit=cover`;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1114,10 +1089,13 @@ function buildTable() {
       return `${a.slice(2)}/${b}`;
     };
     tdName.title = team;
-    const logos = getTeamLogo(team);
+    const logo = getTeamLogo(team);
+    const logoHtml = logo
+      ? `<img class="team-logo" src="${logo}" alt="${team}" onerror="this.style.display='none'">`
+      : `<span class="team-dot" style="background:${color}"></span>`;
     tdName.innerHTML = `
       <div class="team-label">
-        <img class="team-logo" src="${logos.real || logos.fallback}" alt="${team}" ${logos.real ? `onerror="this.src='${logos.fallback}'"` : ''}>
+        ${logoHtml}
         <span class="team-label-text">${shortTeamName(team)}</span>
       </div>
       <div class="team-meta">Best: ${best===1?'🏆 Champion':`${best}${ord(best)}`} (${yearShort(mostRecentBest)})</div>
@@ -1591,12 +1569,10 @@ async function handleGameClick(e, idx) {
   const resCol   = match.result === 'W' ? '#4ade80' : match.result === 'D' ? '#fbbf24' : '#f87171';
   const myTeam   = match.isHome ? match.homeTeam : match.awayTeam;
   const oppTeam  = match.opp || (match.isHome ? match.awayTeam : match.homeTeam) || '?';
-  const myLogos  = getTeamLogo(myTeam);
-  const oppLogos = getTeamLogo(oppTeam);
-  const myLogo   = myLogos.real || myLogos.fallback;
-  const oppLogo  = oppLogos.real || oppLogos.fallback;
-  const myOnerror = myLogos.real ? `onerror="this.src='${myLogos.fallback}'"` : '';
-  const oppOnerror = oppLogos.real ? `onerror="this.src='${oppLogos.fallback}'"` : '';
+  const myLogo   = getTeamLogo(myTeam);
+  const oppLogo  = getTeamLogo(oppTeam);
+  const myColor  = TEAM_COLORS[myTeam] || '#888';
+  const oppColor = TEAM_COLORS[oppTeam] || '#888';
 
   popup.innerHTML = `
     <div class="gp-topbar">
@@ -1607,13 +1583,13 @@ async function handleGameClick(e, idx) {
       <div class="gp-score-big">${match.gf}<span style="color:#4b5563;font-weight:300;padding:0 4px">–</span>${match.ga}</div>
       <div class="gp-teams-row">
         <span class="ht" style="display:flex; align-items:center; gap:4px;">
-          <img src="${match.isHome ? myLogo : oppLogo}" style="width:20px; height:20px; object-fit:contain;" ${match.isHome ? myOnerror : oppOnerror}>
+          ${match.isHome ? (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`) : (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`)}
           ${match.isHome ? (myTeam || '—') : (oppTeam || '—')}
         </span>
         <span style="color:#6366f1;font-weight:700">${resultTx}</span>
         <span class="at" style="display:flex; align-items:center; gap:4px; justify-content:flex-end;">
           ${match.isHome ? (oppTeam || '—') : (myTeam || '—')}
-          <img src="${match.isHome ? oppLogo : myLogo}" style="width:20px; height:20px; object-fit:contain;" ${match.isHome ? oppOnerror : myOnerror}>
+          ${match.isHome ? (oppLogo ? `<img src="${oppLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${oppColor}; display:inline-block;"></span>`) : (myLogo ? `<img src="${myLogo}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'">` : `<span style="width:20px; height:20px; border-radius:50%; background:${myColor}; display:inline-block;"></span>`)}
         </span>
       </div>
     </div>
