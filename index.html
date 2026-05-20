@@ -86,12 +86,18 @@
 
   /* ── Grid container ── */
   .grid-wrap {
-    flex: 1; overflow-x: auto; overflow-y: hidden; position: relative;
+    flex: 1; overflow: hidden; position: relative;
     transition: margin-right 0.3s ease;
     scrollbar-width: none;
     -ms-overflow-style: none;
     border: none;
     box-shadow: none;
+    width: 100%;
+    max-width: 100%;
+  }
+  .grid-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   .grid-wrap::-webkit-scrollbar {
     display: none !important;
@@ -106,7 +112,7 @@
     -webkit-overflow-scrolling: touch;
   }
   .grid-wrap.panel-open { margin-right: var(--panel-width); }
-  table { border-collapse: collapse; min-width: max-content; width: 100%; }
+  table { border-collapse: collapse; min-width: max-content; width: auto; }
   /* Trailing spacer so the last season column is never clipped at the scroll edge */
   table thead tr::after, table tbody tr::after {
     content: ''; display: table-cell; min-width: 16px;
