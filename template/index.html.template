@@ -523,6 +523,9 @@
       <button onclick="setSort('current')" id="sort-current">Current Standings</button>
       <button onclick="setSort('alpha')" id="sort-alpha">A–Z</button>
     </div>
+    <select id="yearSelect" onchange="handleYearChange(this.value)" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;">
+      <option value="">Select Year</option>
+    </select>
     <div class="btn-group">
       <button class="active" onclick="setColorMode('position')" id="mode-position">Position</button>
       <button onclick="setColorMode('goals')" id="mode-goals">Goals</button>
@@ -4501,6 +4504,7 @@ let colorMode = 'position';
 let sortMode = 'seasons';
 let searchFilter = '';
 let selectedCell = null;
+let selectedYear = '';
 
 // localStorage constants and helpers
 const VIEW_PREFERENCE_KEY = 'pl-default-view';
@@ -4662,6 +4666,14 @@ function getSortedTeams() {
     teams.sort((a,b) => {
       const posA = teamSeasonMap[a]?.['2025-26']?.pos || 999;
       const posB = teamSeasonMap[b]?.['2025-26']?.pos || 999;
+      return posA - posB;
+    });
+  }
+  if (sortMode === 'year' && selectedYear) {
+    // Sort by standings for selected year
+    teams.sort((a,b) => {
+      const posA = teamSeasonMap[a]?.[selectedYear]?.pos || 999;
+      const posB = teamSeasonMap[b]?.[selectedYear]?.pos || 999;
       return posA - posB;
     });
   }
@@ -5619,7 +5631,18 @@ function closePanel() {
 function setSort(mode) {
   sortMode = mode;
   document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
-  document.getElementById(`sort-${mode}`).classList.add('active');
+  if (mode !== 'year') document.getElementById(`sort-${mode}`).classList.add('active');
+  document.getElementById('yearSelect').style.display = mode === 'year' ? 'block' : 'none';
+  if (mode !== 'year') selectedYear = '';
+  buildTable();
+}
+
+function handleYearChange(year) {
+  selectedYear = year;
+  if (year) {
+    sortMode = 'year';
+    document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
+  }
   buildTable();
 }
 
@@ -5824,6 +5847,15 @@ document.getElementById('searchTeam').style.display = viewMode === 'live' ? 'non
 document.querySelectorAll('[id^="sort-"]').forEach(b=>b.parentElement.style.display = viewMode === 'live' ? 'none' : 'flex');
 document.querySelectorAll('[id^="mode-"]').forEach(b=>b.parentElement.style.display = viewMode === 'live' ? 'none' : 'flex');
 document.getElementById('legend').style.display = viewMode === 'live' ? 'none' : 'flex';
+
+// Populate year dropdown
+const yearSelect = document.getElementById('yearSelect');
+SEASONS.forEach(season => {
+  const option = document.createElement('option');
+  option.value = season;
+  option.textContent = season;
+  yearSelect.appendChild(option);
+});
 
 // Build the appropriate table
 if (viewMode === 'live') buildLiveTable();
