@@ -140,7 +140,7 @@ if (data.THESPORTSDB_LOGOS) {
 }
 
 if (data.RAW) {
-  const regex = /const\s+RAW\s*=\s*\{[\s\S]*?\n  \};/;
+  const regex = /const\s+RAW\s*=\s*\{[\s\S]*?\n\};(?=\s*(?:const|function|\/\/))/;
   const replacement = `const RAW = ${JSON.stringify(data.RAW, null, 2)};`;
   if (regex.test(html)) {
     html = html.replace(regex, replacement);
@@ -150,7 +150,7 @@ if (data.RAW) {
 }
 
 if (data.HISTORICAL_MATCHES) {
-  const regex = /const\s+HISTORICAL_MATCHES\s*=\s*\{[\s\S]*?\n  \};/;
+  const regex = /const\s+HISTORICAL_MATCHES\s*=\s*\{[\s\S]*?\n\};(?=\s*(?:const|function|\/\/))/;
   const replacement = `const HISTORICAL_MATCHES = ${JSON.stringify(data.HISTORICAL_MATCHES, null, 2)};`;
   if (regex.test(html)) {
     html = html.replace(regex, replacement);
@@ -170,7 +170,7 @@ if (data.FIXTURES_2025_26) {
 }
 
 if (data.NOTES) {
-  const regex = /const\s+NOTES\s*=\s*\{[\s\S]*?\n  \};/;
+  const regex = /const\s+NOTES\s*=\s*\{[\s\S]*?\n\};(?=\s*(?:const|function|\/\/))/;
   const replacement = `const NOTES = ${JSON.stringify(data.NOTES, null, 2)};`;
   if (regex.test(html)) {
     html = html.replace(regex, replacement);
