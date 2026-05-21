@@ -44,6 +44,11 @@ const funFacts      = readJSON(path.join(staticDir, 'fun-facts.json'));
 const teamNotes     = readJSON(path.join(staticDir, 'team-notes.json'));
 const espnNames     = readJSON(path.join(staticDir, 'espn-names.json'));
 
+// Read season-based data directories
+const standings = readSeasonDir('standings');
+const matches   = readSeasonDir('matches');
+const fixtures  = readSeasonDir('fixtures');
+
 const active = activeSeason(); // e.g., "2025-26" — recomputed from current date each build
 const activeShort = active.slice(2); // "25-26" → display as "25/26"
 const activeShortSlash = activeShort.replace('-', '/');
