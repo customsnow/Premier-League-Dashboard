@@ -5518,28 +5518,43 @@ async function buildMatchChart(team, season) {
   if (!matches) matches = generateMatchData(team, season);
 
   // For 2025-26 season, mark upcoming fixtures as 'U' instead of treating them as unplayed
-  if (season === '2025-26') {
-    // Get all upcoming fixtures for this team
-    const upcomingFixtures = FIXTURES_2025_26.filter(f => f.h === team || f.a === team);
-    if (upcomingFixtures.length > 0 && matches.length > 0) {
-      // Mark only matches that are in the fixtures list (actual upcoming games) as 'U'
-      matches = matches.map(m => {
-        // Check if this match is in the fixtures list
-        const isUpcoming = upcomingFixtures.some(f => {
-          const mDate = m.date ? new Date(m.date) : null;
-          const fDate = f.date ? new Date(f.date) : null;
-          // Match by opponent and home/away status if available
-          const homeTeam = m.ha === 'H' ? team : m.opp;
-          const awayTeam = m.ha === 'A' ? team : m.opp;
-          return (f.h === homeTeam && f.a === awayTeam) || (f.h === awayTeam && f.a === homeTeam);
-        });
+  if (season === '2025-26' && matches.length > 0) {
+    // Get actual played matches from HISTORICAL_MATCHES
+    const historicalMatches = HISTORICAL_MATCHES['2025-26'] || [];
+    const playedCount = historicalMatches.length;
 
-        if (isUpcoming && m.gf === 0 && m.ga === 0 && m.result === 'D') {
-          return { ...m, result: 'U' };
-        }
-        return m;
-      });
+    // Count actual played matches for this team
+    let teamPlayedCount = 0;
+    for (const m of historicalMatches) {
+      if (m.h === team || m.a === team) {
+        teamPlayedCount++;
+      }
     }
+
+    // Mark all matches after the played count as upcoming
+    matches = matches.map((m, idx) => {
+      if (idx >= teamPlayedCount) {
+        // This match hasn't been played yet
+        return { ...m, result: 'U', gf: 0, ga: 0 };
+      }
+      return m;
+    });
+
+    // Also check fixtures list to enrich upcoming match data with opponent info
+    const upcomingFixtures = FIXTURES_2025_26.filter(f => f.h === team || f.a === team);
+    matches = matches.map((m, idx) => {
+      if (m.result === 'U' && idx >= teamPlayedCount) {
+        // Find matching fixture
+        for (const f of upcomingFixtures) {
+          const isHome = f.h === team;
+          const opponent = isHome ? f.a : f.h;
+          if (m.ha === (isHome ? 'H' : 'A')) {
+            return { ...m, opp: opponent, date: f.d };
+          }
+        }
+      }
+      return m;
+    });
   }
 
   const d = teamSeasonMap[team]?.[season];
@@ -5659,8 +5674,11 @@ function handleYearChange(year) {
   if (year) {
     sortMode = 'year';
     document.querySelectorAll('[id^="sort-"]').forEach(b=>b.classList.remove('active'));
+    // Update dropdown to show selected year
+    yearSelect.value = year;
     yearSelect.classList.add('active');
   } else {
+    yearSelect.value = '';
     yearSelect.classList.remove('active');
   }
   buildTable();
