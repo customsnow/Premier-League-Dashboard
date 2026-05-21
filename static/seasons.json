@@ -1,0 +1,4 @@
+{
+  "_comment": "Fetcher config. The active season is computed from the current date, and the seasons list shown in the dashboard is derived at build time from the seasons that have data files on disk. This file only controls the fetcher's iteration scope when --all is passed.",
+  "fetchFrom": "2019-20"
+}

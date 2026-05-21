@@ -1,0 +1,10 @@
+node_modules/
+.claude/
+acronym-generator/
+*.local.json
+.DS_Store
+
+# Build artifact — generated from template/index.html.template + data/*.json
+# Built and deployed to GitHub Pages by .github/workflows/deploy-pages.yml
+# /index.html  (commented out to allow persistence in iCloud Drive)
+/_site/
