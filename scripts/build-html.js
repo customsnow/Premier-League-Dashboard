@@ -57,6 +57,7 @@ const data = {
   teams, shortNames, logos, seasons, notes,
   europeanCups, funFacts, teamNotes, espnNames,
   standings, matches, fixtures,
+  activeSeason: active,
 };
 
 const template = fs.readFileSync(templatePath, 'utf8');
