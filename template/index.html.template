@@ -491,12 +491,13 @@
     .legend-swatch { width: 14px; height: 14px; }
 
     td.cell { width: 28px; min-width: 28px; height: 28px; font-size: 10px; }
-    tbody td.team-name, thead th.team-col { min-width: 120px; max-width: 120px; padding: 4px 8px; font-size: 11px; }
+    tbody td.team-name, thead th.team-col { min-width: 90px; max-width: 90px; padding: 4px 6px; font-size: 11px; }
 
     tbody td.team-name .team-dot { width: 7px; height: 7px; margin-right: 5px; }
-    tbody td.team-name .team-label-text { font-size: 11px; }
-    tbody td.team-name .team-meta { font-size: 9px; margin-top: 1px; }
-    tbody td.team-name .team-seasons { font-size: 9px; }
+    tbody td.team-name .team-label { overflow: hidden; }
+    tbody td.team-name .team-label-text { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    tbody td.team-name .team-meta { font-size: 9px; margin-top: 1px; display: none; }
+    tbody td.team-name .team-seasons { font-size: 9px; display: none; }
 
     /* Hide scrollbar on mobile but keep scrolling functional */
     .grid-wrap { scrollbar-width: none; }
