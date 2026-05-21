@@ -81,7 +81,9 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
     color: var(--text-muted); padding: 8px 12px; cursor: pointer; font-size: 14px;
     transition: all 0.2s ease; display: flex; align-items: center; gap: 4px;
+    opacity: 0; pointer-events: none;
   }
+  header:hover .settings-btn { opacity: 1; pointer-events: auto; }
   .settings-btn:hover { background: var(--surface2); color: var(--text); transform: translateY(-1px); }
 
   /* ── Settings Modal ── */
@@ -5713,6 +5715,8 @@ function setColorMode(mode) {
 
 function setViewMode(mode) {
   viewMode = mode;
+  // Remember this view for next time
+  saveViewPreference(mode);
   document.querySelectorAll('[id^="view-"]').forEach(b=>b.classList.remove('active'));
   document.getElementById(`view-${mode}`).classList.add('active');
   document.getElementById('searchTeam').style.display = mode === 'live' ? 'none' : 'block';
