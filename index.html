@@ -8260,7 +8260,7 @@ const RAW = {
     ],
     [
       13,
-      "Wolves",
+      "Wolverhampton",
       38,
       13,
       7,
@@ -31768,9 +31768,10 @@ document.querySelectorAll('[id^="sort-"]').forEach(b=>b.parentElement.style.disp
 document.querySelectorAll('[id^="mode-"]').forEach(b=>b.parentElement.style.display = viewMode === 'live' ? 'none' : 'flex');
 document.getElementById('legend').style.display = viewMode === 'live' ? 'none' : 'flex';
 
-// Populate year dropdown
+// Populate year dropdown (in descending order - newest first)
 const yearSelect = document.getElementById('yearSelect');
-SEASONS.forEach(season => {
+const seasonsDescending = [...SEASONS].reverse();
+seasonsDescending.forEach(season => {
   const option = document.createElement('option');
   option.value = season;
   option.textContent = season;
