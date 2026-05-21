@@ -521,7 +521,7 @@
   <h1><span style="color: var(--cl-blue);">Premier League</span> <span>Dashboard</span></h1>
   <div class="btn-group" id="viewButtonGroup">
     <button onclick="setViewMode('historical')" id="view-historical">Historical</button>
-    <button class="active" onclick="setViewMode('live')" id="view-live">🔴 Live Table 25/26</button>
+    <button class="active" onclick="setViewMode('live')" id="view-live">🔴 Live Table {{ACTIVE_SEASON_SHORT}}</button>
   </div>
   <button class="settings-btn" onclick="toggleSettingsModal()" title="View Preferences">⚙️</button>
   <div class="controls">
@@ -556,7 +556,7 @@
       </label>
       <label>
         <input type="radio" name="default-view" value="live" id="pref-live" checked>
-        Live Table 25/26
+        Live Table {{ACTIVE_SEASON_SHORT}}
       </label>
     </div>
     <div class="button-group">
@@ -599,7 +599,8 @@ const TEAM_COLORS         = Object.fromEntries(window.__DATA.teams.map(t => [t.n
 const RAW                 = window.__DATA.standings;
 const HISTORICAL_MATCHES  = window.__DATA.matches;
 const HISTORICAL_MATCHES_PRE2003 = window.__DATA.matches;
-const FIXTURES_2025_26    = window.__DATA.fixtures['2025-26'] || [];
+const ACTIVE_SEASON       = window.__DATA.activeSeason;
+const FIXTURES_2025_26    = window.__DATA.fixtures[ACTIVE_SEASON] || [];
 const NOTES               = window.__DATA.notes;
 const EUROPEAN_CUPS       = window.__DATA.europeanCups;
 const FUN_FACTS           = window.__DATA.funFacts;
@@ -615,66 +616,12 @@ function fetchTimeout(url, ms) {
 
 function shortTeamName(name) { return SHORT_NAMES[name] || name; }
 
-// Real team logos from TheSportsDB via CORS proxy with SVG fallback
+// Team logos are downloaded into static/logos/ and committed; paths are relative.
 function getTeamLogo(team) {
-  const realUrl = THESPORTSDB_LOGOS[team];
-  if (!realUrl) return null;
-  // Try to load real logo via images.weserv.nl CDN
-  const encoded = encodeURIComponent(realUrl.replace('https://', ''));
-  return `https://images.weserv.nl/?url=${encoded}&w=24&h=24&fit=cover`;
+  const localPath = THESPORTSDB_LOGOS[team];
+  if (!localPath) return null;
+  return `static/${localPath}`;
 }
-
-// Calculate 2025-26 standings from match data
-(function() {
-  const matches = HISTORICAL_MATCHES['2025-26'] || [];
-  const standings = {};
-  const allTeams = new Set();
-
-  // Initialize standings for all teams that have played
-  for (const match of matches) {
-    allTeams.add(match.h);
-    allTeams.add(match.a);
-    if (!standings[match.h]) standings[match.h] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
-    if (!standings[match.a]) standings[match.a] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
-  }
-
-  // Calculate standings from matches
-  for (const match of matches) {
-    const h = standings[match.h];
-    const a = standings[match.a];
-    h.p++; a.p++;
-    h.gf += match.hg; h.ga += match.ag;
-    a.gf += match.ag; a.ga += match.hg;
-
-    if (match.hg > match.ag) {
-      h.w++; a.l++;
-      h.pts += 3;
-    } else if (match.hg < match.ag) {
-      h.l++; a.w++;
-      a.pts += 3;
-    } else {
-      h.d++; a.d++;
-      h.pts += 1; a.pts += 1;
-    }
-  }
-
-  // Sort by points (desc), then by goal difference
-  const sorted = Array.from(allTeams)
-    .map(team => {
-      const s = standings[team];
-      return [Object.keys(standings).filter(t => standings[t]).indexOf(team)+1, team, s.p, s.w, s.d, s.l, s.gf, s.ga, s.pts];
-    })
-    .sort((a, b) => {
-      const gdA = a[6] - a[7];
-      const gdB = b[6] - b[7];
-      if (b[8] !== a[8]) return b[8] - a[8]; // points desc
-      if (gdB !== gdA) return gdB - gdA; // goal diff desc
-      return b[6] - a[6]; // goals for desc
-    })
-    .map((row, i) => [i+1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]);
-
-  RAW['2025-26'] = sorted;
-})();
 
 // European Cups data for teams that qualified
 
@@ -730,7 +677,7 @@ function teamAvg(t) {
 //  LIVE STANDINGS CALCULATOR (2025-26)
 // ════════════════════════════════════════════════════════════════
 function calculateLiveStandings() {
-  const matches = HISTORICAL_MATCHES['2025-26'] || [];
+  const matches = HISTORICAL_MATCHES[ACTIVE_SEASON] || [];
   const standings = {};
 
   // Initialize all teams
@@ -848,8 +795,8 @@ function getSortedTeams() {
   if (sortMode === 'current') {
     // Sort by 2025-26 current standings position
     teams.sort((a,b) => {
-      const posA = teamSeasonMap[a]?.['2025-26']?.pos || 999;
-      const posB = teamSeasonMap[b]?.['2025-26']?.pos || 999;
+      const posA = teamSeasonMap[a]?.[ACTIVE_SEASON]?.pos || 999;
+      const posB = teamSeasonMap[b]?.[ACTIVE_SEASON]?.pos || 999;
       return posA - posB;
     });
   }
@@ -915,9 +862,9 @@ function buildTable() {
     };
     tdName.title = team;
     // Try to load logo, fall back to colored dot if it fails
-    const logoUrl = THESPORTSDB_LOGOS[team];
-    const logoHtml = logoUrl
-      ? `<img class="team-logo" src="${logoUrl}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
+    const logoSrc = getTeamLogo(team);
+    const logoHtml = logoSrc
+      ? `<img class="team-logo" src="${logoSrc}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
       : `<span class="team-dot" style="background:${color}"></span>`;
     tdName.innerHTML = `
       <div class="team-label">
@@ -930,7 +877,7 @@ function buildTable() {
     // Make team name clickable to open current season stats
     tdName.style.cursor = 'pointer';
     tdName.addEventListener('click', () => {
-      const currentSeason = '2025-26';
+      const currentSeason = ACTIVE_SEASON;
       if (teamSeasonMap[team]?.[currentSeason]) {
         openPanel(team, currentSeason);
       }
@@ -945,7 +892,7 @@ function buildTable() {
         // Check if this is 2025-26 and there's a remaining fixture
         let cellText = data.pos;
         let isFixture = false;
-        if (s === '2025-26') {
+        if (s === ACTIVE_SEASON) {
           const fixture = FIXTURES_2025_26.find(f => f.h === team || f.a === team);
           if (fixture) {
             const opponent = fixture.h === team ? fixture.a : fixture.h;
@@ -1028,7 +975,7 @@ function openPanel(team, season) {
     <div class="panel-header">
       <div class="panel-team-badge">
         <div class="panel-color-bar" style="background:${color}"></div>
-        ${THESPORTSDB_LOGOS[team] ? `<img class="panel-logo" src="${THESPORTSDB_LOGOS[team]}" alt="${team}" style="width:24px;height:24px;object-fit:contain;margin:0 8px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+        ${getTeamLogo(team) ? `<img class="panel-logo" src="${getTeamLogo(team)}" alt="${team}" style="width:24px;height:24px;object-fit:contain;margin:0 8px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
         <div>
           <div class="panel-team-name">${team}</div>
           <div class="panel-season">${season} Season</div>
@@ -1698,9 +1645,9 @@ async function buildMatchChart(team, season) {
   if (!matches) matches = generateMatchData(team, season);
 
   // For 2025-26 season, mark upcoming fixtures as 'U' instead of treating them as unplayed
-  if (season === '2025-26' && matches.length > 0) {
+  if (season === ACTIVE_SEASON && matches.length > 0) {
     // Get actual played matches from HISTORICAL_MATCHES
-    const historicalMatches = HISTORICAL_MATCHES['2025-26'] || [];
+    const historicalMatches = HISTORICAL_MATCHES[ACTIVE_SEASON] || [];
     const playedCount = historicalMatches.length;
 
     // Count actual played matches for this team
@@ -1950,7 +1897,7 @@ function buildLiveTable() {
   const table = calculateLiveStandings();
   const tbody = document.getElementById('tbody');
   const thead = document.getElementById('thead');
-  const matches = HISTORICAL_MATCHES['2025-26'] || [];
+  const matches = HISTORICAL_MATCHES[ACTIVE_SEASON] || [];
 
   // Clear and rebuild header
   thead.innerHTML = `

@@ -49,25 +49,45 @@ premier-league-dashboard/
 │   └── Built in CI from template + data + static, deployed to GitHub Pages
 ├── template/
 │   └── index.html.template          ← Edit this for HTML/CSS/JS changes
-├── data/                            ← FETCHED data (written by CI)
-│   ├── standings.json
-│   ├── matches.json
-│   └── fixtures.json
+├── data/                            ← FETCHED data, one file per season
+│   ├── standings/
+│   │   ├── 1992-93.json            ← immutable past seasons
+│   │   └── 2025-26.json            ← active season, written nightly
+│   ├── matches/<season>.json
+│   └── fixtures/<season>.json
 ├── static/                          ← CURATED data (hand-edited)
 │   ├── teams.json
 │   ├── short-names.json
-│   ├── logos.json
-│   ├── seasons.json
+│   ├── logos.json                   ← maps team → local logo path
+│   ├── logos/                       ← downloaded PNGs (committed)
+│   │   └── manchester-united.png
+│   ├── seasons.json                 ← fetcher config (fetchFrom)
 │   └── notes.json
 ├── scripts/
 │   ├── build-html.js               ← Generate index.html from template + data + static
-│   ├── fetch-all.js                ← Master fetcher (runs all fetchers)
+│   ├── fetcher.js                  ← Unified fetcher (one CLI, all sources, all seasons)
 │   ├── fetchers/
-│   │   ├── fetch-live-standings.js ← Fetch current standings
-│   │   ├── fetch-matches.js        ← Fetch recent match results
-│   │   └── fetch-fixtures.js       ← Fetch upcoming fixtures
+│   │   ├── fetch-matches.js        ← Per-season matches module
+│   │   ├── fetch-fixtures.js       ← Per-season fixtures module
+│   │   └── fetch-logos.js          ← One-shot logo downloader
 │   └── utils/
-│       └── espn-api.js             ← ESPN API client utilities
+│       ├── active-season.js        ← Derives the active season from current date
+│       ├── derive-standings.js     ← Computes standings from matches
+│       └── espn-api.js             ← ESPN API client
+
+The fetcher's CLI:
+  npm run fetch                        # active season (default)
+  npm run fetch -- --all               # iterate fetchFrom → active
+  npm run fetch -- --season=2024-25    # one season
+  npm run fetch -- --type=matches      # one type
+  npm run fetch -- --no-cache          # bypass TTL gate
+
+Cache: TTL gates the API call; SHA-256 of merged data gates the file
+write. Cache sidecars live in data/.cache/ (gitignored). Existing data
+is never lost — empty/null fetches preserve what's on disk.
+
+Active season is computed from the current date (Aug → May rollover);
+nothing in the repo hardcodes a specific season.
 ├── .github/
 │   └── workflows/
 │       └── nightly-update.yml      ← GitHub Actions workflow
