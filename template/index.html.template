@@ -529,9 +529,9 @@
 
     <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Sort</div>
     <div class="btn-group">
-      <button class="active" onclick="setSort('seasons')" id="sort-seasons" title="Most Seasons">Most Seasons</button>
+      <button onclick="setSort('seasons')" id="sort-seasons" title="Most Seasons">Most Seasons</button>
       <button onclick="setSort('best')" id="sort-best" title="Best Finish">Best Finish</button>
-      <button onclick="setSort('current')" id="sort-current" title="Current Standings">Current Standings</button>
+      <button class="active" onclick="setSort('current')" id="sort-current" title="Current Standings">Current Standings</button>
       <button onclick="setSort('alpha')" id="sort-alpha" title="Alphabetical">A–Z</button>
       <select id="yearSelect" onchange="handleYearChange(this.value)" title="Filter by Season" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;">
         <option value="">By Year</option>
@@ -639,7 +639,7 @@ function getTeamLogo(team) {
 //  STATE
 // ════════════════════════════════════════════════════════════════
 let colorMode = 'position';
-let sortMode = 'seasons';
+let sortMode = 'current';
 let searchFilter = '';
 let selectedCell = null;
 let selectedYear = '';
@@ -835,7 +835,7 @@ function buildTable() {
   th0.className = 'team-col';
   th0.textContent = `Teams (${teams.length})`;
   hr.appendChild(th0);
-  for (const s of [...SEASONS].reverse()) {
+  for (const s of SEASONS) {
     const th = document.createElement('th');
     const note = NOTES[s];
     const isChampion = note ? true : false;
@@ -892,7 +892,7 @@ function buildTable() {
     });
     tr.appendChild(tdName);
 
-    for (const s of [...SEASONS].reverse()) {
+    for (const s of SEASONS) {
       const td = document.createElement('td');
       const data = teamSeasonMap[team]?.[s];
       if (data) {
@@ -1423,11 +1423,13 @@ async function handleGameClick(e, idx) {
   popup.style.left = left + 'px';
   popup.style.top  = top  + 'px';
 
+  const homeTeam = match.homeTeam || match.h;
+  const awayTeam = match.awayTeam || match.a;
   const venue    = match.ha === 'H' ? 'Home' : 'Away';
   const resultTx = match.result === 'W' ? 'Win' : match.result === 'D' ? 'Draw' : match.result === 'U' ? 'Upcoming' : 'Loss';
   const resCol   = match.result === 'W' ? '#4ade80' : match.result === 'D' ? '#fbbf24' : match.result === 'U' ? '#6b7280' : '#f87171';
-  const myTeam   = match.isHome ? match.homeTeam : match.awayTeam;
-  const oppTeam  = match.opp || (match.isHome ? match.awayTeam : match.homeTeam) || '?';
+  const myTeam   = match.isHome ? homeTeam : awayTeam;
+  const oppTeam  = match.opp || (match.isHome ? awayTeam : homeTeam) || '?';
   const myColor  = TEAM_COLORS[myTeam] || '#888';
   const oppColor = TEAM_COLORS[oppTeam] || '#888';
   const isUpcoming = match.result === 'U';
@@ -1445,12 +1447,12 @@ async function handleGameClick(e, idx) {
       `}
       <div class="gp-teams-row">
         <span class="ht" style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-          <img src="${LOGOS[match.isHome ? myTeam : oppTeam]}" style="width:20px; height:20px; object-fit:contain;" alt="${match.isHome ? myTeam : oppTeam}"/>
+          ${getTeamLogo(match.isHome ? myTeam : oppTeam) ? `<img src="${getTeamLogo(match.isHome ? myTeam : oppTeam)}" style="width:20px; height:20px; object-fit:contain;" alt="${match.isHome ? myTeam : oppTeam}"/>` : ''}
           ${match.isHome ? (myTeam || '—') : (oppTeam || '—')}
         </span>
         <span style="color:${resCol};font-weight:700">${resultTx}</span>
         <span class="at" style="display:flex; flex-direction:column; align-items:center; gap:4px; justify-content:center;">
-          <img src="${LOGOS[match.isHome ? oppTeam : myTeam]}" style="width:20px; height:20px; object-fit:contain;" alt="${match.isHome ? oppTeam : myTeam}"/>
+          ${getTeamLogo(match.isHome ? oppTeam : myTeam) ? `<img src="${getTeamLogo(match.isHome ? oppTeam : myTeam)}" style="width:20px; height:20px; object-fit:contain;" alt="${match.isHome ? oppTeam : myTeam}"/>` : ''}
           ${match.isHome ? (oppTeam || '—') : (myTeam || '—')}
         </span>
       </div>

@@ -37,7 +37,6 @@ console.log('🔨 Building index.html from template + data…\n');
 const teams         = readJSON(path.join(staticDir, 'teams.json')).teams;
 const shortNames    = readJSON(path.join(staticDir, 'short-names.json')).shortNames;
 const logos         = readJSON(path.join(staticDir, 'logos.json')).logos;
-const seasons       = readJSON(path.join(staticDir, 'seasons.json')).seasons;
 const notes         = readJSON(path.join(staticDir, 'notes.json'));
 const europeanCups  = readJSON(path.join(staticDir, 'european-cups.json'));
 const funFacts      = readJSON(path.join(staticDir, 'fun-facts.json'));
@@ -48,6 +47,9 @@ const espnNames     = readJSON(path.join(staticDir, 'espn-names.json'));
 const standings = readSeasonDir('standings');
 const matches   = readSeasonDir('matches');
 const fixtures  = readSeasonDir('fixtures');
+
+// Derive seasons from actual standings data (sorted newest first)
+const seasons = Object.keys(standings).sort().reverse();
 
 const active = activeSeason(); // e.g., "2025-26" — recomputed from current date each build
 const activeShort = active.slice(2); // "25-26" → display as "25/26"

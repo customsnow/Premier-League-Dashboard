@@ -6,5 +6,5 @@ acronym-generator/
 
 # Build artifact — generated from template/index.html.template + data/*.json
 # Built and deployed to GitHub Pages by .github/workflows/deploy-pages.yml
-/index.html
+# /index.html  (commented out to allow persistence in iCloud Drive)
 /_site/
