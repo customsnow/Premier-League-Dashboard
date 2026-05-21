@@ -8,8 +8,8 @@ const teamsToFind = {
   'Blackburn Rovers': 'https://www.thesportsdb.com/league/4329-english-league-championship',
   'Ipswich Town': 'https://www.thesportsdb.com/league/4329-english-league-championship',
   'Leicester City': 'https://www.thesportsdb.com/league/4329-english-league-championship',
-  Southampton: 'https://www.thesportsdb.com/league/4329-english-league-championship',
   Reading: 'https://www.thesportsdb.com/league/4329-english-league-championship',
+  Southampton: 'https://www.thesportsdb.com/league/4329-english-league-championship',
 };
 
 async function findLogoForTeam(teamName, pageUrl) {

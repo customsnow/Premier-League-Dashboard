@@ -132,7 +132,7 @@ function writeJsonFile(filename, data, description) {
 }
 
 if (data.teamColors) {
-  const teamsArray = Object.entries(data.teamColors).map(([name, color]) => ({ name, color }));
+  const teamsArray = Object.entries(data.teamColors).map(([name, color]) => ({ color, name }));
   writeJsonFile('teams.json', { teams: teamsArray }, 'Team Colors');
 }
 

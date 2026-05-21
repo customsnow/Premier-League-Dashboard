@@ -71,7 +71,7 @@ function parseEvent(event) {
   const home = c.find((x) => x.homeAway === 'home');
   const away = c.find((x) => x.homeAway === 'away');
   if (!home || !away) return null;
-  return { home, away };
+  return { away, home };
 }
 
 // Get recent match results (only events with a final/in-progress status).
@@ -98,11 +98,11 @@ export async function getMatchResults(team = null, limit = 100) {
           const sides = parseEvent(event);
           if (!sides) continue;
           matches.push({
+            a: sides.away.team?.displayName || sides.away.team?.name,
+            ag: parseInt(sides.away.score, 10) || 0,
             d: new Date(event.date).toLocaleDateString('en-GB'), // DD/MM/YYYY
             h: sides.home.team?.displayName || sides.home.team?.name,
-            a: sides.away.team?.displayName || sides.away.team?.name,
             hg: parseInt(sides.home.score, 10) || 0,
-            ag: parseInt(sides.away.score, 10) || 0,
             status,
           });
         }
@@ -153,13 +153,13 @@ export async function getFixtures(daysAhead = 30) {
             if (!sides) continue;
             const time = eventDate.toLocaleTimeString('en-GB', {
               hour: '2-digit',
-              minute: '2-digit',
               hour12: false,
+              minute: '2-digit',
             });
             fixtures.push({
+              a: sides.away.team?.displayName || sides.away.team?.name,
               d: eventDate.toLocaleDateString('en-GB'),
               h: sides.home.team?.displayName || sides.home.team?.name,
-              a: sides.away.team?.displayName || sides.away.team?.name,
               time,
             });
           }
@@ -193,9 +193,9 @@ export async function healthCheck() {
 }
 
 export default {
+  delay,
+  getFixtures,
   getLeagueStandings,
   getMatchResults,
-  getFixtures,
   healthCheck,
-  delay,
 };

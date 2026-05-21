@@ -12,8 +12,8 @@ export function deriveStandings(matches) {
   for (const m of matches) {
     teams.add(m.h);
     teams.add(m.a);
-    if (!rows[m.h]) rows[m.h] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
-    if (!rows[m.a]) rows[m.a] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
+    if (!rows[m.h]) rows[m.h] = { d: 0, ga: 0, gf: 0, l: 0, p: 0, pts: 0, w: 0 };
+    if (!rows[m.a]) rows[m.a] = { d: 0, ga: 0, gf: 0, l: 0, p: 0, pts: 0, w: 0 };
 
     const h = rows[m.h];
     const a = rows[m.a];

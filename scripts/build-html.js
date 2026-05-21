@@ -56,19 +56,19 @@ const activeShort = active.slice(2); // "25-26" → display as "25/26"
 const activeShortSlash = activeShort.replace('-', '/');
 
 const data = {
-  teams,
-  shortNames,
-  logos,
-  seasons,
-  notes,
-  europeanCups,
-  funFacts,
-  teamNotes,
-  espnNames,
-  standings,
-  matches,
-  fixtures,
   activeSeason: active,
+  espnNames,
+  europeanCups,
+  fixtures,
+  funFacts,
+  logos,
+  matches,
+  notes,
+  seasons,
+  shortNames,
+  standings,
+  teamNotes,
+  teams,
 };
 
 const template = fs.readFileSync(templatePath, 'utf8');

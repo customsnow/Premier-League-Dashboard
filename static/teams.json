@@ -1,208 +1,208 @@
 {
   "teams": [
     {
-      "name": "Arsenal",
-      "color": "#EF0107"
+      "color": "#EF0107",
+      "name": "Arsenal"
     },
     {
-      "name": "Aston Villa",
-      "color": "#670E36"
+      "color": "#670E36",
+      "name": "Aston Villa"
     },
     {
-      "name": "Barnsley",
-      "color": "#EE2233"
+      "color": "#EE2233",
+      "name": "Barnsley"
     },
     {
-      "name": "Birmingham City",
-      "color": "#0000FF"
+      "color": "#0000FF",
+      "name": "Birmingham City"
     },
     {
-      "name": "Blackburn Rovers",
-      "color": "#009EE0"
+      "color": "#009EE0",
+      "name": "Blackburn Rovers"
     },
     {
-      "name": "Blackpool",
-      "color": "#F68712"
+      "color": "#F68712",
+      "name": "Blackpool"
     },
     {
-      "name": "Bolton Wanderers",
-      "color": "#263C7E"
+      "color": "#263C7E",
+      "name": "Bolton Wanderers"
     },
     {
-      "name": "Bournemouth",
-      "color": "#DA291C"
+      "color": "#DA291C",
+      "name": "Bournemouth"
     },
     {
-      "name": "Bradford City",
-      "color": "#800000"
+      "color": "#800000",
+      "name": "Bradford City"
     },
     {
-      "name": "Brentford",
-      "color": "#E30613"
+      "color": "#E30613",
+      "name": "Brentford"
     },
     {
-      "name": "Brighton",
-      "color": "#0057B8"
+      "color": "#0057B8",
+      "name": "Brighton"
     },
     {
-      "name": "Burnley",
-      "color": "#6C1D45"
+      "color": "#6C1D45",
+      "name": "Burnley"
     },
     {
-      "name": "Cardiff City",
-      "color": "#0070B5"
+      "color": "#0070B5",
+      "name": "Cardiff City"
     },
     {
-      "name": "Charlton Athletic",
-      "color": "#CC2233"
+      "color": "#CC2233",
+      "name": "Charlton Athletic"
     },
     {
-      "name": "Chelsea",
-      "color": "#034694"
+      "color": "#034694",
+      "name": "Chelsea"
     },
     {
-      "name": "Coventry City",
-      "color": "#59CEFF"
+      "color": "#59CEFF",
+      "name": "Coventry City"
     },
     {
-      "name": "Crystal Palace",
-      "color": "#1B458F"
+      "color": "#1B458F",
+      "name": "Crystal Palace"
     },
     {
-      "name": "Derby County",
-      "color": "#1A1A1A"
+      "color": "#1A1A1A",
+      "name": "Derby County"
     },
     {
-      "name": "Everton",
-      "color": "#003399"
+      "color": "#003399",
+      "name": "Everton"
     },
     {
-      "name": "Fulham",
-      "color": "#CC0000"
+      "color": "#CC0000",
+      "name": "Fulham"
     },
     {
-      "name": "Huddersfield Town",
-      "color": "#0E63AD"
+      "color": "#0E63AD",
+      "name": "Huddersfield Town"
     },
     {
-      "name": "Hull City",
-      "color": "#F5A12D"
+      "color": "#F5A12D",
+      "name": "Hull City"
     },
     {
-      "name": "Ipswich Town",
-      "color": "#0044A9"
+      "color": "#0044A9",
+      "name": "Ipswich Town"
     },
     {
-      "name": "Leeds United",
-      "color": "#FFCD00"
+      "color": "#FFCD00",
+      "name": "Leeds United"
     },
     {
-      "name": "Leicester City",
-      "color": "#003090"
+      "color": "#003090",
+      "name": "Leicester City"
     },
     {
-      "name": "Liverpool",
-      "color": "#C8102E"
+      "color": "#C8102E",
+      "name": "Liverpool"
     },
     {
-      "name": "Luton Town",
-      "color": "#F78F1E"
+      "color": "#F78F1E",
+      "name": "Luton Town"
     },
     {
-      "name": "Manchester City",
-      "color": "#6CABDD"
+      "color": "#6CABDD",
+      "name": "Manchester City"
     },
     {
-      "name": "Manchester United",
-      "color": "#DA291C"
+      "color": "#DA291C",
+      "name": "Manchester United"
     },
     {
-      "name": "Middlesbrough",
-      "color": "#E00000"
+      "color": "#E00000",
+      "name": "Middlesbrough"
     },
     {
-      "name": "Newcastle United",
-      "color": "#241F20"
+      "color": "#241F20",
+      "name": "Newcastle United"
     },
     {
-      "name": "Norwich City",
-      "color": "#00A650"
+      "color": "#00A650",
+      "name": "Norwich City"
     },
     {
-      "name": "Nottingham Forest",
-      "color": "#E53233"
+      "color": "#E53233",
+      "name": "Nottingham Forest"
     },
     {
-      "name": "Oldham Athletic",
-      "color": "#0052A5"
+      "color": "#0052A5",
+      "name": "Oldham Athletic"
     },
     {
-      "name": "Portsmouth",
-      "color": "#0052A5"
+      "color": "#0052A5",
+      "name": "Portsmouth"
     },
     {
-      "name": "QPR",
-      "color": "#1D5BA4"
+      "color": "#1D5BA4",
+      "name": "QPR"
     },
     {
-      "name": "Reading",
-      "color": "#004494"
+      "color": "#004494",
+      "name": "Reading"
     },
     {
-      "name": "Sheffield United",
-      "color": "#EE2523"
+      "color": "#EE2523",
+      "name": "Sheffield United"
     },
     {
-      "name": "Sheffield Wednesday",
-      "color": "#1463A6"
+      "color": "#1463A6",
+      "name": "Sheffield Wednesday"
     },
     {
-      "name": "Southampton",
-      "color": "#D71920"
+      "color": "#D71920",
+      "name": "Southampton"
     },
     {
-      "name": "Stoke City",
-      "color": "#E03A3E"
+      "color": "#E03A3E",
+      "name": "Stoke City"
     },
     {
-      "name": "Sunderland",
-      "color": "#EB172B"
+      "color": "#EB172B",
+      "name": "Sunderland"
     },
     {
-      "name": "Swansea City",
-      "color": "#121212"
+      "color": "#121212",
+      "name": "Swansea City"
     },
     {
-      "name": "Swindon Town",
-      "color": "#EE2522"
+      "color": "#EE2522",
+      "name": "Swindon Town"
     },
     {
-      "name": "Tottenham Hotspur",
-      "color": "#132257"
+      "color": "#132257",
+      "name": "Tottenham Hotspur"
     },
     {
-      "name": "Watford",
-      "color": "#FBEE23"
+      "color": "#FBEE23",
+      "name": "Watford"
     },
     {
-      "name": "WBA",
-      "color": "#122F67"
+      "color": "#122F67",
+      "name": "WBA"
     },
     {
-      "name": "West Ham United",
-      "color": "#7A263A"
+      "color": "#7A263A",
+      "name": "West Ham United"
     },
     {
-      "name": "Wigan Athletic",
-      "color": "#1C2B5E"
+      "color": "#1C2B5E",
+      "name": "Wigan Athletic"
     },
     {
-      "name": "Wimbledon",
-      "color": "#0063A6"
+      "color": "#0063A6",
+      "name": "Wimbledon"
     },
     {
-      "name": "Wolverhampton",
-      "color": "#FDB913"
+      "color": "#FDB913",
+      "name": "Wolverhampton"
     }
   ]
 }

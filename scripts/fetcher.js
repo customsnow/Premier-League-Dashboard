@@ -38,20 +38,20 @@ const staticDir = path.join(rootDir, 'static');
 
 // TTL in seconds. Active season is hot; past seasons are gated more loosely.
 const TTL = {
-  active: { matches: 60 * 60, fixtures: 60 * 60 },
-  past: { matches: 7 * 24 * 60 * 60, fixtures: 7 * 24 * 60 * 60 },
+  active: { fixtures: 60 * 60, matches: 60 * 60 },
+  past: { fixtures: 7 * 24 * 60 * 60, matches: 7 * 24 * 60 * 60 },
 };
 
 const TYPES = ['matches', 'fixtures'];
 const FETCHERS = {
-  matches: fetchMatchesForSeason,
   fixtures: fetchFixturesForSeason,
+  matches: fetchMatchesForSeason,
 };
 
 // ---- args ------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const out = { season: null, type: null, noCache: false, all: false };
+  const out = { all: false, noCache: false, season: null, type: null };
   for (const a of argv) {
     if (a === '--no-cache') out.noCache = true;
     else if (a === '--all') out.all = true;
@@ -102,7 +102,7 @@ function cacheIsFresh(type, season, isActive) {
 }
 
 function writeCache(type, season, hash) {
-  writeJSON(cachePath(type, season), { hash, fetchedAt: new Date().toISOString() });
+  writeJSON(cachePath(type, season), { fetchedAt: new Date().toISOString(), hash });
 }
 
 // Merge for matches: dedupe by (date, home, away). For fixtures: replace.
@@ -189,7 +189,7 @@ async function processOne(season, type, args, active) {
   writeJSON(dataPath(type, season), next);
   writeCache(type, season, newHash);
   console.log(`  ✓  ${label}: ${next.length} items written`);
-  return { written: true, data: next };
+  return { data: next, written: true };
 }
 
 // Re-derive standings/<season>.json from matches/<season>.json whenever matches change.

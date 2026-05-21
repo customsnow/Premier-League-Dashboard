@@ -25,23 +25,23 @@ const scriptContent = htmlContent.slice(scriptStart + 8, scriptEnd);
 
 // Create a safe context to evaluate the variables with browser API stubs
 const context = {
-  localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
-  window: {},
-  document: { querySelector: () => null, querySelectorAll: () => [] },
-  console: console,
-  Math: Math,
-  Object: Object,
   Array: Array,
-  String: String,
-  Number: Number,
   Boolean: Boolean,
+  console: console,
   Date: Date,
-  RegExp: RegExp,
-  JSON: JSON,
-  parseInt: parseInt,
-  parseFloat: parseFloat,
+  document: { querySelector: () => null, querySelectorAll: () => [] },
   isNaN: Number.isNaN,
+  JSON: JSON,
+  localStorage: { getItem: () => null, removeItem: () => {}, setItem: () => {} },
+  Math: Math,
+  Number: Number,
+  Object: Object,
+  parseFloat: parseFloat,
+  parseInt: parseInt,
+  RegExp: RegExp,
+  String: String,
   undefined: undefined,
+  window: {},
 };
 
 try {
@@ -52,15 +52,15 @@ try {
 
   // Now extract the variables from the context
   const variables = {
-    TEAM_COLORS: context.TEAM_COLORS,
-    SHORT_NAMES: context.SHORT_NAMES,
-    THESPORTSDB_LOGOS: context.THESPORTSDB_LOGOS,
-    SEASONS: context.SEASONS,
-    RAW: context.RAW,
-    HISTORICAL_MATCHES_PRE2003: context.HISTORICAL_MATCHES_PRE2003,
-    HISTORICAL_MATCHES: context.HISTORICAL_MATCHES,
     FIXTURES_2025_26: context.FIXTURES_2025_26,
+    HISTORICAL_MATCHES: context.HISTORICAL_MATCHES,
+    HISTORICAL_MATCHES_PRE2003: context.HISTORICAL_MATCHES_PRE2003,
     NOTES: context.NOTES,
+    RAW: context.RAW,
+    SEASONS: context.SEASONS,
+    SHORT_NAMES: context.SHORT_NAMES,
+    TEAM_COLORS: context.TEAM_COLORS,
+    THESPORTSDB_LOGOS: context.THESPORTSDB_LOGOS,
   };
 
   // Check what was extracted
@@ -132,8 +132,8 @@ try {
   // Write individual JSON files
   if (variables.TEAM_COLORS) {
     const teamsArray = Object.entries(variables.TEAM_COLORS).map(([name, color]) => ({
-      name,
       color,
+      name,
     }));
     writeJsonFile('teams.json', { teams: teamsArray }, 'Team Colors');
   }

@@ -27,14 +27,14 @@ teams.forEach((team) => {
 // Find and fix mismatched names
 console.log(`\n🔧 Fixing name mismatches...`);
 const nameMapping = {
-  'West Bromwich Alb': 'WBA',
-  'West Bromwich Albion': 'WBA',
+  'Accrington Stanle': 'Accrington Stanley',
+  'AFC Wimbledon': 'Wimbledon',
+  'Milton Keynes Don': 'Milton Keynes Dons',
+  'Peterborough Unit': 'Peterborough United',
   'Queens Park Range': 'QPR',
   'Sheffield Wednesd': 'Sheffield Wednesday',
-  'Accrington Stanle': 'Accrington Stanley',
-  'Peterborough Unit': 'Peterborough United',
-  'Milton Keynes Don': 'Milton Keynes Dons',
-  'AFC Wimbledon': 'Wimbledon',
+  'West Bromwich Alb': 'WBA',
+  'West Bromwich Albion': 'WBA',
 };
 
 const fixedLogos = { ...logos };
