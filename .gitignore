@@ -3,3 +3,8 @@ node_modules/
 acronym-generator/
 *.local.json
 .DS_Store
+
+# Build artifact — generated from template/index.html.template + data/*.json
+# Built and deployed to GitHub Pages by .github/workflows/deploy-pages.yml
+/index.html
+/_site/
