@@ -49,25 +49,32 @@ premier-league-dashboard/
 │   └── Auto-generated from template + data + static
 ├── template/
 │   └── index.html.template          ← Edit this for HTML/CSS/JS changes
-├── data/                            ← FETCHED data (written by CI)
-│   ├── standings.json
-│   ├── matches.json
-│   └── fixtures.json
+├── data/                            ← FETCHED data, one file per season
+│   ├── standings/
+│   │   ├── 1992-93.json            ← immutable past seasons
+│   │   └── 2025-26.json            ← active season, written nightly
+│   ├── matches/<season>.json
+│   └── fixtures/<season>.json
 ├── static/                          ← CURATED data (hand-edited)
 │   ├── teams.json
 │   ├── short-names.json
-│   ├── logos.json
-│   ├── seasons.json
+│   ├── logos.json                   ← maps team → local logo path
+│   ├── logos/                       ← downloaded PNGs (committed)
+│   │   └── manchester-united.png
+│   ├── seasons.json                 ← season list; last entry = "active"
 │   └── notes.json
 ├── scripts/
 │   ├── build-html.js               ← Generate index.html from template + data + static
-│   ├── fetch-all.js                ← Master fetcher (runs all fetchers)
+│   ├── fetch-all.js                ← Master fetcher (active season only)
+│   ├── backfill.js                 ← Explicitly refetch a past season
 │   ├── fetchers/
-│   │   ├── fetch-live-standings.js ← Fetch current standings
-│   │   ├── fetch-matches.js        ← Fetch recent match results
-│   │   └── fetch-fixtures.js       ← Fetch upcoming fixtures
+│   │   ├── fetch-matches.js        ← Match results + derived standings
+│   │   ├── fetch-fixtures.js       ← Upcoming fixtures
+│   │   └── fetch-logos.js          ← One-shot logo downloader
 │   └── utils/
-│       └── espn-api.js             ← ESPN API client utilities
+│       ├── active-season.js        ← Resolves the active season
+│       ├── derive-standings.js     ← Computes standings from matches
+│       └── espn-api.js             ← ESPN API client
 ├── .github/
 │   └── workflows/
 │       └── nightly-update.yml      ← GitHub Actions workflow

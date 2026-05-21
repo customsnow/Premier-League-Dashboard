@@ -17,19 +17,32 @@ function readJSON(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));
 }
 
+// Read every <season>.json under data/<type>/ and merge into { "1992-93": …, "1993-94": … }
+function readSeasonDir(type) {
+  const dir = path.join(dataDir, type);
+  if (!fs.existsSync(dir)) return {};
+  const out = {};
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith('.json')) continue;
+    const season = path.basename(file, '.json');
+    out[season] = readJSON(path.join(dir, file));
+  }
+  return out;
+}
+
 console.log('🔨 Building index.html from template + data…\n');
 
 // Curated data (hand-edited)
-const teams      = readJSON(path.join(staticDir, 'teams.json')).teams;
-const shortNames = readJSON(path.join(staticDir, 'short-names.json')).shortNames;
-const logos      = readJSON(path.join(staticDir, 'logos.json')).logos;
-const seasons    = readJSON(path.join(staticDir, 'seasons.json')).seasons;
-const notes      = readJSON(path.join(staticDir, 'notes.json'));
+const teams        = readJSON(path.join(staticDir, 'teams.json')).teams;
+const shortNames   = readJSON(path.join(staticDir, 'short-names.json')).shortNames;
+const logos        = readJSON(path.join(staticDir, 'logos.json')).logos;
+const seasons      = readJSON(path.join(staticDir, 'seasons.json')).seasons;
+const notes        = readJSON(path.join(staticDir, 'notes.json'));
 
-// Fetched data (written by CI)
-const standings  = readJSON(path.join(dataDir, 'standings.json'));
-const matches    = readJSON(path.join(dataDir, 'matches.json'));
-const fixtures   = readJSON(path.join(dataDir, 'fixtures.json'));
+// Fetched data (per-season files under data/<type>/<season>.json)
+const standings = readSeasonDir('standings');
+const matches   = readSeasonDir('matches');
+const fixtures  = readSeasonDir('fixtures');
 
 const data = { teams, shortNames, logos, seasons, notes, standings, matches, fixtures };
 
@@ -46,4 +59,4 @@ const html = template.replace(INJECTION_MARKER, injection);
 fs.writeFileSync(outputPath, html, 'utf8');
 
 const sizeMB = (fs.statSync(outputPath).size / 1024 / 1024).toFixed(2);
-console.log(`✅ Built index.html (${sizeMB} MB)`);
+console.log(`✅ Built index.html (${sizeMB} MB) — ${Object.keys(standings).length} standings, ${Object.keys(matches).length} matches, ${Object.keys(fixtures).length} fixtures seasons`);

@@ -1,60 +1,39 @@
 #!/usr/bin/env node
+// Orchestrate nightly fetches. The matches fetcher also derives standings
+// for the active season, so there's no separate standings fetcher.
 
-import { fetchLiveStandings } from './fetchers/fetch-live-standings.js';
 import { fetchMatches } from './fetchers/fetch-matches.js';
 import { fetchFixtures } from './fetchers/fetch-fixtures.js';
+import { activeSeason } from './utils/active-season.js';
 
 async function fetchAllData() {
-  console.log('🔄 Premier League Dashboard - Fetching Latest Data\n');
-  console.log('📅 ' + new Date().toLocaleString() + '\n');
+  const season = activeSeason();
+  console.log('🔄 Premier League Dashboard — Fetching Latest Data');
+  console.log(`📅 ${new Date().toLocaleString()}`);
+  console.log(`🎯 Active season: ${season}\n`);
 
-  const results = {
-    standings: false,
-    matches: false,
-    fixtures: false
-  };
+  const results = { matches: false, fixtures: false };
 
-  try {
-    // Fetch all data in sequence
-    console.log('📥 Fetching data from APIs...\n');
+  console.log('📥 Fetching data from APIs…\n');
+  results.matches = await fetchMatches();
+  console.log('');
+  results.fixtures = await fetchFixtures();
+  console.log('');
 
-    results.standings = await fetchLiveStandings();
-    console.log('');
+  console.log('📊 Fetch Summary:');
+  console.log(`  ${results.matches  ? '✓' : '✗'} Matches  (+ derived standings): ${results.matches  ? 'Updated' : 'Failed'}`);
+  console.log(`  ${results.fixtures ? '✓' : '✗'} Fixtures:                       ${results.fixtures ? 'Updated' : 'Failed'}`);
+  console.log('');
 
-    results.matches = await fetchMatches();
-    console.log('');
-
-    results.fixtures = await fetchFixtures();
-    console.log('');
-
-    // Summary
-    console.log('📊 Fetch Summary:\n');
-    console.log(`  ${results.standings ? '✓' : '✗'} Standings: ${results.standings ? 'Updated' : 'Failed'}`);
-    console.log(`  ${results.matches ? '✓' : '✗'} Matches: ${results.matches ? 'Updated' : 'Failed'}`);
-    console.log(`  ${results.fixtures ? '✓' : '✗'} Fixtures: ${results.fixtures ? 'Updated' : 'Failed'}`);
-    console.log('');
-
-    // Exit status
-    const anySuccess = Object.values(results).some(r => r);
-    const allSuccess = Object.values(results).every(r => r);
-
-    if (allSuccess) {
-      console.log('✅ All data sources fetched successfully\n');
-      process.exit(0);
-    } else if (anySuccess) {
-      console.log('⚠️  Partial success - some data sources failed, but continuing\n');
-      process.exit(0);  // Don't fail - CI should continue to rebuild with what we have
-    } else {
-      console.log('❌ All data sources failed - keeping previous data\n');
-      process.exit(0);  // Still exit 0 - let CI continue, the build will use old data
-    }
-
-  } catch (error) {
-    console.error('❌ Unexpected error in fetch-all:', error.message);
-    console.log('\n⚠️  Keeping previous data and continuing\n');
-    process.exit(0);  // Graceful degradation - don't break CI
+  if (Object.values(results).every(Boolean)) {
+    console.log('✅ All data sources fetched successfully');
+  } else if (Object.values(results).some(Boolean)) {
+    console.log('⚠️  Partial success — some sources failed, continuing with existing data');
+  } else {
+    console.log('❌ All sources failed — keeping previous data');
   }
+  // Always exit 0; the build step downstream uses whatever data is on disk.
+  process.exit(0);
 }
 
-// Run the fetch
 fetchAllData();

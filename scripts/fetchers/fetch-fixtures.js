@@ -1,58 +1,47 @@
 #!/usr/bin/env node
+// Fetch upcoming fixtures for the active season from ESPN and write to
+// data/fixtures/<active>.json. The fetched list replaces the file's
+// contents — fixtures are authoritative from the API, not merged.
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import espnApi from '../utils/espn-api.js';
+import { activeSeason } from '../utils/active-season.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..', '..');
 const dataDir = path.join(rootDir, 'data');
-const fixturesPath = path.join(dataDir, 'fixtures.json');
 
-export async function fetchFixtures() {
+export async function fetchFixtures({ season = activeSeason() } = {}) {
+  const fixturesPath = path.join(dataDir, 'fixtures', `${season}.json`);
+
   try {
-    console.log('  🔄 Fetching upcoming fixtures for next 30 days...');
+    console.log(`  🔄 Fetching upcoming fixtures for ${season} (next 30 days)…`);
 
-    // Fetch fixtures from ESPN API (30 days ahead)
     const fixtures = await espnApi.getFixtures(30);
-
     if (!fixtures || fixtures.length === 0) {
       console.log('     ⚠️  No fixture data retrieved from ESPN');
       return false;
     }
 
-    // Read existing fixtures file
-    let existingData = {};
-    if (fs.existsSync(fixturesPath)) {
-      const content = fs.readFileSync(fixturesPath, 'utf-8');
-      existingData = JSON.parse(content);
-    }
-
-    // Replace 2025-26 fixtures with newly fetched ones
-    // (This overwrites rather than merges, as fixtures should be the authoritative list)
-    existingData['2025-26'] = fixtures;
-
-    // Sort fixtures by date (ascending - earliest first)
-    existingData['2025-26'].sort((a, b) => {
-      const dateA = new Date(a.d.split('/').reverse().join('-'));
-      const dateB = new Date(b.d.split('/').reverse().join('-'));
-      return dateA - dateB;
+    fixtures.sort((a, b) => {
+      const da = new Date(a.d.split('/').reverse().join('-'));
+      const db = new Date(b.d.split('/').reverse().join('-'));
+      return da - db;
     });
 
-    // Write updated fixtures back to file
-    fs.writeFileSync(fixturesPath, JSON.stringify(existingData, null, 2), 'utf-8');
+    fs.mkdirSync(path.dirname(fixturesPath), { recursive: true });
+    fs.writeFileSync(fixturesPath, JSON.stringify(fixtures, null, 2) + '\n');
 
-    console.log(`     ✓ Updated 2025-26 fixtures (${existingData['2025-26'].length} upcoming matches)`);
+    console.log(`     ✓ data/fixtures/${season}.json (${fixtures.length} upcoming)`);
     return true;
-
   } catch (error) {
     console.error('     ❌ Error fetching fixtures:', error.message);
     return false;
   }
 }
 
-// Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const success = await fetchFixtures();
   process.exit(success ? 0 : 1);

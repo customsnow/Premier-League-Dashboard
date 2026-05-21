@@ -611,66 +611,12 @@ function fetchTimeout(url, ms) {
 
 function shortTeamName(name) { return SHORT_NAMES[name] || name; }
 
-// Real team logos from TheSportsDB via CORS proxy with SVG fallback
+// Team logos are downloaded into static/logos/ and committed; paths are relative.
 function getTeamLogo(team) {
-  const realUrl = THESPORTSDB_LOGOS[team];
-  if (!realUrl) return null;
-  // Try to load real logo via images.weserv.nl CDN
-  const encoded = encodeURIComponent(realUrl.replace('https://', ''));
-  return `https://images.weserv.nl/?url=${encoded}&w=24&h=24&fit=cover`;
+  const localPath = THESPORTSDB_LOGOS[team];
+  if (!localPath) return null;
+  return `static/${localPath}`;
 }
-
-// Calculate 2025-26 standings from match data
-(function() {
-  const matches = HISTORICAL_MATCHES['2025-26'] || [];
-  const standings = {};
-  const allTeams = new Set();
-
-  // Initialize standings for all teams that have played
-  for (const match of matches) {
-    allTeams.add(match.h);
-    allTeams.add(match.a);
-    if (!standings[match.h]) standings[match.h] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
-    if (!standings[match.a]) standings[match.a] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
-  }
-
-  // Calculate standings from matches
-  for (const match of matches) {
-    const h = standings[match.h];
-    const a = standings[match.a];
-    h.p++; a.p++;
-    h.gf += match.hg; h.ga += match.ag;
-    a.gf += match.ag; a.ga += match.hg;
-
-    if (match.hg > match.ag) {
-      h.w++; a.l++;
-      h.pts += 3;
-    } else if (match.hg < match.ag) {
-      h.l++; a.w++;
-      a.pts += 3;
-    } else {
-      h.d++; a.d++;
-      h.pts += 1; a.pts += 1;
-    }
-  }
-
-  // Sort by points (desc), then by goal difference
-  const sorted = Array.from(allTeams)
-    .map(team => {
-      const s = standings[team];
-      return [Object.keys(standings).filter(t => standings[t]).indexOf(team)+1, team, s.p, s.w, s.d, s.l, s.gf, s.ga, s.pts];
-    })
-    .sort((a, b) => {
-      const gdA = a[6] - a[7];
-      const gdB = b[6] - b[7];
-      if (b[8] !== a[8]) return b[8] - a[8]; // points desc
-      if (gdB !== gdA) return gdB - gdA; // goal diff desc
-      return b[6] - a[6]; // goals for desc
-    })
-    .map((row, i) => [i+1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]);
-
-  RAW['2025-26'] = sorted;
-})();
 
 // European Cups data for teams that qualified
 const EUROPEAN_CUPS = {
@@ -1152,9 +1098,9 @@ function buildTable() {
     };
     tdName.title = team;
     // Try to load logo, fall back to colored dot if it fails
-    const logoUrl = THESPORTSDB_LOGOS[team];
-    const logoHtml = logoUrl
-      ? `<img class="team-logo" src="${logoUrl}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
+    const logoSrc = getTeamLogo(team);
+    const logoHtml = logoSrc
+      ? `<img class="team-logo" src="${logoSrc}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
       : `<span class="team-dot" style="background:${color}"></span>`;
     tdName.innerHTML = `
       <div class="team-label">
@@ -1265,7 +1211,7 @@ function openPanel(team, season) {
     <div class="panel-header">
       <div class="panel-team-badge">
         <div class="panel-color-bar" style="background:${color}"></div>
-        ${THESPORTSDB_LOGOS[team] ? `<img class="panel-logo" src="${THESPORTSDB_LOGOS[team]}" alt="${team}" style="width:24px;height:24px;object-fit:contain;margin:0 8px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+        ${getTeamLogo(team) ? `<img class="panel-logo" src="${getTeamLogo(team)}" alt="${team}" style="width:24px;height:24px;object-fit:contain;margin:0 8px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
         <div>
           <div class="panel-team-name">${team}</div>
           <div class="panel-season">${season} Season</div>
