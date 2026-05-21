@@ -4704,6 +4704,8 @@ function buildTable() {
     span.className = 'season-hdr' + (isChampion ? ' champion-col':'');
     span.textContent = s;
     span.title = note ? `Champion: ${note.champion}` : s;
+    span.style.cursor = 'pointer';
+    span.onclick = () => handleYearChange(s);
     th.appendChild(span);
     hr.appendChild(th);
   }
