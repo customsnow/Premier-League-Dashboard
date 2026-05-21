@@ -4751,6 +4751,14 @@ function buildTable() {
       <div class="team-meta">Best: ${best===1?'🏆 Champion':`${best}${ord(best)}`} (${yearShort(mostRecentBest)})</div>
       <div class="team-seasons">${seasons} seasons</div>
     `;
+    // Make team name clickable to open current season stats
+    tdName.style.cursor = 'pointer';
+    tdName.addEventListener('click', () => {
+      const currentSeason = '2025-26';
+      if (teamSeasonMap[team]?.[currentSeason]) {
+        openPanel(team, currentSeason);
+      }
+    });
     tr.appendChild(tdName);
 
     for (const s of SEASONS) {
