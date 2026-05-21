@@ -24,50 +24,70 @@ All hardcoded data has been extracted from `index.html` into clean JSON files:
 ### Phase 2: Template & Build System ✅
 
 #### Template-Based Architecture
-- `template/index.html.template` - HTML template with data injection points
-- `scripts/build-html.js` - Builds final `index.html` from template + JSON data
-- All CSS and JavaScript logic preserved, only data is templated
+- `template/index.html.template` - HTML template with a single `/* __DATA_INJECTION_POINT__ */` marker
+- `scripts/build-html.js` - Composes `window.__DATA` from `data/` + `static/`, injects into template
+- All CSS and JavaScript logic preserved; the template reads data from `window.__DATA`
 
 #### Build Process
 ```bash
-npm run extract   # Extract data from old HTML → JSON
-npm run build     # Generate index.html from template + JSON data
+npm run build     # Compose window.__DATA and inject into index.html
 ```
 
 #### How It Works
-1. **Template Creation**: Current `index.html` → `template/index.html.template`
-2. **Data Loading**: Build script reads all JSON files from `data/`
-3. **Injection**: Data formatted as JavaScript constants and injected into template
-4. **Generation**: Complete `index.html` written with all data embedded
+1. **Read curated data** from `static/*.json` (hand-edited; teams, logos, short names, season list, season notes)
+2. **Read fetched data** from `data/*.json` (written by CI; standings, matches, fixtures)
+3. **Compose** one `{ teams, shortNames, logos, seasons, notes, standings, matches, fixtures }` object
+4. **Inject** at the template marker as `<script>window.__DATA = {…};</script>`
+5. **Template aliases** like `const RAW = window.__DATA.standings;` give the rest of the JS its familiar names
 
 ## Current Status
 
 ### File Structure
 ```
 premier-league-dashboard/
-├── index.html                        ← Generated (DO NOT EDIT)
-│   └── Auto-generated from template + data
+├── index.html                        ← Generated (DO NOT EDIT, gitignored)
+│   └── Built in CI from template + data + static, deployed to GitHub Pages
 ├── template/
 │   └── index.html.template          ← Edit this for HTML/CSS/JS changes
-├── data/                            ← Data files (source of truth)
+├── data/                            ← FETCHED data, one file per season
+│   ├── standings/
+│   │   ├── 1992-93.json            ← immutable past seasons
+│   │   └── 2025-26.json            ← active season, written nightly
+│   ├── matches/<season>.json
+│   └── fixtures/<season>.json
+├── static/                          ← CURATED data (hand-edited)
 │   ├── teams.json
-│   ├── standings.json
-│   ├── matches.json
-│   ├── fixtures.json
-│   ├── notes.json
-│   ├── seasons.json
 │   ├── short-names.json
-│   └── logos.json
+│   ├── logos.json                   ← maps team → local logo path
+│   ├── logos/                       ← downloaded PNGs (committed)
+│   │   └── manchester-united.png
+│   ├── seasons.json                 ← fetcher config (fetchFrom)
+│   └── notes.json
 ├── scripts/
-│   ├── extract-data.js             ← Extract from old HTML → JSON
-│   ├── build-html.js               ← Generate index.html from template+data
-│   ├── fetch-all.js                ← Master fetcher (runs all fetchers)
+│   ├── build-html.js               ← Generate index.html from template + data + static
+│   ├── fetcher.js                  ← Unified fetcher (one CLI, all sources, all seasons)
 │   ├── fetchers/
-│   │   ├── fetch-live-standings.js ← Fetch current standings
-│   │   ├── fetch-matches.js        ← Fetch recent match results
-│   │   └── fetch-fixtures.js       ← Fetch upcoming fixtures
+│   │   ├── fetch-matches.js        ← Per-season matches module
+│   │   ├── fetch-fixtures.js       ← Per-season fixtures module
+│   │   └── fetch-logos.js          ← One-shot logo downloader
 │   └── utils/
-│       └── espn-api.js             ← ESPN API client utilities
+│       ├── active-season.js        ← Derives the active season from current date
+│       ├── derive-standings.js     ← Computes standings from matches
+│       └── espn-api.js             ← ESPN API client
+
+The fetcher's CLI:
+  npm run fetch                        # active season (default)
+  npm run fetch -- --all               # iterate fetchFrom → active
+  npm run fetch -- --season=2024-25    # one season
+  npm run fetch -- --type=matches      # one type
+  npm run fetch -- --no-cache          # bypass TTL gate
+
+Cache: TTL gates the API call; SHA-256 of merged data gates the file
+write. Cache sidecars live in data/.cache/ (gitignored). Existing data
+is never lost — empty/null fetches preserve what's on disk.
+
+Active season is computed from the current date (Aug → May rollover);
+nothing in the repo hardcodes a specific season.
 ├── .github/
 │   └── workflows/
 │       └── nightly-update.yml      ← GitHub Actions workflow
@@ -89,9 +109,12 @@ npm run build
 
 #### 2. To update data manually
 ```bash
-# Edit JSON files directly
+# Fetched data (rare — CI does this)
 vim data/standings.json
-vim data/notes.json
+
+# Curated data
+vim static/notes.json
+vim static/teams.json
 
 # Rebuild HTML with new data
 npm run build
