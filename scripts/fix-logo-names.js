@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
+import fs from 'node:fs';
 
 // Load all data
 const teams = JSON.parse(fs.readFileSync('data/teams.json', 'utf-8')).teams;
 const logos = JSON.parse(fs.readFileSync('data/logos.json', 'utf-8')).logos;
 
 // Get all team names from teams.json
-const teamNames = new Set(teams.map(t => t.name));
+const teamNames = new Set(teams.map((t) => t.name));
 console.log(`Teams in database: ${teamNames.size}`);
 
 // Get all logo keys
@@ -17,7 +17,7 @@ console.log(`Teams with logos: ${logoNames.length}\n`);
 // Find missing teams
 console.log('📋 Teams missing logos:');
 const missing = [];
-teams.forEach(team => {
+teams.forEach((team) => {
   if (!logos[team.name]) {
     missing.push(team.name);
     console.log(`  ✗ ${team.name}`);
@@ -38,18 +38,18 @@ const nameMapping = {
 };
 
 const fixedLogos = { ...logos };
-let fixedCount = 0;
+let _fixedCount = 0;
 
 for (const [badName, correctName] of Object.entries(nameMapping)) {
   if (fixedLogos[badName]) {
     const url = fixedLogos[badName];
     delete fixedLogos[badName];
-    
+
     // Only set if not already present (preserve existing entries)
     if (!fixedLogos[correctName]) {
       fixedLogos[correctName] = url;
       console.log(`  ✓ "${badName}" → "${correctName}"`);
-      fixedCount++;
+      _fixedCount++;
     } else {
       console.log(`  ~ "${badName}" exists, skipping (using existing)`);
     }
@@ -68,7 +68,7 @@ for (const [name, url] of Object.entries(fixedLogos)) {
       break;
     }
   }
-  
+
   if (!finalLogos[finalName]) {
     finalLogos[finalName] = url;
   } else {
@@ -78,15 +78,15 @@ for (const [name, url] of Object.entries(fixedLogos)) {
 
 // Check final coverage
 console.log(`\n📊 Final Status:`);
-let coveredCount = 0;
-missing.forEach(team => {
+let _coveredCount = 0;
+missing.forEach((team) => {
   if (finalLogos[team]) {
     console.log(`  ✓ ${team} (now has logo)`);
-    coveredCount++;
+    _coveredCount++;
   }
 });
 
-const stillMissing = missing.filter(t => !finalLogos[t]);
+const stillMissing = missing.filter((t) => !finalLogos[t]);
 console.log(`\n  Total teams with logos: ${Object.keys(finalLogos).length}`);
 console.log(`  Still missing: ${stillMissing.length}`);
 if (stillMissing.length > 0) {
@@ -96,4 +96,3 @@ if (stillMissing.length > 0) {
 // Save
 fs.writeFileSync('data/logos.json', JSON.stringify({ logos: finalLogos }, null, 2));
 console.log(`\n✅ Updated data/logos.json`);
-

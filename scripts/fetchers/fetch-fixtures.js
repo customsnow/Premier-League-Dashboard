@@ -3,8 +3,8 @@
 // Returns a fresh array of fixtures: [{ d: "DD/MM/YYYY", h, a, time }, …].
 // Fixtures only make sense for the active season; past seasons return null.
 
-import espnApi from '../utils/espn-api.js';
 import { activeSeason } from '../utils/active-season.js';
+import espnApi from '../utils/espn-api.js';
 
 export async function fetchFixturesForSeason(season) {
   if (season !== activeSeason()) return null;

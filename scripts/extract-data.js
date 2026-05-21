@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
@@ -25,7 +25,10 @@ const scriptContent = htmlContent.slice(scriptStart + 8, scriptEnd);
 // Helper function to safely extract and evaluate a single variable
 function extractVariable(name, content) {
   // Find the pattern: const NAME = {...}; or const NAME = [...];
-  const regex = new RegExp(`const\\s+${name}\\s*=\\s*([\\s\\S]*?);\\s*(?=const|function|async|$)`, 'gm');
+  const regex = new RegExp(
+    `const\\s+${name}\\s*=\\s*([\\s\\S]*?);\\s*(?=const|function|async|$)`,
+    'gm',
+  );
   const match = regex.exec(content);
 
   if (!match) {
@@ -77,7 +80,10 @@ console.log('📦 Extracting RAW (standings)...');
 data.standings = extractVariable('RAW', scriptContent);
 if (data.standings) {
   const seasonCount = Object.keys(data.standings).length;
-  const totalRecords = Object.values(data.standings).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
+  const totalRecords = Object.values(data.standings).reduce(
+    (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+    0,
+  );
   console.log(`   ✓ Found ${seasonCount} seasons with ${totalRecords} total records`);
 }
 
@@ -85,7 +91,10 @@ console.log('📦 Extracting HISTORICAL_MATCHES_PRE2003...');
 data.matchesPre2003 = extractVariable('HISTORICAL_MATCHES_PRE2003', scriptContent);
 if (data.matchesPre2003) {
   const seasonCount = Object.keys(data.matchesPre2003).length;
-  const totalMatches = Object.values(data.matchesPre2003).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
+  const totalMatches = Object.values(data.matchesPre2003).reduce(
+    (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+    0,
+  );
   console.log(`   ✓ Found ${seasonCount} seasons with ${totalMatches} total matches`);
 }
 
@@ -93,7 +102,10 @@ console.log('📦 Extracting HISTORICAL_MATCHES...');
 data.matches = extractVariable('HISTORICAL_MATCHES', scriptContent);
 if (data.matches) {
   const seasonCount = Object.keys(data.matches).length;
-  const totalMatches = Object.values(data.matches).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
+  const totalMatches = Object.values(data.matches).reduce(
+    (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+    0,
+  );
   console.log(`   ✓ Found ${seasonCount} seasons with ${totalMatches} total matches`);
 }
 

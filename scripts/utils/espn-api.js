@@ -1,12 +1,12 @@
 // `fetch` is a Node 18+ global, so no import needed.
 
 // ESPN API URLs for football/soccer
-const ESPN_BASE = 'https://site.api.espn.com/apis/site/v2';
-const FOOTBALL_BASE = 'https://www.espn.com/soccer/json';
+const _ESPN_BASE = 'https://site.api.espn.com/apis/site/v2';
+const _FOOTBALL_BASE = 'https://www.espn.com/soccer/json';
 
 // Utility to add delay between API calls (rate limiting)
 async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Get Premier League standings for current season
@@ -35,15 +35,15 @@ export async function getLeagueStandings(season = '2025-26') {
           if (table.entries) {
             table.entries.forEach((entry, idx) => {
               standings.push([
-                idx + 1,                    // Position
-                entry.team.name,            // Team name
-                entry.stats.find(s => s.name === 'gamesPlayed')?.value || 0,  // P
-                entry.stats.find(s => s.name === 'wins')?.value || 0,         // W
-                entry.stats.find(s => s.name === 'draws')?.value || 0,        // D
-                entry.stats.find(s => s.name === 'losses')?.value || 0,       // L
-                entry.stats.find(s => s.name === 'goalsFor')?.value || 0,     // GF
-                entry.stats.find(s => s.name === 'goalsAgainst')?.value || 0, // GA
-                entry.points                // Pts
+                idx + 1, // Position
+                entry.team.name, // Team name
+                entry.stats.find((s) => s.name === 'gamesPlayed')?.value || 0, // P
+                entry.stats.find((s) => s.name === 'wins')?.value || 0, // W
+                entry.stats.find((s) => s.name === 'draws')?.value || 0, // D
+                entry.stats.find((s) => s.name === 'losses')?.value || 0, // L
+                entry.stats.find((s) => s.name === 'goalsFor')?.value || 0, // GF
+                entry.stats.find((s) => s.name === 'goalsAgainst')?.value || 0, // GA
+                entry.points, // Pts
               ]);
             });
 
@@ -51,15 +51,11 @@ export async function getLeagueStandings(season = '2025-26') {
             return standings;
           }
         }
-      } catch (e) {
-        // Try next endpoint
-        continue;
-      }
+      } catch (_e) {}
     }
 
     console.log('     ⚠️  Could not fetch from ESPN endpoints');
     return null;
-
   } catch (error) {
     console.error('     ❌ Error fetching standings:', error.message);
     return null;
@@ -72,8 +68,8 @@ export async function getLeagueStandings(season = '2025-26') {
 function parseEvent(event) {
   const c = event.competitions?.[0]?.competitors;
   if (!Array.isArray(c) || c.length < 2) return null;
-  const home = c.find(x => x.homeAway === 'home');
-  const away = c.find(x => x.homeAway === 'away');
+  const home = c.find((x) => x.homeAway === 'home');
+  const away = c.find((x) => x.homeAway === 'away');
   if (!home || !away) return null;
   return { home, away };
 }
@@ -105,8 +101,8 @@ export async function getMatchResults(team = null, limit = 100) {
             d: new Date(event.date).toLocaleDateString('en-GB'), // DD/MM/YYYY
             h: sides.home.team?.displayName || sides.home.team?.name,
             a: sides.away.team?.displayName || sides.away.team?.name,
-            hg: parseInt(sides.home.score) || 0,
-            ag: parseInt(sides.away.score) || 0,
+            hg: parseInt(sides.home.score, 10) || 0,
+            ag: parseInt(sides.away.score, 10) || 0,
             status,
           });
         }
@@ -115,9 +111,7 @@ export async function getMatchResults(team = null, limit = 100) {
           console.log(`     ✓ Got ${matches.length} recent matches`);
           return matches;
         }
-      } catch {
-        continue;
-      }
+      } catch {}
     }
 
     console.log('     ⚠️  Could not fetch match results');
@@ -135,7 +129,7 @@ export async function getFixtures(daysAhead = 30) {
 
     const endpoints = [
       'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard',
-      'https://www.espn.com/soccer/api/site/v2/competitions/eng/events'
+      'https://www.espn.com/soccer/api/site/v2/competitions/eng/events',
     ];
 
     for (const endpoint of endpoints) {
@@ -175,14 +169,11 @@ export async function getFixtures(daysAhead = 30) {
             return fixtures;
           }
         }
-      } catch (e) {
-        continue;
-      }
+      } catch (_e) {}
     }
 
     console.log('     ⚠️  Could not fetch fixtures');
     return null;
-
   } catch (error) {
     console.error('     ❌ Error fetching fixtures:', error.message);
     return null;
@@ -192,7 +183,9 @@ export async function getFixtures(daysAhead = 30) {
 // Health check - test API connectivity
 export async function healthCheck() {
   try {
-    const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/standings');
+    const response = await fetch(
+      'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/standings',
+    );
     return response.ok;
   } catch {
     return false;
@@ -204,5 +197,5 @@ export default {
   getMatchResults,
   getFixtures,
   healthCheck,
-  delay
+  delay,
 };
