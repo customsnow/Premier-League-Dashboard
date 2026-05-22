@@ -30967,9 +30967,9 @@ function buildTable() {
           td.classList.add('selected');
         }
         td.addEventListener('click', () => {
-          // If clicking a blurred (non-active year) cell, clear the year filter
+          // If clicking a blurred (non-active year) cell, clear the year filter and reset to current standings
           if (selectedYear && selectedYear !== s) {
-            handleYearChange('');
+            setSort('current');
           } else {
             openPanel(team, s);
           }
