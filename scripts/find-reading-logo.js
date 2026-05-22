@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 
-import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
+import fetch from 'node-fetch';
 
 async function findReadingLogo() {
   console.log('🔍 Searching for Reading logo...\n');
-  
+
   // Try Championship page
-  const response = await fetch('https://www.thesportsdb.com/league/4329-english-league-championship', {
-    headers: { 'User-Agent': 'Mozilla/5.0' }
-  });
+  const response = await fetch(
+    'https://www.thesportsdb.com/league/4329-english-league-championship',
+    {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    },
+  );
   const html = await response.text();
   const dom = new JSDOM(html);
   const doc = dom.window.document;
-  
+
   // Find all images with badge
   const images = doc.querySelectorAll('img[src*="badge"]');
   console.log(`Total badge images found: ${images.length}\n`);
-  
+
   // Look through all and find those near "Reading"
   let found = false;
   images.forEach((img, i) => {
@@ -34,23 +37,23 @@ async function findReadingLogo() {
       }
     }
   });
-  
+
   if (!found) {
     console.log('❌ Reading not found on Championship page');
     console.log('\nTrying alternative search...');
-    
+
     // Search through all text nodes for "Reading"
     const walker = doc.createTreeWalker(
       doc.body,
       4, // NodeFilter.SHOW_TEXT
       null,
-      false
+      false,
     );
-    
-    let node;
+
     let searchCount = 0;
-    while (node = walker.nextNode()) {
-      if (node.textContent && node.textContent.includes('Reading')) {
+    let node = walker.nextNode();
+    while (node) {
+      if (node.textContent?.includes('Reading')) {
         searchCount++;
         const parent = node.parentElement;
         if (parent) {
@@ -62,8 +65,9 @@ async function findReadingLogo() {
         }
       }
       if (searchCount > 50) break;
+      node = walker.nextNode();
     }
-    
+
     if (!found) {
       console.log('Reading not found anywhere on the page');
     }
@@ -71,4 +75,3 @@ async function findReadingLogo() {
 }
 
 findReadingLogo().catch(console.error);
-

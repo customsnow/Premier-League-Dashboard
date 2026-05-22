@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import vm from 'vm';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
@@ -16,7 +16,7 @@ if (!fs.existsSync(dataDir)) {
 console.log('🔄 Extracting data from index.html...\n');
 
 // Read the current index.html
-let htmlContent = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf-8');
+const htmlContent = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf-8');
 
 // Extract only the JavaScript section
 const scriptStart = htmlContent.indexOf('<script>');
@@ -25,23 +25,23 @@ const scriptContent = htmlContent.slice(scriptStart + 8, scriptEnd);
 
 // Create a safe context to evaluate the variables with browser API stubs
 const context = {
-  localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
-  window: {},
-  document: { querySelector: () => null, querySelectorAll: () => [] },
-  console: console,
-  Math: Math,
-  Object: Object,
   Array: Array,
-  String: String,
-  Number: Number,
   Boolean: Boolean,
+  console: console,
   Date: Date,
-  RegExp: RegExp,
+  document: { querySelector: () => null, querySelectorAll: () => [] },
+  isNaN: Number.isNaN,
   JSON: JSON,
-  parseInt: parseInt,
+  localStorage: { getItem: () => null, removeItem: () => {}, setItem: () => {} },
+  Math: Math,
+  Number: Number,
+  Object: Object,
   parseFloat: parseFloat,
-  isNaN: isNaN,
-  undefined: undefined
+  parseInt: parseInt,
+  RegExp: RegExp,
+  String: String,
+  undefined: undefined,
+  window: {},
 };
 
 try {
@@ -52,15 +52,15 @@ try {
 
   // Now extract the variables from the context
   const variables = {
-    TEAM_COLORS: context.TEAM_COLORS,
-    SHORT_NAMES: context.SHORT_NAMES,
-    THESPORTSDB_LOGOS: context.THESPORTSDB_LOGOS,
-    SEASONS: context.SEASONS,
-    RAW: context.RAW,
-    HISTORICAL_MATCHES_PRE2003: context.HISTORICAL_MATCHES_PRE2003,
-    HISTORICAL_MATCHES: context.HISTORICAL_MATCHES,
     FIXTURES_2025_26: context.FIXTURES_2025_26,
-    NOTES: context.NOTES
+    HISTORICAL_MATCHES: context.HISTORICAL_MATCHES,
+    HISTORICAL_MATCHES_PRE2003: context.HISTORICAL_MATCHES_PRE2003,
+    NOTES: context.NOTES,
+    RAW: context.RAW,
+    SEASONS: context.SEASONS,
+    SHORT_NAMES: context.SHORT_NAMES,
+    TEAM_COLORS: context.TEAM_COLORS,
+    THESPORTSDB_LOGOS: context.THESPORTSDB_LOGOS,
   };
 
   // Check what was extracted
@@ -84,19 +84,30 @@ try {
 
   if (variables.RAW) {
     const seasonCount = Object.keys(variables.RAW).length;
-    const totalRecords = Object.values(variables.RAW).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
+    const totalRecords = Object.values(variables.RAW).reduce(
+      (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+      0,
+    );
     console.log(`✓ RAW: ${seasonCount} seasons with ${totalRecords} total records`);
   }
 
   if (variables.HISTORICAL_MATCHES_PRE2003) {
     const seasonCount = Object.keys(variables.HISTORICAL_MATCHES_PRE2003).length;
-    const totalMatches = Object.values(variables.HISTORICAL_MATCHES_PRE2003).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
-    console.log(`✓ HISTORICAL_MATCHES_PRE2003: ${seasonCount} seasons with ${totalMatches} total matches`);
+    const totalMatches = Object.values(variables.HISTORICAL_MATCHES_PRE2003).reduce(
+      (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+      0,
+    );
+    console.log(
+      `✓ HISTORICAL_MATCHES_PRE2003: ${seasonCount} seasons with ${totalMatches} total matches`,
+    );
   }
 
   if (variables.HISTORICAL_MATCHES) {
     const seasonCount = Object.keys(variables.HISTORICAL_MATCHES).length;
-    const totalMatches = Object.values(variables.HISTORICAL_MATCHES).reduce((sum, season) => sum + (Array.isArray(season) ? season.length : 0), 0);
+    const totalMatches = Object.values(variables.HISTORICAL_MATCHES).reduce(
+      (sum, season) => sum + (Array.isArray(season) ? season.length : 0),
+      0,
+    );
     console.log(`✓ HISTORICAL_MATCHES: ${seasonCount} seasons with ${totalMatches} total matches`);
   }
 
@@ -120,7 +131,10 @@ try {
 
   // Write individual JSON files
   if (variables.TEAM_COLORS) {
-    const teamsArray = Object.entries(variables.TEAM_COLORS).map(([name, color]) => ({ name, color }));
+    const teamsArray = Object.entries(variables.TEAM_COLORS).map(([name, color]) => ({
+      color,
+      name,
+    }));
     writeJsonFile('teams.json', { teams: teamsArray }, 'Team Colors');
   }
 
@@ -140,7 +154,7 @@ try {
   if (variables.HISTORICAL_MATCHES_PRE2003 || variables.HISTORICAL_MATCHES) {
     const mergedMatches = {
       ...(variables.HISTORICAL_MATCHES_PRE2003 || {}),
-      ...(variables.HISTORICAL_MATCHES || {})
+      ...(variables.HISTORICAL_MATCHES || {}),
     };
     writeJsonFile('matches.json', mergedMatches, 'Match Results');
   }
@@ -159,7 +173,6 @@ try {
 
   console.log('\n✅ Data extraction complete!\n');
   console.log('📂 Files created in ./data/\n');
-
 } catch (error) {
   console.error('❌ Error executing script:', error.message);
   process.exit(1);

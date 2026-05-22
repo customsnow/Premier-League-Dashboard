@@ -8,8 +8,8 @@
 // those yet — caller will receive `null` and is expected to leave the existing
 // data file alone.
 
-import espnApi from '../utils/espn-api.js';
 import { activeSeason } from '../utils/active-season.js';
+import espnApi from '../utils/espn-api.js';
 
 export async function fetchMatchesForSeason(season) {
   if (season !== activeSeason()) {

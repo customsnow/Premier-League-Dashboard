@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // Unified data fetcher. One CLI, all sources, all seasons.
 //
 // Usage:
@@ -20,15 +21,14 @@
 //   - For seasons where the per-type fetcher returns null (e.g. past seasons
 //     without a date-range implementation), the existing file is preserved.
 
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-import { fileURLToPath } from 'url';
-
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { fetchFixturesForSeason } from './fetchers/fetch-fixtures.js';
+import { fetchMatchesForSeason } from './fetchers/fetch-matches.js';
 import { activeSeason } from './utils/active-season.js';
 import { deriveStandings } from './utils/derive-standings.js';
-import { fetchMatchesForSeason } from './fetchers/fetch-matches.js';
-import { fetchFixturesForSeason } from './fetchers/fetch-fixtures.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
@@ -38,25 +38,25 @@ const staticDir = path.join(rootDir, 'static');
 
 // TTL in seconds. Active season is hot; past seasons are gated more loosely.
 const TTL = {
-  active: { matches: 60 * 60,         fixtures: 60 * 60 },
-  past:   { matches: 7 * 24 * 60 * 60, fixtures: 7 * 24 * 60 * 60 },
+  active: { fixtures: 60 * 60, matches: 60 * 60 },
+  past: { fixtures: 7 * 24 * 60 * 60, matches: 7 * 24 * 60 * 60 },
 };
 
 const TYPES = ['matches', 'fixtures'];
 const FETCHERS = {
-  matches:  fetchMatchesForSeason,
   fixtures: fetchFixturesForSeason,
+  matches: fetchMatchesForSeason,
 };
 
 // ---- args ------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const out = { season: null, type: null, noCache: false, all: false };
+  const out = { all: false, noCache: false, season: null, type: null };
   for (const a of argv) {
-    if (a === '--no-cache')        out.noCache = true;
-    else if (a === '--all')        out.all = true;
+    if (a === '--no-cache') out.noCache = true;
+    else if (a === '--all') out.all = true;
     else if (a.startsWith('--season=')) out.season = a.slice('--season='.length);
-    else if (a.startsWith('--type='))   out.type = a.slice('--type='.length);
+    else if (a.startsWith('--type=')) out.type = a.slice('--type='.length);
     else if (a === '--help' || a === '-h') {
       console.log(`Usage: node scripts/fetcher.js [options]
   --season=YYYY-YY   Fetch a single season
@@ -83,11 +83,15 @@ function readJSON(p, fallback = null) {
 
 function writeJSON(p, value) {
   fs.mkdirSync(path.dirname(p), { recursive: true });
-  fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
+  fs.writeFileSync(p, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-function dataPath(type, season)  { return path.join(dataDir, type, `${season}.json`); }
-function cachePath(type, season) { return path.join(cacheDir, type, `${season}.json`); }
+function dataPath(type, season) {
+  return path.join(dataDir, type, `${season}.json`);
+}
+function cachePath(type, season) {
+  return path.join(cacheDir, type, `${season}.json`);
+}
 
 function cacheIsFresh(type, season, isActive) {
   const cache = readJSON(cachePath(type, season));
@@ -98,14 +102,14 @@ function cacheIsFresh(type, season, isActive) {
 }
 
 function writeCache(type, season, hash) {
-  writeJSON(cachePath(type, season), { hash, fetchedAt: new Date().toISOString() });
+  writeJSON(cachePath(type, season), { fetchedAt: new Date().toISOString(), hash });
 }
 
 // Merge for matches: dedupe by (date, home, away). For fixtures: replace.
 function mergeMatches(existing, fetched) {
   const seen = new Map();
   for (const m of existing) seen.set(`${m.d}|${m.h}|${m.a}`, m);
-  for (const m of fetched)  seen.set(`${m.d}|${m.h}|${m.a}`, m); // fetched overrides existing
+  for (const m of fetched) seen.set(`${m.d}|${m.h}|${m.a}`, m); // fetched overrides existing
   return [...seen.values()].sort((a, b) => {
     const da = new Date(a.d.split('/').reverse().join('-'));
     const db = new Date(b.d.split('/').reverse().join('-'));
@@ -128,7 +132,7 @@ function expandSeasons({ from, to }) {
   // Each season's start year is one more than the previous.
   const out = [];
   const [fromStartStr] = from.split('-');
-  const [toStartStr]   = to.split('-');
+  const [toStartStr] = to.split('-');
   for (let y = parseInt(fromStartStr, 10); y <= parseInt(toStartStr, 10); y++) {
     const endYY = String((y + 1) % 100).padStart(2, '0');
     out.push(`${y}-${endYY}`);
@@ -138,7 +142,7 @@ function expandSeasons({ from, to }) {
 
 function seasonsToFetch(args, active) {
   if (args.season) return [args.season];
-  if (!args.all)   return [active];
+  if (!args.all) return [active];
   const cfg = readJSON(path.join(staticDir, 'seasons.json'), {});
   const from = cfg.fetchFrom || active;
   return expandSeasons({ from, to: active });
@@ -185,7 +189,7 @@ async function processOne(season, type, args, active) {
   writeJSON(dataPath(type, season), next);
   writeCache(type, season, newHash);
   console.log(`  ✓  ${label}: ${next.length} items written`);
-  return { written: true, data: next };
+  return { data: next, written: true };
 }
 
 // Re-derive standings/<season>.json from matches/<season>.json whenever matches change.
@@ -242,7 +246,7 @@ async function main() {
   console.log('✅ Done.');
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error('❌', e);
   process.exit(1);
 });

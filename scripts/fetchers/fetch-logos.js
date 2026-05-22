@@ -3,9 +3,9 @@
 // Idempotent: skips files that already exist (pass --force to re-download).
 // After downloading, rewrites static/logos.json to use the local relative path.
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..', '..');
@@ -83,9 +83,6 @@ for (const [team, value] of Object.entries(logos)) {
 }
 
 // Rewrite logos.json to point at the local paths.
-fs.writeFileSync(
-  logosJsonPath,
-  JSON.stringify({ logos: rewritten }, null, 2) + '\n',
-);
+fs.writeFileSync(logosJsonPath, `${JSON.stringify({ logos: rewritten }, null, 2)}\n`);
 
 console.log(`\nDone: ${downloaded} downloaded, ${skipped} skipped, ${failed} failed`);

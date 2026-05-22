@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
+import fs from 'node:fs';
 
 // Load existing Premier League logos
 const existingLogos = JSON.parse(fs.readFileSync('data/logos.json', 'utf-8'));
@@ -27,19 +27,19 @@ let skippedCount = 0;
 
 for (const [team, url] of Object.entries(eflLogos)) {
   const cleanUrl = cleanupUrl(url);
-  
+
   if (!isValidTeamBadge(cleanUrl)) {
     console.log(`  ⊘ ${team}: Not a team badge (skipped)`);
     skippedCount++;
     continue;
   }
-  
+
   // Check if team already exists in Premier League
   if (mergedLogos[team]) {
     console.log(`  ~ ${team}: Already exists in PL logos (keeping PL version)`);
     continue;
   }
-  
+
   mergedLogos[team] = cleanUrl;
   addedCount++;
   console.log(`  ✓ ${team}`);
@@ -61,8 +61,7 @@ const uniqueTeams = Object.keys(mergedLogos).sort();
 console.log(`\n📋 Teams now covered (${uniqueTeams.length}):`);
 uniqueTeams.forEach((team, i) => {
   if ((i + 1) % 5 === 0) {
-    console.log(`   ${i+1}. ${team}`);
+    console.log(`   ${i + 1}. ${team}`);
   }
 });
 console.log(`   ... and more`);
-
