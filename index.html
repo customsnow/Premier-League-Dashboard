@@ -526,12 +526,9 @@
   </div>
   <button class="settings-btn" onclick="toggleSettingsModal()" title="View Preferences">⚙️</button>
   <div class="controls">
-    <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">🔍</div>
     <input type="text" id="searchTeam" placeholder="Search team…" oninput="filterTeams(this.value)">
 
     <div style="width:1px; height:24px; background:var(--border); margin:0 4px;"></div>
-
-    <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Sort</div>
     <div class="btn-group">
       <button class="active" onclick="setSort('current')" id="sort-current" title="Current Standings">Current Standings</button>
       <button onclick="setSort('seasons')" id="sort-seasons" title="Most Seasons">Most Seasons</button>
@@ -544,7 +541,6 @@
 
     <div style="width:1px; height:24px; background:var(--border); margin:0 4px;"></div>
 
-    <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Display</div>
     <div class="btn-group">
       <button class="active" onclick="setColorMode('position')" id="mode-position" title="Color by Position">Position</button>
       <button onclick="setColorMode('goals')" id="mode-goals" title="Color by Goals Scored">Goals</button>
@@ -31992,9 +31988,9 @@ function buildLiveTable() {
     const posText = idx + 1;
     const last5Html = getTeamLast5(row.team, matches);
 
-    // Get next opponent from fixtures
-    const fixture = FIXTURES_2025_26.find(f => f.h === row.team || f.a === row.team);
-    const nextOpponent = fixture ? (fixture.h === row.team ? `vs ${fixture.a}` : `@ ${fixture.h}`) : '—';
+    // Get next opponent from fixtures (using team name matching to handle name variants)
+    const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, row.team) || teamNamesMatch(f.a, row.team));
+    const nextOpponent = fixture ? (teamNamesMatch(fixture.h, row.team) ? `vs ${fixture.a}` : `@ ${fixture.h}`) : '—';
     const opponentStyle = fixture ? 'color: #06b6d4; font-weight: 500;' : 'color: #6b7280;';
 
     tr.innerHTML = `
