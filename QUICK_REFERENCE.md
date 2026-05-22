@@ -1,336 +1,136 @@
-# Quick Reference Card
+# Quick Reference
 
-Keep this handy for common tasks.
+> Agents: read `CLAUDE.md` first. `index.html` is generated — don't hand-edit it.
 
----
-
-## Essential Commands
+## Commands
 
 ```bash
-# Setup (first time)
-npm install
-
-# Build HTML from template + data
-npm run build
-
-# Start local dev server
-npm run dev
-
-# Fetch data from APIs
-npm run fetch-data
-
-# Extract data from HTML (one-time)
-npm run extract
+npm install                          # first-time setup
+npm run build                        # template + data → index.html
+npm run dev                          # build + serve on :8000
+npm run fetch                        # fetch active season
+npm run fetch -- --all               # fetch every season from fetchFrom → active
+npm run fetch -- --season=2024-25    # one season
+npm run fetch -- --type=matches      # one type (standings|matches|fixtures)
+npm run fetch -- --no-cache          # bypass TTL gate
+npm run fetch-logos                  # one-shot logo download
+npm run validate                     # validate JSON shapes
+npm run test                         # run tests
 ```
 
----
+## Where to edit
 
-## File Locations
+| Change | File | Then |
+|---|---|---|
+| HTML / CSS / client JS | `template/index.html.template` | `npm run build` |
+| Team colors | `static/teams.json` | `npm run build` |
+| Team abbreviations | `static/short-names.json` | `npm run build` |
+| Logo mapping | `static/logos.json` | `npm run build` |
+| Season notes / top scorers | `static/notes.json` | `npm run build` |
+| Per-team notes | `static/team-notes.json` | `npm run build` |
+| Fun facts | `static/fun-facts.json` | `npm run build` |
+| European cups | `static/european-cups.json` | `npm run build` |
+| Fetcher config (seasons) | `static/seasons.json` | `npm run fetch -- --all` then `npm run build` |
+| Standings / matches / fixtures | **don't hand-edit** — `npm run fetch …` | `npm run build` |
+| Build composition | `scripts/build-html.js` | `npm run build` |
+| Fetcher logic | `scripts/fetcher.js`, `scripts/fetchers/*` | re-run fetcher |
+| **`index.html`** | ❌ never — it's generated | — |
 
-| What | Where | Edit? |
-|------|-------|-------|
-| HTML | `index.html` | ❌ Auto-generated |
-| HTML template | `template/index.html.template` | ✅ Yes |
-| League standings | `data/standings.json` | ✅ Yes |
-| Match results | `data/matches.json` | ✅ Yes |
-| Upcoming fixtures | `data/fixtures.json` | ✅ Yes |
-| Season notes | `data/notes.json` | ✅ Yes |
-| Team data | `data/teams.json` | ✅ Yes |
-| API client | `scripts/utils/espn-api.js` | ⚠️ Advanced |
-| Data fetchers | `scripts/fetchers/` | ⚠️ Advanced |
-| Automation | `.github/workflows/nightly-update.yml` | ⚠️ Advanced |
+## Data layout
 
----
+```
+static/                          ← curated (hand-edited)
+  teams.json
+  short-names.json
+  logos.json
+  notes.json
+  …
 
-## Common Tasks
+data/                            ← fetched (one file per season)
+  standings/<season>.json
+  matches/<season>.json
+  fixtures/<season>.json
+```
 
-### Update Standings Now
+## Data shapes
+
+```jsonc
+// static/teams.json
+{ "teams": [ { "name": "Arsenal", "color": "#EF0107" } ] }
+
+// static/short-names.json
+{ "shortNames": { "Manchester United": "Man Utd" } }
+
+// data/standings/<season>.json
+[ [1, "Manchester United", 42, 24, 12, 6, 80, 47, 84] ]   // P, team, GP, W, D, L, GF, GA, Pts
+
+// data/matches/<season>.json
+[ { "d": "15/08/2025", "h": "Man Utd", "a": "Fulham", "hg": 1, "ag": 0 } ]
+
+// data/fixtures/<season>.json
+[ { "d": "24/05/2026", "h": "Brighton", "a": "Man Utd", "time": "15:00" } ]
+
+// static/notes.json
+{ "2025-26": { "champion": "TBD",
+                "topScorer": { "name": "…", "team": "…", "goals": 0 } } }
+```
+
+## Typical flows
+
+### Update standings/matches/fixtures
 ```bash
-# 1. Edit data/standings.json
-# 2. Run:
+npm run fetch                    # active season (or --season=YYYY-YY)
 npm run build
-
-# 3. Test:
-npm run dev
-
-# 4. If good, commit:
-git add data/standings.json index.html
-git commit -m "chore: update standings"
-git push
+npm run dev                      # eyeball
+git add data/<type>/<season>.json
+git commit -m "chore: update <type> for <season>"
 ```
 
-### Update Matches Now
+### Tweak the template
 ```bash
-# 1. Edit data/matches.json
-# 2. Run:
+# edit template/index.html.template
 npm run build
 npm run dev
-
-# 3. Commit if good
-git add data/matches.json index.html
-git commit -m "chore: update match results"
-git push
+git add template/index.html.template
+git commit -m "feat: …"
 ```
 
-### Update Fixtures Now
+### Add or correct curated data
 ```bash
-# 1. Edit data/fixtures.json
-# 2. Run:
+# edit the relevant static/*.json
 npm run build
 npm run dev
-
-# 3. Commit if good
-git add data/fixtures.json index.html
-git commit -m "chore: update fixtures"
-git push
+git add static/<file>.json
+git commit -m "chore: …"
 ```
 
-### Modify HTML/CSS/JavaScript
-```bash
-# ⚠️ IMPORTANT: DO NOT edit index.html
-# Instead, edit template/index.html.template
+## CI
 
-# 1. Edit template/index.html.template
-# 2. Run:
-npm run build
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `nightly-update.yml` | 02:00 UTC + manual | `npm run fetch`, `npm run build`, commit if data changed |
+| `deploy-pages.yml` | push to main | deploy `index.html` to GitHub Pages |
 
-# 3. Test:
-npm run dev
-
-# 4. Commit if good
-git add template/index.html.template index.html
-git commit -m "feat: [describe your change]"
-git push
-```
-
-### Fetch Data Manually
-```bash
-npm run fetch-data
-npm run build
-npm run dev
-```
-
----
-
-## Data Format Reference
-
-### Standings Format
-```json
-{
-  "2025-26": [
-    [Position, "Team Name", Games, Wins, Draws, Losses, GoalsFor, GoalsAgainst, Points],
-    [1, "Manchester City", 20, 14, 4, 2, 45, 18, 46]
-  ]
-}
-```
-
-### Matches Format
-```json
-{
-  "2025-26": [
-    {"d": "DD/MM/YYYY", "h": "Home Team", "a": "Away Team", "hg": 1, "ag": 0}
-  ]
-}
-```
-
-### Fixtures Format
-```json
-{
-  "2025-26": [
-    {"d": "DD/MM/YYYY", "h": "Home Team", "a": "Away Team", "time": "HH:MM"}
-  ]
-}
-```
-
-### Notes Format
-```json
-{
-  "2025-26": {
-    "champion": "Team Name",
-    "topScorer": {"name": "Player Name", "team": "Team Name", "goals": 35}
-  }
-}
-```
-
----
+Manual trigger: **Actions → Nightly Data Update → Run workflow**.
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Dashboard doesn't update | Run `npm run build` |
-| Build fails | Check `template/index.html.template` exists |
-| Dev server won't start | Kill existing process: `lsof -ti:8000 \| xargs kill -9` |
-| Data formatting wrong | Check JSON syntax with `cat file.json \| python3 -m json.tool` |
-| GitHub Actions fails | Check workflow logs in Actions tab |
-| API errors | May be temporary - nightly run will retry |
+| Problem | Check |
+|---|---|
+| Dashboard didn't update | Did you `npm run build` after editing? |
+| Build fails | `template/index.html.template` present? JSON valid? |
+| Dev server won't bind to 8000 | Something else on the port — `lsof -ti:8000` |
+| JSON syntax error | `cat file.json \| python3 -m json.tool` |
+| Nightly didn't run | Actions tab → Nightly Data Update → logs |
+| ESPN API errors | Transient — fetcher preserves prior data, retry tomorrow |
 
----
+## Notes
 
-## Git Workflow
+- **Active season** is derived from the current date (Aug → May rollover). Nothing hardcodes a specific season.
+- **Cache**: TTL gates the API call, SHA-256 gates the file write. Sidecars in `data/.cache/` (gitignored).
+- **Logos** live under `static/logos/` (committed PNGs). `static/logos.json` maps team name → file path.
 
-```bash
-# Check status
-git status
+## See also
 
-# See what changed
-git diff
-
-# Stage files
-git add data/standings.json
-
-# Commit
-git commit -m "chore: update standings"
-
-# Push
-git push
-
-# View history
-git log --oneline
-```
-
----
-
-## Automation
-
-| What | When | Where |
-|-----|------|-------|
-| Fetch data | Daily at 2 AM UTC | GitHub Actions |
-| Build HTML | After fetch | GitHub Actions |
-| Commit changes | Only if data changed | GitHub Actions |
-| Manual trigger | Anytime | Actions tab |
-
-**Manual trigger:**
-- Actions → Nightly Data Update → Run workflow → main → Run workflow
-
----
-
-## Documentation Guide
-
-| Doc | Purpose | Read When |
-|-----|---------|-----------|
-| ARCHITECTURE.md | Technical design | Need to understand architecture |
-| README.md | Overview & quick start | First time setup |
-| MAINTENANCE.md | How-to guides | Need to do a specific task |
-| VERIFICATION_CHECKLIST.md | Testing & deployment | Before going live |
-| COMPLETION_SUMMARY.md | What was delivered | Project overview |
-| QUICK_REFERENCE.md | Common tasks | Quick lookup (this file) |
-
----
-
-## Key Dates & Times
-
-- **Nightly update**: 2 AM UTC (configurable in `.github/workflows/nightly-update.yml`)
-- **Check logs**: GitHub Actions tab, after 2 AM UTC
-- **Watch commits**: Main branch, look for "nightly data update" commits
-- **Monitor data**: Next day, check if dashboard shows fresh data
-
----
-
-## File Size Reference
-
-| File | Size | Type |
-|------|------|------|
-| template/index.html.template | ~330 KB | HTML template |
-| index.html (generated) | ~160 KB | Generated HTML |
-| data/standings.json | ~74 KB | League tables |
-| data/matches.json | ~355 KB | Match results |
-| data/teams.json | ~3.4 KB | Team metadata |
-| data/fixtures.json | ~1 KB | Upcoming matches |
-| data/notes.json | ~6 KB | Season notes |
-
-**Total**: ~529 KB (vs 332 KB original monolith)
-
----
-
-## Environment Variables (if needed)
-
-Currently, no environment variables needed.
-
-To add API keys in future:
-```bash
-# .env file (create if needed)
-ESPN_API_KEY=your_key
-PL_API_KEY=your_key
-
-# Reference in scripts
-import dotenv from 'dotenv';
-dotenv.config();
-const apiKey = process.env.ESPN_API_KEY;
-```
-
----
-
-## Useful Links
-
-- **GitHub Actions docs**: https://docs.github.com/en/actions
-- **ESPN API**: https://site.api.espn.com/
-- **Node.js docs**: https://nodejs.org/docs/
-
----
-
-## Emergency Commands
-
-```bash
-# Revert last commit (keeps file changes)
-git revert HEAD
-
-# Discard all local changes
-git checkout -- .
-
-# Restore a deleted file
-git checkout HEAD -- data/standings.json
-
-# View file history
-git log -- data/standings.json
-
-# See all branches
-git branch -a
-
-# Force push (use with caution)
-git push --force-with-lease
-```
-
----
-
-## Daily Checklist (Optional)
-
-```bash
-# Morning routine (check if nightly update happened)
-git log --oneline -5                # See recent commits
-npm run dev                          # Start server
-# Visit dashboard
-# Check: Does data look current?
-# Check: Any errors in console?
-
-# If issues:
-npm run fetch-data                  # Manual fetch
-npm run build                        # Rebuild
-git add data/ index.html            # Stage changes
-git commit -m "chore: manual update" # Commit
-git push                             # Push
-```
-
----
-
-## Performance Tips
-
-```bash
-# Check generated HTML size
-ls -lh index.html
-
-# Monitor GitHub Actions runtime
-# Actions → Nightly Data Update → Select run → View logs
-
-# Track data changes over time
-git log --stat -- data/
-
-# Compare builds
-git diff index.html  # See what changed
-```
-
----
-
-**Keep this card handy!**
-
-Last Updated: May 20, 2026
+- `CLAUDE.md` — agent guide and hard rules
+- `ARCHITECTURE.md` — full design rationale and data shapes

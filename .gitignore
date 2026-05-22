@@ -8,3 +8,10 @@ acronym-generator/
 # Built and deployed to GitHub Pages by .github/workflows/deploy-pages.yml
 # /index.html  (commented out to allow persistence in iCloud Drive)
 /_site/
+
+# Fetcher cache sidecars (TTL + SHA-256 gates). Regenerated on every fetch.
+data/.cache/
+
+# Lockfile intentionally not committed — see commit c6db6a0. One tiny devDep,
+# not worth the maintenance overhead vs. the cache savings.
+package-lock.json
