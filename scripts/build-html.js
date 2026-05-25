@@ -85,7 +85,7 @@ const data = {
   leaguePromotions,
   leagues,
   logos,
-  matches,
+  matches: JSON.parse(JSON.stringify(matches)), // Deep copy to ensure proper serialization
   notes,
   seasons,
   shortNames,

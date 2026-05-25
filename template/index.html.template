@@ -642,17 +642,11 @@ const ESPN_NAMES          = window.__DATA.espnNames;
 // League selector
 let selectedLeague = localStorage.getItem('selectedLeague') || 'premier-league';
 
-// Dynamic aliases that depend on selectedLeague
+// Dynamic data getters that depend on selectedLeague
 function getRawStandings() { return ALL_STANDINGS[selectedLeague] || {}; }
 function getHistoricalMatches() { return ALL_MATCHES[selectedLeague] || {}; }
 function getFixtures() { return ALL_FIXTURES[selectedLeague] || {}; }
 function getFixtures2525_26() { return getFixtures()[ACTIVE_SEASON] || []; }
-
-// Legacy compatibility
-const RAW = getRawStandings();
-const HISTORICAL_MATCHES = getHistoricalMatches();
-const HISTORICAL_MATCHES_PRE2003 = getHistoricalMatches();
-const FIXTURES_2025_26 = getFixtures2525_26();
 
 // AbortController-based timeout compatible with all modern browsers
 function fetchTimeout(url, ms) {
@@ -725,11 +719,12 @@ function closeLeagueSelector() {
 function populateLeagueSelector() {
   const dropdown = document.getElementById('leagueSelectorDropdown');
   dropdown.innerHTML = LEAGUES.map(league =>
-    `<div class="league-option ${league.id === selectedLeague ? 'active' : ''}" onclick="selectLeague('${league.id}')">${league.name}</div>`
+    `<div class="league-option${league.id === selectedLeague ? ' active' : ''}" data-league="${league.id}">${league.name}</div>`
   ).join('');
 }
 
 function selectLeague(leagueId) {
+  console.log(`Switching to league: ${leagueId}`);
   selectedLeague = leagueId;
   localStorage.setItem('selectedLeague', leagueId);
   closeLeagueSelector();
@@ -739,6 +734,11 @@ function selectLeague(leagueId) {
   document.getElementById('leagueNameSpan').textContent = league.name;
   document.getElementById('leagueNameSpan').style.color = league.color;
   populateLeagueSelector();
+
+  // Rebuild team index with new league data
+  console.log(`Rebuilding team map for ${leagueId}, getRawStandings() has ${Object.keys(getRawStandings()).length} seasons`);
+  rebuildTeamSeasonMap();
+  console.log(`Team map rebuilt: ${ALL_TEAMS.length} teams found`);
 
   // Rebuild tables
   if (viewMode === 'live') buildLiveTable();
@@ -761,19 +761,26 @@ function isRelegatedTeam(team, season) {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  BUILD TEAM INDEX
+//  BUILD TEAM INDEX (Dynamic - rebuilt when league changes)
 // ════════════════════════════════════════════════════════════════
 // Map team → season → row data
-const teamSeasonMap = {};
-for (const [season, rows] of Object.entries(RAW)) {
-  for (const row of rows) {
-    const [pos, team, p, w, d, l, gf, ga, pts] = row;
-    if (!teamSeasonMap[team]) teamSeasonMap[team] = {};
-    teamSeasonMap[team][season] = { pos, p, w, d, l, gf, ga, gd: gf - ga, pts };
+let teamSeasonMap = {};
+let ALL_TEAMS = [];
+
+function rebuildTeamSeasonMap() {
+  teamSeasonMap = {};
+  const standings = getRawStandings();
+  for (const [season, rows] of Object.entries(standings)) {
+    for (const row of rows) {
+      const [pos, team, p, w, d, l, gf, ga, pts] = row;
+      if (!teamSeasonMap[team]) teamSeasonMap[team] = {};
+      teamSeasonMap[team][season] = { pos, p, w, d, l, gf, ga, gd: gf - ga, pts };
+    }
   }
+  ALL_TEAMS = Object.keys(teamSeasonMap);
 }
 
-const ALL_TEAMS = Object.keys(teamSeasonMap);
+rebuildTeamSeasonMap();
 
 function teamSeasons(t) { return Object.keys(teamSeasonMap[t]).length; }
 function teamBest(t) { return Math.min(...Object.values(teamSeasonMap[t]).map(s => s.pos)); }
@@ -787,7 +794,11 @@ function teamAvg(t) {
 //  LIVE STANDINGS CALCULATOR (2025-26)
 // ════════════════════════════════════════════════════════════════
 function calculateLiveStandings() {
+  console.log('DEBUG: calculateLiveStandings called');
+  console.log('DEBUG: selectedLeague:', selectedLeague);
+  console.log('DEBUG: ACTIVE_SEASON:', ACTIVE_SEASON);
   const matches = getHistoricalMatches()[ACTIVE_SEASON] || [];
+  console.log('DEBUG: matches.length:', matches.length);
   const standings = {};
 
   // Initialize all teams
@@ -815,6 +826,19 @@ function calculateLiveStandings() {
       home.d++; home.pts++;
       away.d++; away.pts++;
     }
+  }
+
+  // If no matches data available, fall back to official standings
+  if (Object.keys(standings).length === 0) {
+    const rawStandings = getRawStandings()[ACTIVE_SEASON] || [];
+    console.log('DEBUG: Using fallback, rawStandings length:', rawStandings.length);
+    const result = rawStandings.map(([pos, team, p, w, d, l, gf, ga, pts]) => ({
+      team,
+      p, w, d, l, gf, ga, pts,
+      gd: gf - ga
+    }));
+    console.log('DEBUG: Fallback result length:', result.length);
+    return result;
   }
 
   // Calculate goal difference and sort by points then goal difference
@@ -1057,7 +1081,7 @@ function openPanel(team, season) {
   const teamInfo = TEAM_NOTES[team];
   const color = TEAM_COLORS[team] || '#888';
   const pos = data.pos;
-  const maxPos = RAW[season].length;
+  const maxPos = getRawStandings()[season].length;
 
   let posBadgeBg = positionColor(pos, maxPos);
   let posBadgeText = pos <= 4 ? '#fff' : pos <= 7 ? '#fff' : pos >= maxPos-2 ? '#fff' : '#ccc';
@@ -1254,7 +1278,7 @@ function buildSeasonChart(metric, team, season) {
   if (!container) return;
   container.innerHTML = '';
 
-  const rows = RAW[season];
+  const rows = getRawStandings()[season];
   if (!rows) return;
 
   // For GD, find the absolute max to scale bars
@@ -2174,10 +2198,20 @@ function updateHeaderHeight() {
 // Populate league selector dropdown
 populateLeagueSelector();
 
-// Close league selector on outside click
+// Event delegation for league selection and dropdown management
 document.addEventListener('click', (e) => {
   const dropdown = document.getElementById('leagueSelectorDropdown');
   const h1 = document.querySelector('header h1');
+
+  // Handle league option clicks
+  if (e.target.classList.contains('league-option')) {
+    e.stopPropagation();
+    const leagueId = e.target.getAttribute('data-league');
+    selectLeague(leagueId);
+    return;
+  }
+
+  // Close league selector on outside click
   if (!h1.contains(e.target)) {
     closeLeagueSelector();
   }
