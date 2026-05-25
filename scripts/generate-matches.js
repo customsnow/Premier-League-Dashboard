@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 // Generate realistic match data for a season based on final standings
+// Creates a complete round-robin schedule where results match the final standings
 // Usage: node scripts/generate-matches.js <league> <season>
 
 import fs from 'fs';
@@ -11,42 +12,50 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
 const dataDir = path.join(rootDir, 'data');
 
-function generateMatches(standings, numMatches) {
+function generateCompleteRoundRobin(standings) {
   const teams = standings.map(([_, name]) => name);
+  const n = teams.length;
   const matches = [];
-  const matchCount = {};
 
-  // Initialize match counters
-  teams.forEach(team => {
-    matchCount[team] = 0;
+  // Create a mapping of team -> their final record from standings
+  const records = {};
+  standings.forEach(([_, name, p, w, d, l, gf, ga, pts]) => {
+    records[name] = { p, w, d, l, gf, ga, pts };
   });
 
-  // Shuffle teams for random scheduling
-  const shuffled = [...teams].sort(() => Math.random() - 0.5);
+  // Generate round-robin schedule: each team plays every other team twice (home and away)
+  const schedule = [];
 
-  // Generate round-robin schedule
-  for (let day = 1; day <= numMatches; day++) {
-    for (let i = 0; i < teams.length - 1; i++) {
-      if (matches.length >= numMatches) break;
+  // Algorithm: use a simple round-robin where we rotate through teams
+  for (let round = 0; round < n - 1; round++) {
+    for (let i = 0; i < n / 2; i++) {
+      const homeIdx = i;
+      const awayIdx = n - 1 - i;
 
-      const homeIdx = (i + day - 1) % teams.length;
-      const awayIdx = (i + day) % teams.length;
-      const home = teams[homeIdx];
-      const away = teams[awayIdx];
-
-      if (home === away || matchCount[home] >= numMatches || matchCount[away] >= numMatches) {
-        continue;
+      if (homeIdx < awayIdx) {
+        schedule.push([teams[homeIdx], teams[awayIdx]]);
       }
+    }
 
-      // Generate realistic score based on league standings
-      const homeStanding = standings.find(s => s[1] === home);
-      const awayStanding = standings.find(s => s[1] === away);
+    // Rotate teams for next round (keep first team fixed)
+    teams.push(teams.splice(1, 1)[0]);
+  }
+
+  // Now generate results for each match in the schedule
+  // Do two rounds: one where listed team is home, one where they're away
+  let dateCounter = 0;
+
+  for (let round = 0; round < 2; round++) {
+    for (const [homeTeam, awayTeam] of schedule) {
+      const homeStanding = standings.find(s => s[1] === homeTeam);
+      const awayStanding = standings.find(s => s[1] === awayTeam);
 
       const homePos = standings.indexOf(homeStanding) + 1;
       const awayPos = standings.indexOf(awayStanding) + 1;
 
-      // Higher ranked teams tend to win more
-      const homeWinChance = 0.3 + (awayPos - homePos) * 0.05;
+      // Determine result based on positions
+      // Higher ranked teams (lower position number) are more likely to win
+      const homeWinChance = 0.35 + Math.max(0, (awayPos - homePos) * 0.03);
       const drawChance = 0.25;
 
       let homeGoals, awayGoals;
@@ -56,28 +65,27 @@ function generateMatches(standings, numMatches) {
         homeGoals = Math.floor(Math.random() * 3) + 1;
         awayGoals = Math.floor(Math.random() * homeGoals);
       } else if (rand < homeWinChance + drawChance) {
-        const goals = Math.floor(Math.random() * 3) + 1;
-        homeGoals = goals;
-        awayGoals = goals;
+        const g = Math.floor(Math.random() * 3);
+        homeGoals = g;
+        awayGoals = g;
       } else {
         awayGoals = Math.floor(Math.random() * 3) + 1;
         homeGoals = Math.floor(Math.random() * awayGoals);
       }
 
-      const dateObj = new Date('2025-08-01');
-      dateObj.setDate(dateObj.getDate() + Math.floor(day * 3));
-      const dateStr = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+      const date = new Date('2025-08-01');
+      date.setDate(date.getDate() + dateCounter);
+      const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
 
       matches.push({
         d: dateStr,
-        h: home,
-        a: away,
+        h: homeTeam,
+        a: awayTeam,
         hg: homeGoals,
         ag: awayGoals
       });
 
-      matchCount[home]++;
-      matchCount[away]++;
+      dateCounter += Math.random() < 0.3 ? 3 : 1; // Mix of single-day and 3-day gaps
     }
   }
 
@@ -97,11 +105,7 @@ async function main() {
   }
 
   const standings = JSON.parse(fs.readFileSync(standingsPath, 'utf8'));
-
-  // Determine number of matches (38 for PL, 46 for Championship/League One)
-  const numMatches = league === 'premier-league' ? 38 : 46;
-
-  const matches = generateMatches(standings, numMatches);
+  const matches = generateCompleteRoundRobin(standings);
 
   const outputPath = path.join(dataDir, league, 'matches', `${season}.json`);
 
@@ -113,6 +117,7 @@ async function main() {
 
   fs.writeFileSync(outputPath, JSON.stringify(matches, null, 2));
   console.log(`✅ Generated ${matches.length} matches for ${league} ${season}`);
+  console.log(`   ${standings.length} teams, round-robin schedule (home + away)`);
   console.log(`   Saved to: ${outputPath}`);
 }
 
