@@ -51,16 +51,18 @@ const FETCHERS = {
 // ---- args ------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const out = { all: false, noCache: false, season: null, type: null };
+  const out = { all: false, noCache: false, season: null, type: null, league: 'premier-league' };
   for (const a of argv) {
     if (a === '--no-cache') out.noCache = true;
     else if (a === '--all') out.all = true;
     else if (a.startsWith('--season=')) out.season = a.slice('--season='.length);
     else if (a.startsWith('--type=')) out.type = a.slice('--type='.length);
+    else if (a.startsWith('--league=')) out.league = a.slice('--league='.length);
     else if (a === '--help' || a === '-h') {
       console.log(`Usage: node scripts/fetcher.js [options]
   --season=YYYY-YY   Fetch a single season
   --type=matches|fixtures   Fetch a single data type
+  --league=ID        Fetch a specific league (premier-league, championship, efl-league-one)
   --all              Iterate every season from fetchFrom (in static/seasons.json) to active
   --no-cache         Bypass TTL; force the network call
   -h, --help         Show this help`);
@@ -86,23 +88,23 @@ function writeJSON(p, value) {
   fs.writeFileSync(p, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-function dataPath(type, season) {
-  return path.join(dataDir, type, `${season}.json`);
+function dataPath(type, season, leagueId = 'premier-league') {
+  return path.join(dataDir, leagueId, type, `${season}.json`);
 }
-function cachePath(type, season) {
-  return path.join(cacheDir, type, `${season}.json`);
+function cachePath(type, season, leagueId = 'premier-league') {
+  return path.join(cacheDir, leagueId, type, `${season}.json`);
 }
 
-function cacheIsFresh(type, season, isActive) {
-  const cache = readJSON(cachePath(type, season));
+function cacheIsFresh(type, season, isActive, leagueId = 'premier-league') {
+  const cache = readJSON(cachePath(type, season, leagueId));
   if (!cache?.fetchedAt) return false;
   const ttl = (isActive ? TTL.active : TTL.past)[type] ?? Infinity;
   const ageMs = Date.now() - new Date(cache.fetchedAt).getTime();
   return ageMs < ttl * 1000;
 }
 
-function writeCache(type, season, hash) {
-  writeJSON(cachePath(type, season), { fetchedAt: new Date().toISOString(), hash });
+function writeCache(type, season, hash, leagueId = 'premier-league') {
+  writeJSON(cachePath(type, season, leagueId), { fetchedAt: new Date().toISOString(), hash });
 }
 
 // Merge for matches: dedupe by (date, home, away). For fixtures: replace.
@@ -150,17 +152,17 @@ function seasonsToFetch(args, active) {
 
 // ---- per (season, type) processing -----------------------------------------
 
-async function processOne(season, type, args, active) {
+async function processOne(season, type, args, active, leagueId = 'premier-league') {
   const isActive = season === active;
   const label = `${type}/${season}`;
 
-  if (!args.noCache && cacheIsFresh(type, season, isActive)) {
+  if (!args.noCache && cacheIsFresh(type, season, isActive, leagueId)) {
     console.log(`  ⏭️  ${label}: cache fresh, skipping`);
     return { skipped: true };
   }
 
   const fetcher = FETCHERS[type];
-  const fetched = await fetcher(season);
+  const fetched = await fetcher(season, leagueId);
 
   if (fetched == null) {
     console.log(`  ➖ ${label}: no data fetched, existing file preserved`);
@@ -170,7 +172,7 @@ async function processOne(season, type, args, active) {
   // Merge or replace, depending on type.
   let next;
   if (type === 'matches') {
-    const existing = readJSON(dataPath(type, season), []);
+    const existing = readJSON(dataPath(type, season, leagueId), []);
     next = mergeMatches(existing, fetched);
   } else if (type === 'fixtures') {
     next = sortFixtures(fetched);
@@ -179,23 +181,23 @@ async function processOne(season, type, args, active) {
   }
 
   const newHash = sha(next);
-  const cache = readJSON(cachePath(type, season));
+  const cache = readJSON(cachePath(type, season, leagueId));
   if (cache?.hash === newHash) {
-    writeCache(type, season, newHash); // refresh timestamp
+    writeCache(type, season, newHash, leagueId); // refresh timestamp
     console.log(`  =  ${label}: ${next.length} items, unchanged (touched cache)`);
     return { unchanged: true };
   }
 
-  writeJSON(dataPath(type, season), next);
-  writeCache(type, season, newHash);
+  writeJSON(dataPath(type, season, leagueId), next);
+  writeCache(type, season, newHash, leagueId);
   console.log(`  ✓  ${label}: ${next.length} items written`);
   return { data: next, written: true };
 }
 
 // Re-derive standings/<season>.json from matches/<season>.json whenever matches change.
-function rederiveStandings(season, matchesData) {
+function rederiveStandings(season, matchesData, leagueId = 'premier-league') {
   const standings = deriveStandings(matchesData);
-  const p = dataPath('standings', season);
+  const p = dataPath('standings', season, leagueId);
   const existing = readJSON(p);
   const newHash = sha(standings);
   if (existing && sha(existing) === newHash) {
@@ -213,8 +215,10 @@ async function main() {
   const active = activeSeason();
   const seasons = seasonsToFetch(args, active);
   const types = args.type ? [args.type] : TYPES;
+  const league = args.league || 'premier-league';
+  const leagueName = { 'premier-league': 'Premier League', 'championship': 'Championship', 'efl-league-one': 'EFL League One' }[league] || league;
 
-  console.log(`🔄 Premier League data fetch`);
+  console.log(`🔄 ${leagueName} data fetch`);
   console.log(`   active season: ${active}`);
   console.log(`   seasons:       ${seasons.join(', ')}`);
   console.log(`   types:         ${types.join(', ')}`);
@@ -227,7 +231,7 @@ async function main() {
 
     for (const type of types) {
       try {
-        const result = await processOne(season, type, args, active);
+        const result = await processOne(season, type, args, active, league);
         if (type === 'matches' && result.written) {
           matchesChanged = true;
           matchesData = result.data;
@@ -238,7 +242,7 @@ async function main() {
     }
 
     if (matchesChanged && matchesData) {
-      rederiveStandings(season, matchesData);
+      rederiveStandings(season, matchesData, league);
     }
     console.log('');
   }

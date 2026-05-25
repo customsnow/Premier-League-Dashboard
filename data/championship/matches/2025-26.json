@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "a": "Middlesbrough",
+    "ag": 0,
+    "d": "23/05/2026",
+    "h": "Hull City",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  }
+]

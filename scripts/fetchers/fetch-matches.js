@@ -11,13 +11,21 @@
 import { activeSeason } from '../utils/active-season.js';
 import espnApi from '../utils/espn-api.js';
 
-export async function fetchMatchesForSeason(season) {
+// Map league IDs to ESPN league IDs
+const LEAGUE_ESPN_ID = {
+  'premier-league': 'eng.1',
+  'championship': 'eng.2',
+  'efl-league-one': 'eng.3',
+};
+
+export async function fetchMatchesForSeason(season, leagueId = 'premier-league') {
   if (season !== activeSeason()) {
     // No date-range fetcher yet. Callers must preserve existing data.
     return null;
   }
 
-  const fetched = await espnApi.getMatchResults(null, 100);
+  const espnLeagueId = LEAGUE_ESPN_ID[leagueId] || 'eng.1';
+  const fetched = await espnApi.getMatchResults(null, 100, espnLeagueId);
   if (!fetched || fetched.length === 0) return null;
   return fetched;
 }
