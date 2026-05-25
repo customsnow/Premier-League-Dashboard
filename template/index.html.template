@@ -1433,6 +1433,14 @@ async function fetchRealMatches(team, season) {
           homeGoalStr: '', awayGoalStr: '',
           isHome,
         };
+      })
+      .sort((a, b) => {
+        // Sort by date (DD/MM/YYYY) chronologically
+        const [ad, am, ay] = a.date.split('/').map(Number);
+        const [bd, bm, by] = b.date.split('/').map(Number);
+        const aDate = new Date(ay, am - 1, ad);
+        const bDate = new Date(by, bm - 1, bd);
+        return aDate - bDate;
       });
 
     if (teamMatches.length >= 5) return teamMatches;
