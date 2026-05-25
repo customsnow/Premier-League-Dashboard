@@ -170,7 +170,7 @@
     display: none !important;
   }
   .grid-wrap.panel-open { margin-right: var(--panel-width); }
-  table { border-collapse: collapse; width: 100%; table-layout: auto; margin: 0; padding: 0; }
+  table { border-collapse: collapse; width: 100%; table-layout: fixed; margin: 0; padding: 0; }
   /* Trailing spacer so the last season column is never clipped at the scroll edge */
   table thead tr::after, table tbody tr::after {
     content: ''; display: table-cell; min-width: 16px;
