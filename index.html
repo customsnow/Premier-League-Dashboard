@@ -32103,8 +32103,20 @@ function buildLiveTable() {
 
     // Get next opponent from fixtures (using team name matching to handle name variants)
     const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, row.team) || teamNamesMatch(f.a, row.team));
-    const nextOpponent = fixture ? (teamNamesMatch(fixture.h, row.team) ? `vs ${fixture.a}` : `@ ${fixture.h}`) : '—';
-    const opponentStyle = fixture ? 'color: #06b6d4; font-weight: 500;' : 'color: #6b7280;';
+    let nextOpponent = '—';
+    let opponentStyle = 'color: #6b7280;';
+
+    if (fixture) {
+      const opponentName = teamNamesMatch(fixture.h, row.team) ? fixture.a : fixture.h;
+      const homeAway = teamNamesMatch(fixture.h, row.team) ? 'vs' : '@';
+
+      // Find opponent's finishing place from 2024-25 season
+      const prevSeasonStandings = STANDINGS['2024-25'] || [];
+      const opponentFinish = prevSeasonStandings.findIndex(s => teamNamesMatch(s[1], opponentName)) + 1;
+
+      nextOpponent = opponentFinish ? `${homeAway} ${opponentName} (${opponentFinish})` : `${homeAway} ${opponentName}`;
+      opponentStyle = 'color: #06b6d4; font-weight: 500;';
+    }
 
     tr.innerHTML = `
       <td style="position: sticky; left: 0; z-index: 10; background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px; border-right: 2px solid var(--border);">${posText}</td>
