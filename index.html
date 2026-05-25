@@ -33781,9 +33781,16 @@ let selectedLeague = localStorage.getItem('selectedLeague') || 'premier-league';
 
 // Dynamic data getters that depend on selectedLeague
 function getRawStandings() {
-  const data = ALL_STANDINGS[selectedLeague] || {};
-  console.log(`[getRawStandings] selectedLeague=${selectedLeague}, seasons=${Object.keys(data).length}`);
-  return data;
+  console.log(`[getRawStandings] selectedLeague='${selectedLeague}'`);
+  console.log(`[getRawStandings] ALL_STANDINGS keys:`, Object.keys(ALL_STANDINGS));
+  const data = ALL_STANDINGS[selectedLeague];
+  console.log(`[getRawStandings] data for ${selectedLeague}:`, data ? Object.keys(data).length + ' seasons' : 'UNDEFINED');
+  if (data) {
+    console.log(`[getRawStandings] Seasons available:`, Object.keys(data).join(', '));
+  } else {
+    console.error(`[getRawStandings] ERROR: No data for league '${selectedLeague}'! Available leagues:`, Object.keys(ALL_STANDINGS));
+  }
+  return data || {};
 }
 function getHistoricalMatches() { return ALL_MATCHES[selectedLeague] || {}; }
 function getFixtures() { return ALL_FIXTURES[selectedLeague] || {}; }
@@ -33923,16 +33930,31 @@ let teamSeasonMap = {};
 let ALL_TEAMS = [];
 
 function rebuildTeamSeasonMap() {
+  console.log(`\n=== rebuildTeamSeasonMap for league: ${selectedLeague} ===`);
   teamSeasonMap = {};
   const standings = getRawStandings();
+  console.log(`[rebuildTeamSeasonMap] Got standings:`, standings ? 'YES' : 'NO');
+
+  let totalSeasons = 0, totalTeams = new Set();
+
   for (const [season, rows] of Object.entries(standings)) {
+    totalSeasons++;
+    console.log(`  ${season}: ${rows ? rows.length : 'NO DATA'} teams`);
+    if (!rows || !Array.isArray(rows)) {
+      console.error(`    ERROR: rows is not an array!`, rows);
+      continue;
+    }
     for (const row of rows) {
       const [pos, team, p, w, d, l, gf, ga, pts] = row;
       if (!teamSeasonMap[team]) teamSeasonMap[team] = {};
       teamSeasonMap[team][season] = { pos, p, w, d, l, gf, ga, gd: gf - ga, pts };
+      totalTeams.add(team);
     }
   }
   ALL_TEAMS = Object.keys(teamSeasonMap);
+  console.log(`[rebuildTeamSeasonMap] FINAL: ${totalSeasons} seasons, ${ALL_TEAMS.length} unique teams`);
+  console.log(`[rebuildTeamSeasonMap] Teams:`, ALL_TEAMS.slice(0, 5).join(', ') + (ALL_TEAMS.length > 5 ? '...' : ''));
+  console.log(`===\n`);
 }
 
 rebuildTeamSeasonMap();
