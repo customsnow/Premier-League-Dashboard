@@ -195,10 +195,18 @@ async function processOne(season, type, args, active, leagueId = 'premier-league
 }
 
 // Re-derive standings/<season>.json from matches/<season>.json whenever matches change.
+// Only update if derived standings has more or equal teams (avoid losing data from incomplete match data).
 function rederiveStandings(season, matchesData, leagueId = 'premier-league') {
   const standings = deriveStandings(matchesData);
   const p = dataPath('standings', season, leagueId);
   const existing = readJSON(p);
+
+  // If derived standings has fewer teams than existing, skip to preserve completeness
+  if (existing && Array.isArray(existing) && Array.isArray(standings) && standings.length < existing.length) {
+    console.log(`  ➖ standings/${season}: skipped (derived ${standings.length} < existing ${existing.length} teams)`);
+    return;
+  }
+
   const newHash = sha(standings);
   if (existing && sha(existing) === newHash) {
     console.log(`  =  standings/${season}: unchanged`);
