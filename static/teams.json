@@ -2,207 +2,393 @@
   "teams": [
     {
       "color": "#EF0107",
-      "name": "Arsenal"
+      "name": "Arsenal",
+      "league_id": "premier-league"
     },
     {
       "color": "#670E36",
-      "name": "Aston Villa"
+      "name": "Aston Villa",
+      "league_id": "premier-league"
     },
     {
       "color": "#EE2233",
-      "name": "Barnsley"
+      "name": "Barnsley",
+      "league_id": "championship"
     },
     {
       "color": "#0000FF",
-      "name": "Birmingham City"
+      "name": "Birmingham City",
+      "league_id": "championship"
     },
     {
       "color": "#009EE0",
-      "name": "Blackburn Rovers"
+      "name": "Blackburn Rovers",
+      "league_id": "championship"
     },
     {
       "color": "#F68712",
-      "name": "Blackpool"
+      "name": "Blackpool",
+      "league_id": "championship"
     },
     {
       "color": "#263C7E",
-      "name": "Bolton Wanderers"
+      "name": "Bolton Wanderers",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#DA291C",
-      "name": "Bournemouth"
+      "name": "Bournemouth",
+      "league_id": "premier-league"
     },
     {
       "color": "#800000",
-      "name": "Bradford City"
+      "name": "Bradford City",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#E30613",
-      "name": "Brentford"
+      "name": "Brentford",
+      "league_id": "premier-league"
     },
     {
       "color": "#0057B8",
-      "name": "Brighton"
+      "name": "Brighton",
+      "league_id": "premier-league"
     },
     {
       "color": "#6C1D45",
-      "name": "Burnley"
+      "name": "Burnley",
+      "league_id": "championship"
     },
     {
       "color": "#0070B5",
-      "name": "Cardiff City"
+      "name": "Cardiff City",
+      "league_id": "championship"
     },
     {
       "color": "#CC2233",
-      "name": "Charlton Athletic"
+      "name": "Charlton Athletic",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#034694",
-      "name": "Chelsea"
+      "name": "Chelsea",
+      "league_id": "premier-league"
     },
     {
       "color": "#59CEFF",
-      "name": "Coventry City"
+      "name": "Coventry City",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#1B458F",
-      "name": "Crystal Palace"
+      "name": "Crystal Palace",
+      "league_id": "premier-league"
     },
     {
       "color": "#1A1A1A",
-      "name": "Derby County"
+      "name": "Derby County",
+      "league_id": "championship"
     },
     {
       "color": "#003399",
-      "name": "Everton"
+      "name": "Everton",
+      "league_id": "premier-league"
     },
     {
       "color": "#CC0000",
-      "name": "Fulham"
+      "name": "Fulham",
+      "league_id": "premier-league"
     },
     {
       "color": "#0E63AD",
-      "name": "Huddersfield Town"
+      "name": "Huddersfield Town",
+      "league_id": "championship"
     },
     {
       "color": "#F5A12D",
-      "name": "Hull City"
+      "name": "Hull City",
+      "league_id": "championship"
     },
     {
       "color": "#0044A9",
-      "name": "Ipswich Town"
+      "name": "Ipswich Town",
+      "league_id": "championship"
     },
     {
       "color": "#FFCD00",
-      "name": "Leeds United"
+      "name": "Leeds United",
+      "league_id": "championship"
     },
     {
       "color": "#003090",
-      "name": "Leicester City"
+      "name": "Leicester City",
+      "league_id": "championship"
     },
     {
       "color": "#C8102E",
-      "name": "Liverpool"
+      "name": "Liverpool",
+      "league_id": "premier-league"
     },
     {
       "color": "#F78F1E",
-      "name": "Luton Town"
+      "name": "Luton Town",
+      "league_id": "championship"
     },
     {
       "color": "#6CABDD",
-      "name": "Manchester City"
+      "name": "Manchester City",
+      "league_id": "premier-league"
     },
     {
       "color": "#DA291C",
-      "name": "Manchester United"
+      "name": "Manchester United",
+      "league_id": "premier-league"
     },
     {
       "color": "#E00000",
-      "name": "Middlesbrough"
+      "name": "Middlesbrough",
+      "league_id": "championship"
     },
     {
       "color": "#241F20",
-      "name": "Newcastle United"
+      "name": "Newcastle United",
+      "league_id": "premier-league"
     },
     {
       "color": "#00A650",
-      "name": "Norwich City"
+      "name": "Norwich City",
+      "league_id": "championship"
     },
     {
       "color": "#E53233",
-      "name": "Nottingham Forest"
+      "name": "Nottingham Forest",
+      "league_id": "premier-league"
     },
     {
       "color": "#0052A5",
-      "name": "Oldham Athletic"
+      "name": "Oldham Athletic",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#0052A5",
-      "name": "Portsmouth"
+      "name": "Portsmouth",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#1D5BA4",
-      "name": "QPR"
+      "name": "QPR",
+      "league_id": "championship"
     },
     {
       "color": "#004494",
-      "name": "Reading"
+      "name": "Reading",
+      "league_id": "championship"
     },
     {
       "color": "#EE2523",
-      "name": "Sheffield United"
+      "name": "Sheffield United",
+      "league_id": "championship"
     },
     {
       "color": "#1463A6",
-      "name": "Sheffield Wednesday"
+      "name": "Sheffield Wednesday",
+      "league_id": "championship"
     },
     {
       "color": "#D71920",
-      "name": "Southampton"
+      "name": "Southampton",
+      "league_id": "championship"
     },
     {
       "color": "#E03A3E",
-      "name": "Stoke City"
+      "name": "Stoke City",
+      "league_id": "championship"
     },
     {
       "color": "#EB172B",
-      "name": "Sunderland"
+      "name": "Sunderland",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#121212",
-      "name": "Swansea City"
+      "name": "Swansea City",
+      "league_id": "championship"
     },
     {
       "color": "#EE2522",
-      "name": "Swindon Town"
+      "name": "Swindon Town",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#132257",
-      "name": "Tottenham Hotspur"
+      "name": "Tottenham Hotspur",
+      "league_id": "premier-league"
     },
     {
       "color": "#FBEE23",
-      "name": "Watford"
+      "name": "Watford",
+      "league_id": "championship"
     },
     {
       "color": "#122F67",
-      "name": "WBA"
+      "name": "WBA",
+      "league_id": "championship"
     },
     {
       "color": "#7A263A",
-      "name": "West Ham United"
+      "name": "West Ham United",
+      "league_id": "premier-league"
     },
     {
       "color": "#1C2B5E",
-      "name": "Wigan Athletic"
+      "name": "Wigan Athletic",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#0063A6",
-      "name": "Wimbledon"
+      "name": "Wimbledon",
+      "league_id": "efl-league-one"
     },
     {
       "color": "#FDB913",
-      "name": "Wolverhampton"
+      "name": "Wolverhampton",
+      "league_id": "premier-league"
+    },
+    {
+      "color": "#E63C9A",
+      "name": "Accrington Stanley",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#0052CC",
+      "name": "Bristol Rovers",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#DC143C",
+      "name": "Cambridge United",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#00A1DE",
+      "name": "Cheltenham Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#0066CC",
+      "name": "Colchester United",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#00A9E0",
+      "name": "Crawley Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#C70032",
+      "name": "Crewe Alexandra",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#CCCCCC",
+      "name": "Fleetwood Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#004687",
+      "name": "Gillingham",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#2E5C8A",
+      "name": "Grimsby Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#003DA5",
+      "name": "Leyton Orient",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#CC0000",
+      "name": "Lincoln City",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#FFCC00",
+      "name": "MK Dons",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#FFA500",
+      "name": "Milton Keynes Dons",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#0077BE",
+      "name": "Northampton Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#FFCC00",
+      "name": "Oxford United",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#003DA5",
+      "name": "Peterborough United",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#00AA00",
+      "name": "Plymouth Argyle",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#003399",
+      "name": "Port Vale",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#0051BA",
+      "name": "Rotherham United",
+      "league_id": "championship"
+    },
+    {
+      "color": "#E53210",
+      "name": "Salford City",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#2E1046",
+      "name": "Shrewsbury Town",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#333333",
+      "name": "Stevenage",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#DC0000",
+      "name": "Stockport County",
+      "league_id": "championship"
+    },
+    {
+      "color": "#D81E3F",
+      "name": "Tranmere Rovers",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#000000",
+      "name": "Walsall",
+      "league_id": "efl-league-one"
+    },
+    {
+      "color": "#F4B81C",
+      "name": "Wrexham",
+      "league_id": "championship"
     }
   ]
 }

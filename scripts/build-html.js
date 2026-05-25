@@ -31,6 +31,19 @@ function readSeasonDir(type) {
   return out;
 }
 
+// Read league-organized season directories
+function readLeagueSeasonDir(leagueId, type) {
+  const dir = path.join(dataDir, leagueId, type);
+  if (!fs.existsSync(dir)) return {};
+  const out = {};
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith('.json')) continue;
+    const season = path.basename(file, '.json');
+    out[season] = readJSON(path.join(dir, file));
+  }
+  return out;
+}
+
 console.log('🔨 Building index.html from template + data…\n');
 
 // Curated data (hand-edited)
@@ -42,14 +55,22 @@ const europeanCups = readJSON(path.join(staticDir, 'european-cups.json'));
 const funFacts = readJSON(path.join(staticDir, 'fun-facts.json'));
 const teamNotes = readJSON(path.join(staticDir, 'team-notes.json'));
 const espnNames = readJSON(path.join(staticDir, 'espn-names.json'));
+const leagues = readJSON(path.join(staticDir, 'leagues.json')).leagues;
+const leaguePromotions = readJSON(path.join(staticDir, 'league-promotions.json'));
 
-// Read season-based data directories
-const standings = readSeasonDir('standings');
-const matches = readSeasonDir('matches');
-const fixtures = readSeasonDir('fixtures');
+// Read season-based data organized by league
+const standings = {};
+const matches = {};
+const fixtures = {};
 
-// Derive seasons from actual standings data (sorted newest first)
-const seasons = Object.keys(standings).sort().reverse();
+for (const league of leagues) {
+  standings[league.id] = readLeagueSeasonDir(league.id, 'standings');
+  matches[league.id] = readLeagueSeasonDir(league.id, 'matches');
+  fixtures[league.id] = readLeagueSeasonDir(league.id, 'fixtures');
+}
+
+// Derive seasons from Premier League standings (primary source)
+const seasons = Object.keys(standings['premier-league'] || {}).sort().reverse();
 
 const active = activeSeason(); // e.g., "2025-26" — recomputed from current date each build
 const activeShort = active.slice(2); // "25-26" → display as "25/26"
@@ -61,6 +82,8 @@ const data = {
   europeanCups,
   fixtures,
   funFacts,
+  leaguePromotions,
+  leagues,
   logos,
   matches,
   notes,
@@ -86,6 +109,9 @@ const html = template
 fs.writeFileSync(outputPath, html, 'utf8');
 
 const sizeMB = (fs.statSync(outputPath).size / 1024 / 1024).toFixed(2);
+const totalStandingsSeasons = Object.values(standings).reduce((sum, s) => sum + Object.keys(s).length, 0);
+const totalMatchesSeasons = Object.values(matches).reduce((sum, m) => sum + Object.keys(m).length, 0);
+const totalFixturesSeasons = Object.values(fixtures).reduce((sum, f) => sum + Object.keys(f).length, 0);
 console.log(
-  `✅ Built index.html (${sizeMB} MB) — ${Object.keys(standings).length} standings, ${Object.keys(matches).length} matches, ${Object.keys(fixtures).length} fixtures seasons`,
+  `✅ Built index.html (${sizeMB} MB) — ${Object.keys(leagues).length} leagues, ${totalStandingsSeasons} standings seasons, ${totalMatchesSeasons} matches, ${totalFixturesSeasons} fixtures`,
 );

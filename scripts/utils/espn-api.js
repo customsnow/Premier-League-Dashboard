@@ -10,15 +10,16 @@ async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Get Premier League standings for current season
-export async function getLeagueStandings(season = '2025-26') {
+// Get league standings for current season
+export async function getLeagueStandings(season = '2025-26', leagueEspnId = 'eng.1') {
   try {
-    console.log(`  🔄 Fetching Premier League standings for ${season}...`);
+    const leagueName = leagueEspnId === 'eng.1' ? 'Premier League' : leagueEspnId === 'eng.2' ? 'Championship' : 'EFL League One';
+    console.log(`  🔄 Fetching ${leagueName} standings for ${season}...`);
 
     // Try multiple endpoints
     const endpoints = [
-      'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/standings',
-      'https://www.espn.com/soccer/api/site/v2/competitions/eng/seasons/2025/standings',
+      `https://site.api.espn.com/apis/site/v2/sports/soccer/${leagueEspnId}/standings`,
+      `https://www.espn.com/soccer/api/site/v2/competitions/${leagueEspnId.split('.')[0]}/seasons/2025/standings`,
     ];
 
     for (const endpoint of endpoints) {
@@ -76,13 +77,14 @@ function parseEvent(event) {
 }
 
 // Get recent match results (only events with a final/in-progress status).
-export async function getMatchResults(team = null, limit = 100) {
+export async function getMatchResults(team = null, limit = 100, leagueEspnId = 'eng.1') {
   try {
-    console.log(`  🔄 Fetching recent match results${team ? ` for ${team}` : ''}...`);
+    const leagueName = leagueEspnId === 'eng.1' ? 'Premier League' : leagueEspnId === 'eng.2' ? 'Championship' : 'EFL League One';
+    console.log(`  🔄 Fetching recent ${leagueName} match results${team ? ` for ${team}` : ''}...`);
 
     const endpoints = [
-      'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard',
-      'https://www.espn.com/soccer/api/site/v2/competitions/eng/events',
+      `https://site.api.espn.com/apis/site/v2/sports/soccer/${leagueEspnId}/scoreboard`,
+      `https://www.espn.com/soccer/api/site/v2/competitions/${leagueEspnId.split('.')[0]}/events`,
     ];
 
     for (const endpoint of endpoints) {
@@ -131,13 +133,14 @@ export async function getMatchResults(team = null, limit = 100) {
 }
 
 // Get upcoming fixtures
-export async function getFixtures(daysAhead = 30) {
+export async function getFixtures(daysAhead = 30, leagueEspnId = 'eng.1') {
   try {
-    console.log(`  🔄 Fetching upcoming fixtures (next ${daysAhead} days)...`);
+    const leagueName = leagueEspnId === 'eng.1' ? 'Premier League' : leagueEspnId === 'eng.2' ? 'Championship' : 'EFL League One';
+    console.log(`  🔄 Fetching upcoming ${leagueName} fixtures (next ${daysAhead} days)...`);
 
     const endpoints = [
-      'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard',
-      'https://www.espn.com/soccer/api/site/v2/competitions/eng/events',
+      `https://site.api.espn.com/apis/site/v2/sports/soccer/${leagueEspnId}/scoreboard`,
+      `https://www.espn.com/soccer/api/site/v2/competitions/${leagueEspnId.split('.')[0]}/events`,
     ];
 
     for (const endpoint of endpoints) {

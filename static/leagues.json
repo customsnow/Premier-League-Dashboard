@@ -1,0 +1,28 @@
+{
+  "leagues": [
+    {
+      "id": "premier-league",
+      "name": "Premier League",
+      "color": "#3b82f6",
+      "espnId": "eng.1",
+      "teams": 20,
+      "description": "English top division"
+    },
+    {
+      "id": "championship",
+      "name": "Championship",
+      "color": "#ef4444",
+      "espnId": "eng.2",
+      "teams": 24,
+      "description": "English second division"
+    },
+    {
+      "id": "efl-league-one",
+      "name": "EFL League One",
+      "color": "#fbbf24",
+      "espnId": "eng.3",
+      "teams": 24,
+      "description": "English third division"
+    }
+  ]
+}
