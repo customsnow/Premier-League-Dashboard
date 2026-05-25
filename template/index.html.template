@@ -625,7 +625,7 @@
 const SHORT_NAMES         = window.__DATA.shortNames;
 const THESPORTSDB_LOGOS   = window.__DATA.logos;
 const LOGOS               = THESPORTSDB_LOGOS; // Alias for convenience
-const SEASONS             = window.__DATA.seasons;
+// Static data (loaded once at page startup)
 const TEAM_COLORS         = Object.fromEntries(window.__DATA.teams.map(t => [t.name, t.color]));
 const ALL_STANDINGS       = window.__DATA.standings;
 const ALL_MATCHES         = window.__DATA.matches;
@@ -639,14 +639,26 @@ const FUN_FACTS           = window.__DATA.funFacts;
 const TEAM_NOTES          = window.__DATA.teamNotes;
 const ESPN_NAMES          = window.__DATA.espnNames;
 
-// League selector
+// League selector state
 let selectedLeague = localStorage.getItem('selectedLeague') || 'premier-league';
 
 // Dynamic data getters that depend on selectedLeague
-function getRawStandings() { return ALL_STANDINGS[selectedLeague] || {}; }
+function getRawStandings() {
+  const data = ALL_STANDINGS[selectedLeague] || {};
+  console.log(`[getRawStandings] selectedLeague=${selectedLeague}, seasons=${Object.keys(data).length}`);
+  return data;
+}
 function getHistoricalMatches() { return ALL_MATCHES[selectedLeague] || {}; }
 function getFixtures() { return ALL_FIXTURES[selectedLeague] || {}; }
 function getFixtures2525_26() { return getFixtures()[ACTIVE_SEASON] || []; }
+
+// Get seasons for current league (dynamically based on selectedLeague)
+function getSeasons() {
+  const standings = getRawStandings();
+  const seasons = Object.keys(standings).sort().reverse();
+  console.log(`[getSeasons] returning ${seasons.length} seasons for ${selectedLeague}: ${seasons.slice(0, 3).join(', ')}${seasons.length > 3 ? '...' : ''}`);
+  return seasons;
+}
 
 // AbortController-based timeout compatible with all modern browsers
 function fetchTimeout(url, ms) {
@@ -739,6 +751,12 @@ function selectLeague(leagueId) {
   console.log(`Rebuilding team map for ${leagueId}, getRawStandings() has ${Object.keys(getRawStandings()).length} seasons`);
   rebuildTeamSeasonMap();
   console.log(`Team map rebuilt: ${ALL_TEAMS.length} teams found`);
+
+  // Rebuild year dropdown to show seasons for this league
+  populateYearDropdown();
+
+  // Reset selected year to the active season for the new league
+  selectedYear = null;
 
   // Rebuild tables
   if (viewMode === 'live') buildLiveTable();
@@ -951,7 +969,9 @@ function getSortedTeams() {
 // ════════════════════════════════════════════════════════════════
 function buildTable() {
   try {
+  console.log(`[buildTable] Building table for ${selectedLeague}`);
   const teams = getSortedTeams();
+  console.log(`[buildTable] Got ${teams.length} teams: ${teams.slice(0, 3).join(', ')}${teams.length > 3 ? '...' : ''}`);
   const thead = document.getElementById('thead');
   const tbody = document.getElementById('tbody');
 
@@ -962,7 +982,7 @@ function buildTable() {
   th0.className = 'team-col';
   th0.textContent = `Teams (${teams.length})`;
   hr.appendChild(th0);
-  for (const s of SEASONS) {
+  for (const s of getSeasons()) {
     const th = document.createElement('th');
     const note = NOTES[s];
     const isChampion = note ? true : false;
@@ -1021,7 +1041,7 @@ function buildTable() {
     });
     tr.appendChild(tdName);
 
-    for (const s of SEASONS) {
+    for (const s of getSeasons()) {
       const td = document.createElement('td');
       const data = teamSeasonMap[team]?.[s];
       if (data) {
@@ -1241,14 +1261,15 @@ function openPanel(team, season) {
 
   // Mini bar chart of team positions
   const chart = document.getElementById('miniChart');
-  const teamSeasonsData = SEASONS.map(s => teamSeasonMap[team]?.[s] || null);
+  const seasons = getSeasons();
+  const teamSeasonsData = seasons.map(s => teamSeasonMap[team]?.[s] || null);
   const maxP = 22;
   for (const sd of teamSeasonsData) {
     const bar = document.createElement('div');
     if (sd) {
       const h = Math.round((1 - (sd.pos-1)/(maxP-1)) * 52) + 4;
       bar.style.cssText = `height:${h}px;flex:1;border-radius:2px 2px 0 0;background:${positionColor(sd.pos,maxP)};min-width:3px;transition:opacity 0.2s;cursor:default;`;
-      bar.title = `${SEASONS[teamSeasonsData.indexOf(sd)]}: ${sd.pos}${ord(sd.pos)} (${sd.pts}pts)`;
+      bar.title = `${seasons[teamSeasonsData.indexOf(sd)]}: ${sd.pos}${ord(sd.pos)} (${sd.pts}pts)`;
     } else {
       bar.style.cssText = 'height:4px;flex:1;border-radius:2px;background:#222;min-width:3px;';
     }
@@ -2233,14 +2254,20 @@ document.querySelectorAll('[id^="mode-"]').forEach(b=>b.parentElement.style.disp
 document.getElementById('legend').style.display = viewMode === 'live' ? 'none' : 'flex';
 
 // Populate year dropdown (in descending order - newest first)
-const yearSelect = document.getElementById('yearSelect');
-const seasonsDescending = [...SEASONS].reverse();
-seasonsDescending.forEach(season => {
-  const option = document.createElement('option');
-  option.value = season;
-  option.textContent = season;
-  yearSelect.appendChild(option);
-});
+function populateYearDropdown() {
+  const yearSelect = document.getElementById('yearSelect');
+  yearSelect.innerHTML = ''; // Clear existing options
+  const seasons = getSeasons();
+  const seasonsDescending = [...seasons].reverse();
+  seasonsDescending.forEach(season => {
+    const option = document.createElement('option');
+    option.value = season;
+    option.textContent = season;
+    yearSelect.appendChild(option);
+  });
+}
+
+populateYearDropdown();
 
 // Build the appropriate table
 if (viewMode === 'live') buildLiveTable();
