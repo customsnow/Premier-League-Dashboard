@@ -659,6 +659,18 @@ function getHistoricalMatches() { return ALL_MATCHES[selectedLeague] || {}; }
 function getFixtures() { return ALL_FIXTURES[selectedLeague] || {}; }
 function getFixtures2525_26() { return getFixtures()[ACTIVE_SEASON] || []; }
 
+// Aliases for backward compatibility with code that references HISTORICAL_MATCHES directly
+const HISTORICAL_MATCHES = new Proxy({}, {
+  get(target, prop) {
+    return getHistoricalMatches()[prop];
+  }
+});
+const HISTORICAL_MATCHES_PRE2003 = new Proxy({}, {
+  get(target, prop) {
+    return getHistoricalMatches()[prop];
+  }
+});
+
 // Get seasons for current league (dynamically based on selectedLeague)
 function getSeasons() {
   const standings = getRawStandings();
