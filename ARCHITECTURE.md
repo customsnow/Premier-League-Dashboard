@@ -1,153 +1,280 @@
 # Data-Driven Dashboard Architecture
 
-> **Agents: read `CLAUDE.md` first.** Short version: never hand-edit `index.html`; it's a build artifact.
-
 ## Overview
 
-The Premier League Dashboard is a data-driven static site. A single template (`template/index.html.template`) is composed with JSON in `data/` and `static/` into one `index.html` at build time. The build is deterministic, runs locally with `npm run build`, and runs nightly in CI.
+The Premier League Dashboard has been transformed from a 332 KB monolithic HTML file with hardcoded data into a scalable, data-driven system using a template-based build architecture.
 
-## Layout
+## What's Complete ✅
 
+### Phase 1: Data Extraction ✅
+All hardcoded data has been extracted from `index.html` into clean JSON files:
+
+| File | Contents | Size |
+|------|----------|------|
+| `data/teams.json` | 51 teams with colors | 3.4 KB |
+| `data/short-names.json` | 32 team abbreviations | 1.1 KB |
+| `data/logos.json` | 25 team logo URLs | 2.4 KB |
+| `data/seasons.json` | 34 seasons (1992-93 to 2025-26) | 531 B |
+| `data/standings.json` | League tables: 666 records | 74 KB |
+| `data/matches.json` | Match results: 3,030 records | 355 KB |
+| `data/fixtures.json` | 2025-26 upcoming fixtures | 919 B |
+| `data/notes.json` | Season achievements & top scorers | 6.2 KB |
+| **Total** | **All data extracted** | **457 KB** |
+
+### Phase 2: Template & Build System ✅
+
+#### Template-Based Architecture
+- `template/index.html.template` - HTML template with a single `/* __DATA_INJECTION_POINT__ */` marker
+- `scripts/build-html.js` - Composes `window.__DATA` from `data/` + `static/`, injects into template
+- All CSS and JavaScript logic preserved; the template reads data from `window.__DATA`
+
+#### Build Process
+```bash
+npm run build     # Compose window.__DATA and inject into index.html
+```
+
+#### How It Works
+1. **Read curated data** from `static/*.json` (hand-edited; teams, logos, short names, season list, season notes)
+2. **Read fetched data** from `data/*.json` (written by CI; standings, matches, fixtures)
+3. **Compose** one `{ teams, shortNames, logos, seasons, notes, standings, matches, fixtures }` object
+4. **Inject** at the template marker as `<script>window.__DATA = {…};</script>`
+5. **Template aliases** like `const RAW = window.__DATA.standings;` give the rest of the JS its familiar names
+
+## Current Status
+
+### File Structure
 ```
 premier-league-dashboard/
-├── index.html                           ← BUILD ARTIFACT (do not edit)
-├── CLAUDE.md                            ← Agent guide (read first)
-├── ARCHITECTURE.md                      ← This file
-├── QUICK_REFERENCE.md                   ← Common task recipes
+├── index.html                        ← Generated (DO NOT EDIT, gitignored)
+│   └── Built in CI from template + data + static, deployed to GitHub Pages
 ├── template/
-│   └── index.html.template              ← Edit this for HTML/CSS/JS
-├── static/                              ← CURATED data (hand-edited)
-│   ├── teams.json
-│   ├── short-names.json
-│   ├── logos.json                       ← team → local logo path
-│   ├── logos/                           ← downloaded PNGs (committed)
-│   ├── seasons.json                     ← fetcher config (fetchFrom)
-│   ├── notes.json
-│   ├── team-notes.json
-│   ├── fun-facts.json
-│   ├── european-cups.json
-│   └── espn-names.json
-├── data/                                ← FETCHED data, one file per season
-│   ├── standings/<season>.json
+│   └── index.html.template          ← Edit this for HTML/CSS/JS changes
+├── data/                            ← FETCHED data, one file per season
+│   ├── standings/
+│   │   ├── 1992-93.json            ← immutable past seasons
+│   │   └── 2025-26.json            ← active season, written nightly
 │   ├── matches/<season>.json
 │   └── fixtures/<season>.json
+├── static/                          ← CURATED data (hand-edited)
+│   ├── teams.json
+│   ├── short-names.json
+│   ├── logos.json                   ← maps team → local logo path
+│   ├── logos/                       ← downloaded PNGs (committed)
+│   │   └── manchester-united.png
+│   ├── seasons.json                 ← fetcher config (fetchFrom)
+│   └── notes.json
 ├── scripts/
-│   ├── build-html.js                    ← template + data + static → index.html
-│   ├── fetcher.js                       ← unified fetcher CLI (all sources, all seasons)
+│   ├── build-html.js               ← Generate index.html from template + data + static
+│   ├── fetcher.js                  ← Unified fetcher (one CLI, all sources, all seasons)
 │   ├── fetchers/
-│   │   ├── fetch-matches.js             ← per-season matches module
-│   │   ├── fetch-fixtures.js            ← per-season fixtures module
-│   │   └── fetch-logos.js               ← one-shot logo downloader
+│   │   ├── fetch-matches.js        ← Per-season matches module
+│   │   ├── fetch-fixtures.js       ← Per-season fixtures module
+│   │   └── fetch-logos.js          ← One-shot logo downloader
 │   └── utils/
-│       ├── active-season.js             ← derives active season from current date
-│       ├── derive-standings.js          ← computes standings from matches
-│       └── espn-api.js                  ← ESPN API client
-├── .github/workflows/
-│   ├── nightly-update.yml               ← nightly fetch + rebuild + commit
-│   └── deploy-pages.yml                 ← deploy index.html to GitHub Pages
-└── package.json
+│       ├── active-season.js        ← Derives the active season from current date
+│       ├── derive-standings.js     ← Computes standings from matches
+│       └── espn-api.js             ← ESPN API client
+
+The fetcher's CLI:
+  npm run fetch                        # active season (default)
+  npm run fetch -- --all               # iterate fetchFrom → active
+  npm run fetch -- --season=2024-25    # one season
+  npm run fetch -- --type=matches      # one type
+  npm run fetch -- --no-cache          # bypass TTL gate
+
+Cache: TTL gates the API call; SHA-256 of merged data gates the file
+write. Cache sidecars live in data/.cache/ (gitignored). Existing data
+is never lost — empty/null fetches preserve what's on disk.
+
+Active season is computed from the current date (Aug → May rollover);
+nothing in the repo hardcodes a specific season.
+├── .github/
+│   └── workflows/
+│       └── nightly-update.yml      ← GitHub Actions workflow
+└── package.json                     ← NPM scripts & config
 ```
 
-## Build pipeline
+## Usage Guide
 
+### Development Workflow
+
+#### 1. To modify HTML/CSS/JavaScript
+```bash
+# Edit template (not index.html!)
+vim template/index.html.template
+
+# Rebuild HTML with your changes
+npm run build
 ```
-   static/*.json   ──┐
-                     ├──► build-html.js ──► template/index.html.template
-   data/<type>/      │         │                       │
-     <season>.json ──┘         │                       │
-                     window.__DATA = {…}               │
-                               └──► injected at /* __DATA_INJECTION_POINT__ */
-                                                       │
-                                                       ▼
-                                                  index.html
+
+#### 2. To update data manually
+```bash
+# Fetched data (rare — CI does this)
+vim data/standings.json
+
+# Curated data
+vim static/notes.json
+vim static/teams.json
+
+# Rebuild HTML with new data
+npm run build
 ```
 
-`build-html.js`:
-1. Reads curated JSON from `static/` (`teams`, `shortNames`, `logos`, `notes`, `europeanCups`, `funFacts`, `teamNotes`, `espnNames`).
-2. Reads per-season files from `data/standings/`, `data/matches/`, `data/fixtures/` and merges each into `{ "1992-93": …, "2025-26": … }`.
-3. Composes one `{ teams, shortNames, logos, seasons, notes, standings, matches, fixtures, … }` object.
-4. Injects it at the template marker as `<script>window.__DATA = {…};</script>`.
-5. Writes `index.html`.
+#### 3. To extract from old HTML
+```bash
+# If you have an older version with different data
+npm run extract
+```
 
-Inside the template, aliases like `const RAW = window.__DATA.standings;` give the in-template JS familiar names.
+### Testing Locally
+```bash
+npm run dev
+# Opens http://localhost:8000 with dashboard
+```
 
-## Fetcher
+## What's Remaining 🚀
 
-`scripts/fetcher.js` is one CLI for all sources and seasons:
+### Phase 3: Automated Data Fetchers ✅
+Fetch latest 2025-26 season data from APIs:
+- `scripts/fetchers/fetch-live-standings.js` - Get current standings ✅
+- `scripts/fetchers/fetch-matches.js` - Get match results ✅
+- `scripts/fetchers/fetch-fixtures.js` - Get upcoming fixtures ✅
+- `scripts/utils/espn-api.js` - ESPN API client ✅
+- `scripts/fetch-all.js` - Master fetcher script ✅
+
+**Data Sources:**
+- Primary: ESPN API (free, good coverage)
+- Secondary: Official Premier League API (authoritative but limited)
+- Notes: Fetch from Wikipedia/official sources
+
+### Phase 4: GitHub Actions CI/CD ✅
+`.github/workflows/nightly-update.yml` - Automated nightly updates ✅:
+- Fetch latest data from APIs
+- Update JSON files if changed
+- Rebuild `index.html`
+- Commit and push changes (only if data changed)
+- **Frequency**: Every night at 2 AM UTC, skip commit if no changes
+
+### Phase 5: Documentation & Testing (In Progress)
+- Update README with new architecture
+- Create maintenance guide
+- Full end-to-end testing
+- Monitor first automated runs
+
+## Benefits of New Architecture
+
+✅ **Maintainability**: Easy to find and update data (JSON files)
+✅ **Scalability**: Add features without modifying monolithic file  
+✅ **Automation**: Can update data nightly via CI/CD
+✅ **Separation**: Code and data clearly separated
+✅ **Version Control**: Track data changes in git history
+✅ **Flexibility**: Can easily switch data sources or format
+
+## Data Size Improvements
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Main file | 332 KB | 160 KB | ↓ 52% |
+| Data files | Embedded | 457 KB total | Organized |
+| Template | N/A | 332 KB | Source of truth |
+
+## Implementation Decisions Made
+
+- **JSON Loading**: Template compilation (not runtime fetch) → No CORS issues on GitHub Pages
+- **Data Sources**: Mix of ESPN + PL APIs → Reliable, free, good coverage
+- **Notes Management**: Scrape from external sources → Automated, reduces errors
+- **Update Frequency**: Year-round, skip commits if no changes → Consistent, low noise
+- **Failure Handling**: Keep previous data, continue workflow → Graceful degradation
+
+## Next Steps
+
+1. **Review**: Examine the extracted data in `data/` directory
+2. **Test**: Run `npm run build` to verify HTML generation works
+3. **Phase 3**: Implement API fetchers for automated data updates
+4. **Phase 4**: Set up GitHub Actions workflow for nightly CI/CD
+5. **Phase 5**: Document the new system and train on workflows
+
+## Key Commands
 
 ```bash
-npm run fetch                        # active season (default)
-npm run fetch -- --all               # iterate fetchFrom → active
-npm run fetch -- --season=2024-25    # one season
-npm run fetch -- --type=matches      # one data type
-npm run fetch -- --no-cache          # bypass TTL gate
-```
-
-- **Active season** is derived from the current date (Aug → May rollover). Nothing in the repo hardcodes a specific season.
-- **Cache**: TTL gates the API call; SHA-256 of merged data gates the file write. Cache sidecars live in `data/.cache/` (gitignored).
-- **Safety**: existing data is never lost — empty/null fetches preserve what's on disk.
-
-## Commands
-
-```bash
+# Setup
 npm install
-npm run build       # template + data → index.html
-npm run dev         # build + serve on http://localhost:8000
-npm run fetch …     # see fetcher flags above
-npm run fetch-logos # one-shot logo downloader
-npm run extract     # legacy: extract JSON from old monolithic HTML
-npm run validate    # validate JSON shapes
-npm run test        # run tests
+
+# Development
+npm run build      # Generate index.html from template + data
+npm run extract    # Extract data from old HTML (if needed)
+npm run dev        # Build and start local dev server
+
+# (Future) Automation
+npm run fetch-data # Fetch latest data from APIs
+npm run validate   # Validate data structure
+npm run test       # Run tests
+
+# Git workflow
+git add data/                           # Track data changes
+git commit -m "chore: update season data"
 ```
 
-## CI
+## Data Format Reference
 
-- **`.github/workflows/nightly-update.yml`** — daily at 02:00 UTC: fetch → rebuild → commit only if data changed.
-- **`.github/workflows/deploy-pages.yml`** — deploys `index.html` to GitHub Pages.
-
-Both run `npm run build`. Neither hand-edits `index.html`. Don't add steps that do.
-
-## Data shapes
-
-### `static/teams.json`
+### teams.json
 ```json
-{ "teams": [ { "name": "Arsenal", "color": "#EF0107" } ] }
+{
+  "teams": [
+    {"name": "Arsenal", "color": "#EF0107"},
+    ...
+  ]
+}
 ```
 
-### `data/standings/<season>.json`
+### standings.json
 ```json
-[ [1, "Manchester United", 42, 24, 12, 6, 80, 47, 84] ]
+{
+  "1992-93": [
+    [1, "Manchester United", 42, 24, 12, 6, 80, 47, 84],
+    ...
+  ],
+  "1993-94": [...]
+}
 ```
-Tuple order: Position, Team, GP, W, D, L, GF, GA, Pts.
 
-### `data/matches/<season>.json`
+### matches.json
 ```json
-[ { "d": "15/08/2025", "h": "Man Utd", "a": "Fulham", "hg": 1, "ag": 0 } ]
+{
+  "2025-26": [
+    {"d": "15/08/2025", "h": "Man Utd", "a": "Fulham", "hg": 1, "ag": 0},
+    ...
+  ]
+}
 ```
 
-### `data/fixtures/<season>.json`
+### fixtures.json
 ```json
-[ { "d": "24/05/2026", "h": "Brighton", "a": "Man Utd", "time": "15:00" } ]
+{
+  "2025-26": [
+    {"d": "24/05/2026", "h": "Brighton", "a": "Man Utd", "time": "15:00"},
+    ...
+  ]
+}
 ```
 
-### `static/notes.json`
+### notes.json
 ```json
 {
   "1992-93": {
     "champion": "Manchester United",
-    "topScorer": { "name": "Alan Shearer", "team": "Blackburn Rovers", "goals": 34 }
+    "topScorer": {"name": "Alan Shearer", "team": "Blackburn Rovers", "goals": 34}
   }
 }
 ```
 
-## Design decisions
+## Questions & Support
 
-- **Build-time data injection (not runtime fetch)** — no CORS issues on GitHub Pages, deterministic builds, data changes visible in git history.
-- **Per-season files in `data/`** — past seasons are immutable, only the active season churns nightly.
-- **Curated vs. fetched split (`static/` vs. `data/`)** — anything a human hand-tunes (logos, abbreviations, notes) lives in `static/`; anything refreshable from an API lives in `data/`.
-- **Unified fetcher** — one CLI, one cache strategy, one cache layout. Easier to reason about than per-source scripts.
-- **Graceful degradation** — fetch failures preserve prior data; the dashboard never goes blank.
+For questions about the new architecture, refer to the plan file:
+`C:\Users\colin\.claude\plans\fuzzy-growing-sifakis.md`
 
-## History
+---
 
-The original `index.html` was a 332 KB monolith with all data hardcoded inline. The 2.0 rewrite extracted data into JSON and introduced the template + build pipeline. Stray top-level HTML files (`index.html`, `index 2.html`) were removed in commit `5c11892`. Do not reintroduce them.
+**Last Updated**: May 20, 2026  
+**Architecture Version**: 2.0 (Data-Driven)  
+**Status**: Phases 1-4 Complete | Phase 5 (Documentation) In Progress
