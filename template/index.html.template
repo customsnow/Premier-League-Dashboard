@@ -1413,9 +1413,34 @@ function espnSeasonDates(season) {
 }
 
 async function fetchRealMatches(team, season) {
-  // ESPN data is only accurate for 2003 onwards
+  // Try to get matches from local HISTORICAL_MATCHES data first (faster, multi-league support)
+  const localMatches = HISTORICAL_MATCHES?.[season];
+  if (localMatches && Array.isArray(localMatches)) {
+    const teamMatches = localMatches
+      .filter(m => m.h === team || m.a === team)
+      .map(m => {
+        const isHome = m.h === team;
+        const opp = isHome ? m.a : m.h;
+        const gf = isHome ? m.hg : m.ag;
+        const ga = isHome ? m.ag : m.hg;
+        return {
+          ha: isHome ? 'H' : 'A',
+          result: gf > ga ? 'W' : gf < ga ? 'L' : 'D',
+          gf, ga, opp,
+          date: m.d,
+          homeTeam: m.h,
+          awayTeam: m.a,
+          homeGoalStr: '', awayGoalStr: '',
+          isHome,
+        };
+      });
+
+    if (teamMatches.length >= 5) return teamMatches;
+  }
+
+  // Fallback: ESPN data (only for 2003 onwards and Premier League)
   const [startYear] = season.split('-');
-  if (parseInt(startYear) < 2003) return null;
+  if (parseInt(startYear) < 2003 || selectedLeague !== 'premier-league') return null;
 
   const { from, to } = espnSeasonDates(season);
   try {
