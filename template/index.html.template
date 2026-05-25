@@ -882,9 +882,9 @@ function buildTable() {
     };
     tdName.title = team;
     // Try to load logo, fall back to colored dot if it fails
-    const logoSrc = getTeamLogo(team);
-    const logoHtml = logoSrc
-      ? `<img class="team-logo" src="${logoSrc}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
+    const logoPath = THESPORTSDB_LOGOS[team];
+    const logoHtml = logoPath
+      ? `<img class="team-logo" src="${logoPath}" alt="${team}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'team-dot', style: 'background:${color}'}))" style="width:20px;height:20px;object-fit:contain;flex-shrink:0">`
       : `<span class="team-dot" style="background:${color}"></span>`;
     tdName.innerHTML = `
       <div class="team-label">
@@ -1799,16 +1799,24 @@ async function buildMatchChart(team, season) {
   `;
 }
 
+let _currentFilter = null;
+
 function filterMatches(filterBy) {
   const grid = document.getElementById('match-grid');
   if (!grid) return;
 
   const cells = grid.querySelectorAll('.mr-cell');
   const matches = window._mrMatches;
-
-  // Update card styling
   const homeFilter = document.getElementById('home-filter');
   const awayFilter = document.getElementById('away-filter');
+
+  // Toggle: if clicking same filter, clear it; otherwise apply new filter
+  if (_currentFilter === filterBy) {
+    _currentFilter = null;
+    filterBy = null;
+  } else {
+    _currentFilter = filterBy;
+  }
 
   if (filterBy === 'H') {
     // Filter to HOME games
