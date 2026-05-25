@@ -31046,28 +31046,17 @@ function buildTable() {
       const data = teamSeasonMap[team]?.[s];
       if (data) {
         td.className = 'cell' + (selectedYear === s ? ' year-active' : '');
-        // Check if this is 2025-26 and there's a remaining fixture
+        // For all seasons (including 2025-26), show the finishing position
         let cellText = data.pos;
-        let isFixture = false;
-        if (s === ACTIVE_SEASON) {
-          const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, team) || teamNamesMatch(f.a, team));
-          if (fixture) {
-            const opponent = teamNamesMatch(fixture.h, team) ? fixture.a : fixture.h;
-            cellText = opponent;
-            isFixture = true;
-          }
-        }
 
-        const bg = isFixture ? 'rgba(99, 102, 241, 0.3)' : getCellColor(data, team, s);
+        const bg = getCellColor(data, team, s);
         td.style.background = bg;
-        td.style.color = isFixture ? '#818cf8' : (colorMode === 'position' ? textColor(bg) : '#fff');
+        td.style.color = colorMode === 'position' ? textColor(bg) : '#fff';
 
-        if (!isFixture) {
-          if (colorMode === 'goals') cellText = data.gf;
-          else if (colorMode === 'gd') cellText = data.gd;
-          else if (colorMode === 'pts') cellText = data.pts;
-          else if (colorMode === 'cleansheets') cellText = Math.round(data.w * 0.55 + data.d * 0.3);
-        }
+        if (colorMode === 'goals') cellText = data.gf;
+        else if (colorMode === 'gd') cellText = data.gd;
+        else if (colorMode === 'pts') cellText = data.pts;
+        else if (colorMode === 'cleansheets') cellText = Math.round(data.w * 0.55 + data.d * 0.3);
 
         td.textContent = cellText;
         td.dataset.team = team;
