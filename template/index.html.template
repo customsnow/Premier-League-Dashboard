@@ -1007,37 +1007,39 @@ function openPanel(team, season) {
 
     <div class="panel-body">
       <div class="stat-grid">
-        <div class="stat-card">
-          <div class="val" style="color:#4ade80">${data.w}</div>
-          <div class="lbl">Wins</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="stat-card">
+            <div class="val" style="color:#4ade80">${data.w}</div>
+            <div class="lbl">Wins</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" style="color:#fbbf24">${data.pts}</div>
+            <div class="lbl">Points</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="val" style="color:#facc15">${data.d}</div>
-          <div class="lbl">Draws</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="stat-card">
+            <div class="val" style="color:#facc15">${data.d}</div>
+            <div class="lbl">Draws</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" style="color:#38bdf8">${data.gf}</div>
+            <div class="lbl">Goals For</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="val" style="color:#f87171">${data.l}</div>
-          <div class="lbl">Losses</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" style="color:#38bdf8">${data.gf}</div>
-          <div class="lbl">Goals For</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" style="color:#fb923c">${data.ga}</div>
-          <div class="lbl">Goals Against</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" style="color:${data.gd>=0?'#4ade80':'#f87171'}">${data.gd>0?'+':''}${data.gd}</div>
-          <div class="lbl">Goal Diff</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="stat-card">
+            <div class="val" style="color:#f87171">${data.l}</div>
+            <div class="lbl">Losses</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" style="color:${data.gd>=0?'#4ade80':'#f87171'}">${data.gd>0?'+':''}${data.gd}</div>
+            <div class="lbl">Goal Diff</div>
+          </div>
         </div>
       </div>
 
       <div>
-        <div class="stat-row">
-          <span class="lbl">Points</span>
-          <span class="val">${data.pts} pts</span>
-        </div>
         <div class="stat-row">
           <span class="lbl">Games Played</span>
           <span class="val">${data.p}</span>
@@ -1941,7 +1943,7 @@ function buildLiveTable() {
       <th style="padding: 8px; text-align: center;">GD</th>
       <th style="padding: 8px; text-align: center; font-weight: 900;">Pts</th>
       <th style="padding: 8px; text-align: center; min-width: 180px;">Last 5</th>
-      <th style="padding: 8px; text-align: center; min-width: 160px;" id="lastColumnHeader">Next Opponent</th>
+      <th style="padding: 8px; text-align: center; min-width: 160px;" id="lastColumnHeader">Finish</th>
     </tr>
   `;
 
@@ -1953,10 +1955,9 @@ function buildLiveTable() {
     const posText = idx + 1;
     const last5Html = getTeamLast5(row.team, matches);
 
-    // Get next opponent from fixtures (using team name matching to handle name variants)
-    const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, row.team) || teamNamesMatch(f.a, row.team));
-    const nextOpponent = fixture ? (teamNamesMatch(fixture.h, row.team) ? `vs ${fixture.a}` : `@ ${fixture.h}`) : '—';
-    const opponentStyle = fixture ? 'color: #06b6d4; font-weight: 500;' : 'color: #6b7280;';
+    // Show finishing position for completed season (2025-26)
+    const finishPosition = `#${posText}`;
+    const positionStyle = 'color: #fbbf24; font-weight: 600;';
 
     tr.innerHTML = `
       <td style="position: sticky; left: 0; z-index: 10; background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px; border-right: 2px solid var(--border);">${posText}</td>
@@ -1970,7 +1971,7 @@ function buildLiveTable() {
       <td style="padding: 8px; text-align: center; font-weight: 600; color: ${row.gd > 0 ? '#10b981' : row.gd < 0 ? '#ef4444' : '#9ca3af'};">${row.gd > 0 ? '+' : ''}${row.gd}</td>
       <td style="padding: 8px; text-align: center; font-weight: 900; font-size: 1.1rem;">${row.pts}</td>
       <td style="padding: 8px; text-align: center;">${last5Html}</td>
-      <td style="padding: 8px; text-align: center; ${opponentStyle}">${nextOpponent}</td>
+      <td style="padding: 8px; text-align: center; ${positionStyle}">${finishPosition}</td>
     `;
     tbody.appendChild(tr);
   });
