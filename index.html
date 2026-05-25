@@ -30762,9 +30762,9 @@ function shortTeamName(name) { return SHORT_NAMES[name] || name; }
 
 // Team logos are downloaded into static/logos/ and committed; paths are relative.
 function getTeamLogo(team) {
-  const localPath = THESPORTSDB_LOGOS[team];
-  if (!localPath) return null;
-  return `static/${localPath}`;
+  const logoPath = THESPORTSDB_LOGOS[team];
+  if (!logoPath) return null;
+  return logoPath; // Already includes 'static/' prefix
 }
 
 // European Cups data for teams that qualified
@@ -31919,21 +31919,56 @@ async function buildMatchChart(team, season) {
 
   container.innerHTML = `
     <div class="mr-header">
-      <div class="mr-ha-card">
+      <div class="mr-ha-card" id="home-filter" style="cursor:pointer;transition:opacity 0.2s" onclick="filterMatches('H')">
         <div class="hac-label" style="color:#fbbf24">🏠 Home</div>
         <div class="hac-rec">${hRecordDisplay}</div>
         <div class="hac-pts">${hpts} pts · ${hPlayedCount} played</div>
       </div>
-      <div class="mr-ha-card">
+      <div class="mr-ha-card" id="away-filter" style="cursor:pointer;transition:opacity 0.2s" onclick="filterMatches('A')">
         <div class="hac-label" style="color:#93c5fd">✈ Away</div>
         <div class="hac-rec">${aRecordDisplay}</div>
         <div class="hac-pts">${apts} pts · ${aPlayedCount} played</div>
       </div>
     </div>
-    <div class="mr-grid">${cells}</div>
+    <div class="mr-grid" id="match-grid">${cells}</div>
     <div class="mr-pts-strip">${bars}</div>
-    <div class="mr-note">${sourceNote} · cumulative points · gray bars = upcoming matches</div>
+    <div class="mr-note" onclick="filterMatches(null)" style="cursor:pointer;color:#6b7280;transition:color 0.2s" onmouseover="this.style.color='#cbd5e1'" onmouseout="this.style.color='#6b7280'">${sourceNote} · cumulative points · gray bars = upcoming matches</div>
   `;
+}
+
+function filterMatches(filterBy) {
+  const grid = document.getElementById('match-grid');
+  if (!grid) return;
+
+  const cells = grid.querySelectorAll('.mr-cell');
+  const matches = window._mrMatches;
+
+  // Update card styling
+  const homeFilter = document.getElementById('home-filter');
+  const awayFilter = document.getElementById('away-filter');
+
+  if (filterBy === 'H') {
+    // Filter to HOME games
+    homeFilter.style.opacity = '1';
+    awayFilter.style.opacity = '0.5';
+    cells.forEach((cell, i) => {
+      cell.style.opacity = matches[i].ha === 'H' ? '1' : '0.3';
+    });
+  } else if (filterBy === 'A') {
+    // Filter to AWAY games
+    awayFilter.style.opacity = '1';
+    homeFilter.style.opacity = '0.5';
+    cells.forEach((cell, i) => {
+      cell.style.opacity = matches[i].ha === 'A' ? '1' : '0.3';
+    });
+  } else {
+    // Clear filter
+    homeFilter.style.opacity = '1';
+    awayFilter.style.opacity = '1';
+    cells.forEach(cell => {
+      cell.style.opacity = '1';
+    });
+  }
 }
 
 function closePanel() {
