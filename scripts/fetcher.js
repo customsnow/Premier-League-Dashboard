@@ -195,8 +195,15 @@ async function processOne(season, type, args, active, leagueId = 'premier-league
 }
 
 // Re-derive standings/<season>.json from matches/<season>.json whenever matches change.
-// Only update if derived standings has more or equal teams (avoid losing data from incomplete match data).
-function rederiveStandings(season, matchesData, leagueId = 'premier-league') {
+// For the active season, skip derivation entirely to preserve official final standings.
+// For past seasons, only derive if we have more teams than before (avoid losing data).
+function rederiveStandings(season, matchesData, leagueId = 'premier-league', activeSeasonValue = '2025-26') {
+  // For active/current season, never override standings with incomplete match data
+  if (season === activeSeasonValue) {
+    console.log(`  ➖ standings/${season}: skipped (active season - preserving official standings)`);
+    return;
+  }
+
   const standings = deriveStandings(matchesData);
   const p = dataPath('standings', season, leagueId);
   const existing = readJSON(p);
@@ -250,7 +257,7 @@ async function main() {
     }
 
     if (matchesChanged && matchesData) {
-      rederiveStandings(season, matchesData, league);
+      rederiveStandings(season, matchesData, league, active);
     }
     console.log('');
   }
