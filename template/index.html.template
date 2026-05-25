@@ -1890,7 +1890,7 @@ async function buildMatchChart(team, season) {
     });
 
     // Also check fixtures list to enrich upcoming match data with opponent info
-    const upcomingFixtures = FIXTURES_2025_26.filter(f => teamNamesMatch(f.h, team) || teamNamesMatch(f.a, team));
+    const upcomingFixtures = (getFixtures()[ACTIVE_SEASON] || []).filter(f => teamNamesMatch(f.h, team) || teamNamesMatch(f.a, team));
     matches = matches.map((m, idx) => {
       if (m.result === 'U' && idx >= teamPlayedCount) {
         // Find matching fixture
