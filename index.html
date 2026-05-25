@@ -32093,13 +32093,6 @@ function buildLiveTable() {
     </tr>
   `;
 
-  // Update column header based on season
-  if (selectedSeason === '2025-26') {
-    document.getElementById('lastColumnHeader').textContent = 'Finish';
-  } else {
-    document.getElementById('lastColumnHeader').textContent = 'Next Opponent';
-  }
-
   // Build table rows
   tbody.innerHTML = '';
   table.forEach((row, idx) => {
@@ -32108,31 +32101,10 @@ function buildLiveTable() {
     const posText = idx + 1;
     const last5Html = getTeamLast5(row.team, matches);
 
-    // For 2025-26 (completed season): Show finishing position instead of next opponent
-    let columnContent = '—';
-    let columnStyle = 'color: #6b7280;';
-    let columnLabel = 'Next Opponent';
-
-    if (selectedSeason === '2025-26') {
-      // Season is complete, show finishing position
-      columnContent = `#${posText}`;
-      columnStyle = 'color: #fbbf24; font-weight: 600;';
-      columnLabel = 'Finish';
-    } else {
-      // Future season, show next opponent
-      const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, row.team) || teamNamesMatch(f.a, row.team));
-      if (fixture) {
-        const opponentName = teamNamesMatch(fixture.h, row.team) ? fixture.a : fixture.h;
-        const homeAway = teamNamesMatch(fixture.h, row.team) ? 'vs' : '@';
-
-        // Find opponent's finishing place from 2024-25 season
-        const prevSeasonStandings = STANDINGS['2024-25'] || [];
-        const opponentFinish = prevSeasonStandings.findIndex(s => teamNamesMatch(s[1], opponentName)) + 1;
-
-        columnContent = opponentFinish ? `${homeAway} ${opponentName} (${opponentFinish})` : `${homeAway} ${opponentName}`;
-        columnStyle = 'color: #06b6d4; font-weight: 500;';
-      }
-    }
+    // Get next opponent from fixtures (using team name matching to handle name variants)
+    const fixture = FIXTURES_2025_26.find(f => teamNamesMatch(f.h, row.team) || teamNamesMatch(f.a, row.team));
+    const nextOpponent = fixture ? (teamNamesMatch(fixture.h, row.team) ? `vs ${fixture.a}` : `@ ${fixture.h}`) : '—';
+    const opponentStyle = fixture ? 'color: #06b6d4; font-weight: 500;' : 'color: #6b7280;';
 
     tr.innerHTML = `
       <td style="position: sticky; left: 0; z-index: 10; background: ${posColor}; color: white; font-weight: 900; padding: 8px; text-align: center; min-width: 35px; max-width: 35px; border-right: 2px solid var(--border);">${posText}</td>
@@ -32146,7 +32118,7 @@ function buildLiveTable() {
       <td style="padding: 8px; text-align: center; font-weight: 600; color: ${row.gd > 0 ? '#10b981' : row.gd < 0 ? '#ef4444' : '#9ca3af'};">${row.gd > 0 ? '+' : ''}${row.gd}</td>
       <td style="padding: 8px; text-align: center; font-weight: 900; font-size: 1.1rem;">${row.pts}</td>
       <td style="padding: 8px; text-align: center;">${last5Html}</td>
-      <td style="padding: 8px; text-align: center; ${columnStyle}">${columnContent}</td>
+      <td style="padding: 8px; text-align: center; ${opponentStyle}">${nextOpponent}</td>
     `;
     tbody.appendChild(tr);
   });
