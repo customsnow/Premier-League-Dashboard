@@ -1,4 +1,5 @@
-// `fetch` is a Node 18+ global, so no import needed.
+// Import fetch for Node < 18 compatibility
+import fetch from 'node-fetch';
 
 // ESPN API URLs for football/soccer
 const _ESPN_BASE = 'https://site.api.espn.com/apis/site/v2';
@@ -87,9 +88,13 @@ export async function getMatchResults(team = null, limit = 100) {
     for (const endpoint of endpoints) {
       try {
         const response = await fetch(endpoint);
-        if (!response.ok) continue;
+        if (!response.ok) {
+          console.log(`     ℹ️  ${endpoint}: HTTP ${response.status}`);
+          continue;
+        }
         const data = await response.json();
         const events = data.events ?? [];
+        console.log(`     ℹ️  Found ${events.length} events from ${endpoint}`);
         const matches = [];
 
         for (const event of events.slice(0, limit)) {
@@ -111,7 +116,10 @@ export async function getMatchResults(team = null, limit = 100) {
           console.log(`     ✓ Got ${matches.length} recent matches`);
           return matches;
         }
-      } catch {}
+        console.log(`     ℹ️  No valid matches found from ${endpoint}`);
+      } catch (e) {
+        console.log(`     ⚠️  Error from ${endpoint}: ${e.message}`);
+      }
     }
 
     console.log('     ⚠️  Could not fetch match results');
@@ -135,16 +143,21 @@ export async function getFixtures(daysAhead = 30) {
     for (const endpoint of endpoints) {
       try {
         const response = await fetch(endpoint);
-        if (!response.ok) continue;
+        if (!response.ok) {
+          console.log(`     ℹ️  ${endpoint}: HTTP ${response.status}`);
+          continue;
+        }
 
         const data = await response.json();
+        const events = data.events ?? [];
+        console.log(`     ℹ️  Found ${events.length} events from ${endpoint}`);
 
-        if (data.events && data.events.length > 0) {
+        if (events.length > 0) {
           const fixtures = [];
           const now = new Date();
           const future = new Date(now.getTime() + daysAhead * 24 * 60 * 60 * 1000);
 
-          for (const event of data.events) {
+          for (const event of events) {
             const eventDate = new Date(event.date);
             const status = event.status?.type?.name;
             if (status !== 'STATUS_SCHEDULED') continue;
@@ -168,8 +181,11 @@ export async function getFixtures(daysAhead = 30) {
             console.log(`     ✓ Got ${fixtures.length} upcoming fixtures`);
             return fixtures;
           }
+          console.log(`     ℹ️  No valid fixtures found from ${endpoint}`);
         }
-      } catch (_e) {}
+      } catch (e) {
+        console.log(`     ⚠️  Error from ${endpoint}: ${e.message}`);
+      }
     }
 
     console.log('     ⚠️  Could not fetch fixtures');
