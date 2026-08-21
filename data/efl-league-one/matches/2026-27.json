@@ -1,5 +1,13 @@
 [
   {
+    "a": "Bradford City",
+    "ag": 1,
+    "d": "20/08/2026",
+    "h": "Sheffield Wednesday",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Leicester City",
     "ag": 1,
     "d": "15/08/2026",
