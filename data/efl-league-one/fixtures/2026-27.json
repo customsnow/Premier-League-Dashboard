@@ -1,8 +1,68 @@
 [
   {
-    "a": "Bradford City",
-    "d": "20/08/2026",
-    "h": "Sheffield Wednesday",
-    "time": "19:00"
+    "a": "Barnsley",
+    "d": "22/08/2026",
+    "h": "Doncaster Rovers",
+    "time": "11:30"
+  },
+  {
+    "a": "Notts County",
+    "d": "22/08/2026",
+    "h": "Luton Town",
+    "time": "11:30"
+  },
+  {
+    "a": "Reading",
+    "d": "22/08/2026",
+    "h": "AFC Wimbledon",
+    "time": "14:00"
+  },
+  {
+    "a": "Cambridge United",
+    "d": "22/08/2026",
+    "h": "Bromley",
+    "time": "14:00"
+  },
+  {
+    "a": "Burton Albion",
+    "d": "22/08/2026",
+    "h": "Leicester City",
+    "time": "14:00"
+  },
+  {
+    "a": "Huddersfield Town",
+    "d": "22/08/2026",
+    "h": "Milton Keynes Dons",
+    "time": "14:00"
+  },
+  {
+    "a": "Mansfield Town",
+    "d": "22/08/2026",
+    "h": "Peterborough United",
+    "time": "14:00"
+  },
+  {
+    "a": "Oxford United",
+    "d": "22/08/2026",
+    "h": "Stevenage",
+    "time": "14:00"
+  },
+  {
+    "a": "Blackpool",
+    "d": "22/08/2026",
+    "h": "Stockport County",
+    "time": "14:00"
+  },
+  {
+    "a": "Leyton Orient",
+    "d": "22/08/2026",
+    "h": "Wigan Athletic",
+    "time": "14:00"
+  },
+  {
+    "a": "Plymouth Argyle",
+    "d": "22/08/2026",
+    "h": "Wycombe Wanderers",
+    "time": "14:00"
   }
 ]
