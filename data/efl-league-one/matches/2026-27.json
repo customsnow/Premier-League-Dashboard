@@ -1,5 +1,93 @@
 [
   {
+    "a": "Barnsley",
+    "ag": 0,
+    "d": "22/08/2026",
+    "h": "Doncaster Rovers",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Notts County",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Luton Town",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Reading",
+    "ag": 0,
+    "d": "22/08/2026",
+    "h": "AFC Wimbledon",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Cambridge United",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Bromley",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Burton Albion",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Leicester City",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Huddersfield Town",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Milton Keynes Dons",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Mansfield Town",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Peterborough United",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Oxford United",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Stevenage",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Blackpool",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Stockport County",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Leyton Orient",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Wigan Athletic",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Plymouth Argyle",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Wycombe Wanderers",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Bradford City",
     "ag": 1,
     "d": "20/08/2026",

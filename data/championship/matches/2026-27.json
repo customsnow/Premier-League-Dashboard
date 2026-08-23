@@ -1,5 +1,93 @@
 [
   {
+    "a": "Bristol City",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Birmingham City",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Portsmouth",
+    "ag": 3,
+    "d": "22/08/2026",
+    "h": "Lincoln City",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Norwich City",
+    "ag": 0,
+    "d": "22/08/2026",
+    "h": "Millwall",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Middlesbrough",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Blackburn Rovers",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Cardiff City",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "Derby County",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Wolverhampton Wanderers",
+    "ag": 3,
+    "d": "22/08/2026",
+    "h": "Preston North End",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bolton Wanderers",
+    "ag": 0,
+    "d": "22/08/2026",
+    "h": "Queens Park Rangers",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Stoke City",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Southampton",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Sheffield United",
+    "ag": 0,
+    "d": "22/08/2026",
+    "h": "Swansea City",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Charlton Athletic",
+    "ag": 2,
+    "d": "22/08/2026",
+    "h": "West Ham United",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Watford",
+    "ag": 1,
+    "d": "22/08/2026",
+    "h": "Wrexham",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Wrexham",
     "ag": 1,
     "d": "17/08/2026",
