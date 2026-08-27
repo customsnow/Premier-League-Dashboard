@@ -1,68 +1,56 @@
 [
   {
-    "a": "Barnsley",
-    "d": "22/08/2026",
-    "h": "Doncaster Rovers",
+    "a": "Peterborough United",
+    "d": "29/08/2026",
+    "h": "Blackpool",
     "time": "11:30"
   },
   {
-    "a": "Notts County",
-    "d": "22/08/2026",
-    "h": "Luton Town",
+    "a": "Leicester City",
+    "d": "29/08/2026",
+    "h": "Milton Keynes Dons",
     "time": "11:30"
   },
   {
-    "a": "Reading",
-    "d": "22/08/2026",
-    "h": "AFC Wimbledon",
+    "a": "Huddersfield Town",
+    "d": "29/08/2026",
+    "h": "Cambridge United",
     "time": "14:00"
   },
   {
-    "a": "Cambridge United",
-    "d": "22/08/2026",
-    "h": "Bromley",
+    "a": "Barnsley",
+    "d": "29/08/2026",
+    "h": "Leyton Orient",
     "time": "14:00"
   },
   {
     "a": "Burton Albion",
-    "d": "22/08/2026",
-    "h": "Leicester City",
+    "d": "29/08/2026",
+    "h": "Notts County",
     "time": "14:00"
   },
   {
-    "a": "Huddersfield Town",
-    "d": "22/08/2026",
-    "h": "Milton Keynes Dons",
+    "a": "Bradford City",
+    "d": "29/08/2026",
+    "h": "Plymouth Argyle",
     "time": "14:00"
   },
   {
-    "a": "Mansfield Town",
-    "d": "22/08/2026",
-    "h": "Peterborough United",
+    "a": "Bromley",
+    "d": "29/08/2026",
+    "h": "Sheffield Wednesday",
     "time": "14:00"
   },
   {
-    "a": "Oxford United",
-    "d": "22/08/2026",
+    "a": "Doncaster Rovers",
+    "d": "29/08/2026",
     "h": "Stevenage",
     "time": "14:00"
   },
   {
-    "a": "Blackpool",
-    "d": "22/08/2026",
+    "a": "Wycombe Wanderers",
+    "d": "29/08/2026",
     "h": "Stockport County",
-    "time": "14:00"
-  },
-  {
-    "a": "Leyton Orient",
-    "d": "22/08/2026",
-    "h": "Wigan Athletic",
-    "time": "14:00"
-  },
-  {
-    "a": "Plymouth Argyle",
-    "d": "22/08/2026",
-    "h": "Wycombe Wanderers",
     "time": "14:00"
   }
 ]
