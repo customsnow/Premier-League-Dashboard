@@ -1,56 +1,14 @@
 [
   {
-    "a": "Peterborough United",
-    "d": "29/08/2026",
-    "h": "Blackpool",
-    "time": "11:30"
+    "a": "Wigan Athletic",
+    "d": "30/08/2026",
+    "h": "AFC Wimbledon",
+    "time": "13:00"
   },
   {
-    "a": "Leicester City",
-    "d": "29/08/2026",
-    "h": "Milton Keynes Dons",
-    "time": "11:30"
-  },
-  {
-    "a": "Huddersfield Town",
-    "d": "29/08/2026",
-    "h": "Cambridge United",
-    "time": "14:00"
-  },
-  {
-    "a": "Barnsley",
-    "d": "29/08/2026",
-    "h": "Leyton Orient",
-    "time": "14:00"
-  },
-  {
-    "a": "Burton Albion",
-    "d": "29/08/2026",
-    "h": "Notts County",
-    "time": "14:00"
-  },
-  {
-    "a": "Bradford City",
-    "d": "29/08/2026",
-    "h": "Plymouth Argyle",
-    "time": "14:00"
-  },
-  {
-    "a": "Bromley",
-    "d": "29/08/2026",
-    "h": "Sheffield Wednesday",
-    "time": "14:00"
-  },
-  {
-    "a": "Doncaster Rovers",
-    "d": "29/08/2026",
-    "h": "Stevenage",
-    "time": "14:00"
-  },
-  {
-    "a": "Wycombe Wanderers",
-    "d": "29/08/2026",
-    "h": "Stockport County",
+    "a": "Luton Town",
+    "d": "30/08/2026",
+    "h": "Mansfield Town",
     "time": "14:00"
   }
 ]
