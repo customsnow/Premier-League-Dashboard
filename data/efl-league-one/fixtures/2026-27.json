@@ -1,68 +1,8 @@
 [
   {
-    "a": "Sheffield Wednesday",
-    "d": "05/09/2026",
-    "h": "Peterborough United",
-    "time": "11:30"
-  },
-  {
-    "a": "Stockport County",
-    "d": "05/09/2026",
-    "h": "Wigan Athletic",
-    "time": "11:30"
-  },
-  {
-    "a": "Stevenage",
-    "d": "05/09/2026",
-    "h": "Barnsley",
-    "time": "14:00"
-  },
-  {
-    "a": "Mansfield Town",
-    "d": "05/09/2026",
-    "h": "Bradford City",
-    "time": "14:00"
-  },
-  {
-    "a": "Cambridge United",
-    "d": "05/09/2026",
-    "h": "Burton Albion",
-    "time": "14:00"
-  },
-  {
-    "a": "Plymouth Argyle",
-    "d": "05/09/2026",
-    "h": "Doncaster Rovers",
-    "time": "14:00"
-  },
-  {
-    "a": "Notts County",
-    "d": "05/09/2026",
-    "h": "Huddersfield Town",
-    "time": "14:00"
-  },
-  {
-    "a": "Oxford United",
-    "d": "05/09/2026",
-    "h": "Leicester City",
-    "time": "14:00"
-  },
-  {
-    "a": "Leyton Orient",
-    "d": "05/09/2026",
-    "h": "Luton Town",
-    "time": "14:00"
-  },
-  {
-    "a": "Blackpool",
-    "d": "05/09/2026",
-    "h": "Reading",
-    "time": "14:00"
-  },
-  {
-    "a": "Milton Keynes Dons",
-    "d": "05/09/2026",
-    "h": "Wycombe Wanderers",
-    "time": "14:00"
+    "a": "AFC Wimbledon",
+    "d": "07/09/2026",
+    "h": "Bromley",
+    "time": "19:00"
   }
 ]
