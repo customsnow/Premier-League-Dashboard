@@ -1,68 +1,38 @@
 [
   {
-    "a": "Southampton",
-    "d": "05/09/2026",
-    "h": "Lincoln City",
-    "time": "11:30"
+    "a": "Sheffield United",
+    "d": "08/09/2026",
+    "h": "Blackburn Rovers",
+    "time": "18:45"
   },
   {
-    "a": "Blackburn Rovers",
-    "d": "05/09/2026",
-    "h": "Preston North End",
-    "time": "11:30"
+    "a": "Stoke City",
+    "d": "08/09/2026",
+    "h": "Cardiff City",
+    "time": "18:45"
   },
   {
-    "a": "Charlton Athletic",
-    "d": "05/09/2026",
-    "h": "Stoke City",
-    "time": "11:30"
+    "a": "Swansea City",
+    "d": "08/09/2026",
+    "h": "Southampton",
+    "time": "18:45"
   },
   {
-    "a": "Bristol City",
-    "d": "05/09/2026",
-    "h": "Burnley",
-    "time": "14:00"
+    "a": "Preston North End",
+    "d": "08/09/2026",
+    "h": "Watford",
+    "time": "18:45"
   },
   {
-    "a": "Bolton Wanderers",
-    "d": "05/09/2026",
-    "h": "Millwall",
-    "time": "14:00"
+    "a": "Burnley",
+    "d": "08/09/2026",
+    "h": "Wrexham",
+    "time": "18:45"
   },
   {
-    "a": "Cardiff City",
-    "d": "05/09/2026",
-    "h": "Portsmouth",
-    "time": "14:00"
-  },
-  {
-    "a": "Middlesbrough",
-    "d": "05/09/2026",
-    "h": "Queens Park Rangers",
-    "time": "14:00"
-  },
-  {
-    "a": "Norwich City",
-    "d": "05/09/2026",
-    "h": "Sheffield United",
-    "time": "14:00"
-  },
-  {
-    "a": "Watford",
-    "d": "05/09/2026",
-    "h": "West Bromwich Albion",
-    "time": "14:00"
-  },
-  {
-    "a": "Derby County",
-    "d": "05/09/2026",
-    "h": "West Ham United",
-    "time": "14:00"
-  },
-  {
-    "a": "Wrexham",
-    "d": "05/09/2026",
-    "h": "Swansea City",
+    "a": "West Ham United",
+    "d": "08/09/2026",
+    "h": "Bolton Wanderers",
     "time": "19:00"
   }
 ]
