@@ -1,5 +1,101 @@
 [
   {
+    "a": "Cheltenham Town",
+    "ag": 3,
+    "d": "12/09/2026",
+    "h": "Crawley Town",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bristol Rovers",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Grimsby Town",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Accrington Stanley",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Barnet",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Crewe Alexandra",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Colchester United",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Tranmere Rovers",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Gillingham",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Fleetwood Town",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Newport County",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Chesterfield",
+    "ag": 2,
+    "d": "12/09/2026",
+    "h": "Oldham Athletic",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Exeter City",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Port Vale",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Salford City",
+    "ag": 3,
+    "d": "12/09/2026",
+    "h": "Rotherham United",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Northampton Town",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Shrewsbury Town",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Rochdale",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Walsall",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Swindon Town",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "York City",
+    "hg": 4,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Shrewsbury Town",
     "ag": 0,
     "d": "05/09/2026",

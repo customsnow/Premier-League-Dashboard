@@ -1,5 +1,85 @@
 [
   {
+    "a": "Cardiff City",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Bolton Wanderers",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Birmingham City",
+    "ag": 2,
+    "d": "12/09/2026",
+    "h": "Derby County",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Queens Park Rangers",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "West Bromwich Albion",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Millwall",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Blackburn Rovers",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Portsmouth",
+    "ag": 0,
+    "d": "12/09/2026",
+    "h": "Charlton Athletic",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Norwich City",
+    "ag": 3,
+    "d": "12/09/2026",
+    "h": "Middlesbrough",
+    "hg": 4,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Lincoln City",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Preston North End",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bristol City",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Southampton",
+    "hg": 4,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Burnley",
+    "ag": 1,
+    "d": "12/09/2026",
+    "h": "Swansea City",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Stoke City",
+    "ag": 2,
+    "d": "12/09/2026",
+    "h": "Watford",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Wrexham",
     "ag": 0,
     "d": "11/09/2026",
