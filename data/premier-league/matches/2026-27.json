@@ -1,5 +1,45 @@
 [
   {
+    "a": "Aston Villa",
+    "ag": 3,
+    "d": "19/09/2026",
+    "h": "Tottenham Hotspur",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Arsenal",
+    "ag": 0,
+    "d": "19/09/2026",
+    "h": "Brighton & Hove Albion",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Ipswich Town",
+    "ag": 0,
+    "d": "19/09/2026",
+    "h": "Everton",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Hull City",
+    "ag": 1,
+    "d": "19/09/2026",
+    "h": "Newcastle United",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Coventry City",
+    "ag": 1,
+    "d": "19/09/2026",
+    "h": "Nottingham Forest",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Chelsea",
     "ag": 0,
     "d": "18/09/2026",
