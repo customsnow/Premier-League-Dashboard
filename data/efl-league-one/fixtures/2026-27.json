@@ -1,68 +1,26 @@
 [
   {
-    "a": "Leicester City",
-    "d": "19/09/2026",
-    "h": "Barnsley",
-    "time": "11:30"
-  },
-  {
-    "a": "Mansfield Town",
-    "d": "19/09/2026",
-    "h": "Burton Albion",
-    "time": "11:30"
-  },
-  {
-    "a": "Plymouth Argyle",
-    "d": "19/09/2026",
-    "h": "Blackpool",
+    "a": "AFC Wimbledon",
+    "d": "26/09/2026",
+    "h": "Cambridge United",
     "time": "14:00"
   },
   {
-    "a": "Huddersfield Town",
-    "d": "19/09/2026",
-    "h": "Bromley",
+    "a": "Burton Albion",
+    "d": "26/09/2026",
+    "h": "Plymouth Argyle",
     "time": "14:00"
   },
   {
-    "a": "Stevenage",
-    "d": "19/09/2026",
-    "h": "Leyton Orient",
+    "a": "Peterborough United",
+    "d": "26/09/2026",
+    "h": "Stockport County",
     "time": "14:00"
   },
   {
-    "a": "Bradford City",
-    "d": "19/09/2026",
-    "h": "Luton Town",
-    "time": "14:00"
-  },
-  {
-    "a": "Cambridge United",
-    "d": "19/09/2026",
-    "h": "Oxford United",
-    "time": "14:00"
-  },
-  {
-    "a": "Doncaster Rovers",
-    "d": "19/09/2026",
-    "h": "Peterborough United",
-    "time": "14:00"
-  },
-  {
-    "a": "Notts County",
-    "d": "19/09/2026",
-    "h": "Reading",
-    "time": "14:00"
-  },
-  {
-    "a": "Stockport County",
-    "d": "19/09/2026",
-    "h": "Sheffield Wednesday",
-    "time": "14:00"
-  },
-  {
-    "a": "Wycombe Wanderers",
-    "d": "19/09/2026",
-    "h": "Wigan Athletic",
+    "a": "Reading",
+    "d": "26/09/2026",
+    "h": "Wycombe Wanderers",
     "time": "14:00"
   }
 ]
