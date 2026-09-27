@@ -1,5 +1,37 @@
 [
   {
+    "a": "AFC Wimbledon",
+    "ag": 1,
+    "d": "26/09/2026",
+    "h": "Cambridge United",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Burton Albion",
+    "ag": 1,
+    "d": "26/09/2026",
+    "h": "Plymouth Argyle",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Peterborough United",
+    "ag": 0,
+    "d": "26/09/2026",
+    "h": "Stockport County",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Reading",
+    "ag": 2,
+    "d": "26/09/2026",
+    "h": "Wycombe Wanderers",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Leicester City",
     "ag": 1,
     "d": "19/09/2026",
