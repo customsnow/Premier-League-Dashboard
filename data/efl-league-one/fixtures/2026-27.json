@@ -1,26 +1,20 @@
 [
   {
-    "a": "AFC Wimbledon",
-    "d": "26/09/2026",
-    "h": "Cambridge United",
+    "a": "Huddersfield Town",
+    "d": "03/10/2026",
+    "h": "Burton Albion",
     "time": "14:00"
   },
   {
-    "a": "Burton Albion",
-    "d": "26/09/2026",
-    "h": "Plymouth Argyle",
+    "a": "Plymouth Argyle",
+    "d": "03/10/2026",
+    "h": "Leyton Orient",
     "time": "14:00"
   },
   {
-    "a": "Peterborough United",
-    "d": "26/09/2026",
-    "h": "Stockport County",
-    "time": "14:00"
-  },
-  {
-    "a": "Reading",
-    "d": "26/09/2026",
-    "h": "Wycombe Wanderers",
+    "a": "Bradford City",
+    "d": "03/10/2026",
+    "h": "Reading",
     "time": "14:00"
   }
 ]
