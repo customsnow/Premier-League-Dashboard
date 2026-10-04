@@ -1,5 +1,69 @@
 [
   {
+    "a": "Tranmere Rovers",
+    "ag": 2,
+    "d": "03/10/2026",
+    "h": "Chesterfield",
+    "hg": 4,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Cheltenham Town",
+    "ag": 0,
+    "d": "03/10/2026",
+    "h": "Accrington Stanley",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bristol Rovers",
+    "ag": 1,
+    "d": "03/10/2026",
+    "h": "Crewe Alexandra",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Rotherham United",
+    "ag": 0,
+    "d": "03/10/2026",
+    "h": "Exeter City",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Newport County",
+    "ag": 0,
+    "d": "03/10/2026",
+    "h": "Gillingham",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Shrewsbury Town",
+    "ag": 2,
+    "d": "03/10/2026",
+    "h": "Grimsby Town",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Swindon Town",
+    "ag": 0,
+    "d": "03/10/2026",
+    "h": "Rochdale",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Fleetwood Town",
+    "ag": 0,
+    "d": "03/10/2026",
+    "h": "Salford City",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Exeter City",
     "ag": 0,
     "d": "26/09/2026",

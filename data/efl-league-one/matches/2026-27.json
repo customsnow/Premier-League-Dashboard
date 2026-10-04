@@ -1,5 +1,29 @@
 [
   {
+    "a": "Huddersfield Town",
+    "ag": 3,
+    "d": "03/10/2026",
+    "h": "Burton Albion",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Plymouth Argyle",
+    "ag": 2,
+    "d": "03/10/2026",
+    "h": "Leyton Orient",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bradford City",
+    "ag": 1,
+    "d": "03/10/2026",
+    "h": "Reading",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "AFC Wimbledon",
     "ag": 1,
     "d": "26/09/2026",
