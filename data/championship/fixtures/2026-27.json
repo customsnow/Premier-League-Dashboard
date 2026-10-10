@@ -1,8 +1,62 @@
 [
   {
-    "a": "Queens Park Rangers",
-    "d": "09/10/2026",
-    "h": "West Ham United",
-    "time": "19:00"
+    "a": "Bristol City",
+    "d": "10/10/2026",
+    "h": "Charlton Athletic",
+    "time": "11:30"
+  },
+  {
+    "a": "Norwich City",
+    "d": "10/10/2026",
+    "h": "Swansea City",
+    "time": "11:30"
+  },
+  {
+    "a": "Birmingham City",
+    "d": "10/10/2026",
+    "h": "West Bromwich Albion",
+    "time": "11:30"
+  },
+  {
+    "a": "Cardiff City",
+    "d": "10/10/2026",
+    "h": "Blackburn Rovers",
+    "time": "14:00"
+  },
+  {
+    "a": "Stoke City",
+    "d": "10/10/2026",
+    "h": "Bolton Wanderers",
+    "time": "14:00"
+  },
+  {
+    "a": "Wrexham",
+    "d": "10/10/2026",
+    "h": "Derby County",
+    "time": "14:00"
+  },
+  {
+    "a": "Wolverhampton Wanderers",
+    "d": "10/10/2026",
+    "h": "Middlesbrough",
+    "time": "14:00"
+  },
+  {
+    "a": "Millwall",
+    "d": "10/10/2026",
+    "h": "Preston North End",
+    "time": "14:00"
+  },
+  {
+    "a": "Lincoln City",
+    "d": "10/10/2026",
+    "h": "Sheffield United",
+    "time": "14:00"
+  },
+  {
+    "a": "Burnley",
+    "d": "10/10/2026",
+    "h": "Watford",
+    "time": "14:00"
   }
 ]
