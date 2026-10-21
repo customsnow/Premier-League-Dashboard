@@ -1,5 +1,93 @@
 [
   {
+    "a": "Mansfield Town",
+    "ag": 3,
+    "d": "20/10/2026",
+    "h": "AFC Wimbledon",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Milton Keynes Dons",
+    "ag": 0,
+    "d": "20/10/2026",
+    "h": "Blackpool",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Leicester City",
+    "ag": 4,
+    "d": "20/10/2026",
+    "h": "Bromley",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Bradford City",
+    "ag": 0,
+    "d": "20/10/2026",
+    "h": "Burton Albion",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Wycombe Wanderers",
+    "ag": 2,
+    "d": "20/10/2026",
+    "h": "Cambridge United",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Stockport County",
+    "ag": 2,
+    "d": "20/10/2026",
+    "h": "Doncaster Rovers",
+    "hg": 0,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Peterborough United",
+    "ag": 1,
+    "d": "20/10/2026",
+    "h": "Huddersfield Town",
+    "hg": 4,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Barnsley",
+    "ag": 1,
+    "d": "20/10/2026",
+    "h": "Luton Town",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Sheffield Wednesday",
+    "ag": 0,
+    "d": "20/10/2026",
+    "h": "Notts County",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Wigan Athletic",
+    "ag": 1,
+    "d": "20/10/2026",
+    "h": "Oxford United",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Plymouth Argyle",
+    "ag": 0,
+    "d": "20/10/2026",
+    "h": "Stevenage",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Oxford United",
     "ag": 2,
     "d": "10/10/2026",
