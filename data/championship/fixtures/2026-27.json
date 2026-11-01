@@ -1,68 +1,56 @@
 [
   {
-    "a": "Birmingham City",
-    "d": "31/10/2026",
-    "h": "Lincoln City",
-    "time": "12:30"
+    "a": "Stoke City",
+    "d": "03/11/2026",
+    "h": "Blackburn Rovers",
+    "time": "19:45"
   },
   {
-    "a": "Watford",
-    "d": "31/10/2026",
-    "h": "Norwich City",
-    "time": "12:30"
+    "a": "Bolton Wanderers",
+    "d": "03/11/2026",
+    "h": "Charlton Athletic",
+    "time": "19:45"
   },
   {
-    "a": "Preston North End",
-    "d": "31/10/2026",
-    "h": "Stoke City",
-    "time": "12:30"
+    "a": "Norwich City",
+    "d": "03/11/2026",
+    "h": "Derby County",
+    "time": "19:45"
   },
   {
-    "a": "Bristol City",
-    "d": "31/10/2026",
-    "h": "Bolton Wanderers",
-    "time": "15:00"
+    "a": "Swansea City",
+    "d": "03/11/2026",
+    "h": "Portsmouth",
+    "time": "19:45"
   },
   {
-    "a": "Portsmouth",
-    "d": "31/10/2026",
-    "h": "Burnley",
-    "time": "15:00"
+    "a": "Sheffield United",
+    "d": "03/11/2026",
+    "h": "Preston North End",
+    "time": "19:45"
   },
   {
-    "a": "Charlton Athletic",
-    "d": "31/10/2026",
-    "h": "Middlesbrough",
-    "time": "15:00"
+    "a": "Burnley",
+    "d": "03/11/2026",
+    "h": "Queens Park Rangers",
+    "time": "19:45"
   },
   {
-    "a": "Derby County",
-    "d": "31/10/2026",
-    "h": "Millwall",
-    "time": "15:00"
+    "a": "Lincoln City",
+    "d": "03/11/2026",
+    "h": "Watford",
+    "time": "19:45"
   },
   {
-    "a": "Queens Park Rangers",
-    "d": "31/10/2026",
-    "h": "Southampton",
-    "time": "15:00"
+    "a": "Millwall",
+    "d": "03/11/2026",
+    "h": "Birmingham City",
+    "time": "20:00"
   },
   {
-    "a": "Blackburn Rovers",
-    "d": "31/10/2026",
-    "h": "Swansea City",
-    "time": "15:00"
-  },
-  {
-    "a": "West Bromwich Albion",
-    "d": "31/10/2026",
-    "h": "West Ham United",
-    "time": "15:00"
-  },
-  {
-    "a": "Cardiff City",
-    "d": "31/10/2026",
-    "h": "Wolverhampton Wanderers",
-    "time": "15:00"
+    "a": "Southampton",
+    "d": "03/11/2026",
+    "h": "West Bromwich Albion",
+    "time": "20:00"
   }
 ]
