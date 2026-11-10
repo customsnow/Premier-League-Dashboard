@@ -6,12 +6,6 @@
     "time": "15:00"
   },
   {
-    "a": "Leyton Orient",
-    "d": "14/11/2026",
-    "h": "Doncaster Rovers",
-    "time": "15:00"
-  },
-  {
     "a": "Burton Albion",
     "d": "14/11/2026",
     "h": "Milton Keynes Dons",
@@ -24,12 +18,6 @@
     "time": "15:00"
   },
   {
-    "a": "Mansfield Town",
-    "d": "14/11/2026",
-    "h": "Stevenage",
-    "time": "15:00"
-  },
-  {
     "a": "Reading",
     "d": "14/11/2026",
     "h": "Stockport County",
@@ -39,12 +27,6 @@
     "a": "Barnsley",
     "d": "14/11/2026",
     "h": "Wigan Athletic",
-    "time": "15:00"
-  },
-  {
-    "a": "Huddersfield Town",
-    "d": "14/11/2026",
-    "h": "Wycombe Wanderers",
     "time": "15:00"
   }
 ]
