@@ -1,5 +1,45 @@
 [
   {
+    "a": "Blackpool",
+    "ag": 0,
+    "d": "14/11/2026",
+    "h": "AFC Wimbledon",
+    "hg": 1,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Burton Albion",
+    "ag": 2,
+    "d": "14/11/2026",
+    "h": "Milton Keynes Dons",
+    "hg": 6,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Plymouth Argyle",
+    "ag": 0,
+    "d": "14/11/2026",
+    "h": "Sheffield Wednesday",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Reading",
+    "ag": 1,
+    "d": "14/11/2026",
+    "h": "Stockport County",
+    "hg": 3,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
+    "a": "Barnsley",
+    "ag": 1,
+    "d": "14/11/2026",
+    "h": "Wigan Athletic",
+    "hg": 2,
+    "status": "STATUS_FULL_TIME"
+  },
+  {
     "a": "Reading",
     "ag": 0,
     "d": "04/11/2026",
