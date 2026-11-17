@@ -1,32 +1,8 @@
 [
   {
-    "a": "Blackpool",
-    "d": "14/11/2026",
-    "h": "AFC Wimbledon",
-    "time": "15:00"
-  },
-  {
-    "a": "Burton Albion",
-    "d": "14/11/2026",
-    "h": "Milton Keynes Dons",
-    "time": "15:00"
-  },
-  {
-    "a": "Plymouth Argyle",
-    "d": "14/11/2026",
-    "h": "Sheffield Wednesday",
-    "time": "15:00"
-  },
-  {
-    "a": "Reading",
-    "d": "14/11/2026",
-    "h": "Stockport County",
-    "time": "15:00"
-  },
-  {
-    "a": "Barnsley",
-    "d": "14/11/2026",
-    "h": "Wigan Athletic",
-    "time": "15:00"
+    "a": "Sheffield Wednesday",
+    "d": "20/11/2026",
+    "h": "Barnsley",
+    "time": "20:00"
   }
 ]
